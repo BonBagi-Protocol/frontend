@@ -14,6 +14,7 @@
 
 ## Later (not MVP)
 - Referrer/affiliate share as a charter member, via a pay page hosted by the referrer (not in MVP).
+- Charter drafted by an AI agent from the seller–affiliate chat; both parties review and sign. Privacy check needed first: the chat must not leak to a third-party model provider in a way that breaks the threat model.
 
 ## Split (owner 40%, others 30% each)
 - Dex: owner, charter + pay page, demo video
