@@ -13,9 +13,9 @@
 - Static pay page (no scanning backend needed).
 
 ## Later (not MVP)
-- Referrer/affiliate share as a charter member, via a pay page hosted by the referrer (council vote 4–3: not in MVP).
+- Referrer/affiliate share as a charter member, via a pay page hosted by the referrer (not in MVP).
 
-## Split (owner 40%, others 30% each — trio agreement 16 Oct)
+## Split (owner 40%, others 30% each)
 - Dex: owner, charter + pay page, demo video
 - Hans: ? (backlog to be split)
 - Dave: ? (backlog to be split)
