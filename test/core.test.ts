@@ -160,3 +160,30 @@ describe("payment request", () => {
     await expect(buildPaymentRequest(signed, parseZec("0.01"), "X")).rejects.toThrow(/Mentor C/);
   });
 });
+
+import { addSignature, parseCharterFile } from "../src/core/charter.ts";
+import { percentToBps } from "../src/core/split.ts";
+
+describe("charter file helpers", () => {
+  it("percentToBps", () => {
+    expect(percentToBps("50")).toBe(5000);
+    expect(percentToBps("33.33")).toBe(3333);
+    expect(percentToBps("0.5")).toBe(50);
+    for (const bad of ["0", "101", "33.333", "abc", ""]) expect(() => percentToBps(bad)).toThrow();
+  });
+  it("round-trips through JSON and collects signatures one by one", async () => {
+    const { charter, keys } = await makeCharter();
+    let file = parseCharterFile(JSON.stringify({ charter, signatures: [] }));
+    for (const k of keys) file = parseCharterFile(JSON.stringify(await addSignature(file, k)));
+    expect(file.signatures).toHaveLength(3);
+    expect((await verifyCharter(file)).unsigned).toEqual([]);
+    // signing twice replaces, not duplicates
+    file = await addSignature(file, keys[0]!);
+    expect(file.signatures).toHaveLength(3);
+  });
+  it("rejects garbage", () => {
+    expect(() => parseCharterFile("nope")).toThrow(/JSON/);
+    expect(() => parseCharterFile("{}")).toThrow();
+    expect(() => parseCharterFile(JSON.stringify({ charter: { members: [{}] } }))).toThrow(/label/);
+  });
+});

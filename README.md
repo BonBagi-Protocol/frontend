@@ -13,6 +13,7 @@ Built for [ZECATHON](https://thezecathon.com) · track Shielded Payments.
 ## Status
 - **Core library** (`src/core/`, tested): ZIP-321 multi-recipient builder + strict parser, deterministic zatoshi split with a minimum share, memo per output, signed charter (canonical JSON + Ed25519, every member must sign).
 - **Day-1 gate tool** (`gate.html`): three shielded addresses → one payment request (copy + QR). Next: pay it from Zingo PC on Ironwood mainnet. See `docs/PLAN.md`.
+- **Charter page** (`charter.html`): each member creates a key, the group drafts the charter, everyone signs, anyone can check. Tampering is detected (any edit invalidates all signatures).
 - Pay page: in progress.
 
 ## Develop

@@ -13,7 +13,7 @@ h1 { font-size: 1.6rem; margin: 0 0 4px; }
 .sub { color: var(--muted); margin: 0 0 24px; }
 .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
 label { display: block; font-size: .85rem; color: var(--muted); margin: 8px 0 4px; }
-input, textarea { width: 100%; font: inherit; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); }
+input, textarea, select { width: 100%; font: inherit; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); }
 textarea { font-family: ui-monospace, monospace; font-size: .8rem; min-height: 96px; word-break: break-all; }
 .row { display: grid; grid-template-columns: 1fr 140px; gap: 8px; }
 @media (max-width: 520px) { .row { grid-template-columns: 1fr; } }
@@ -28,3 +28,5 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: now
 .qr { display: flex; justify-content: center; padding: 12px; background: #fff; border-radius: 8px; }
 .qr svg { width: min(320px, 100%); height: auto; }
 ol li { margin-bottom: 6px; }
+h2 { font-size: 1.1rem; margin: 0 0 4px; }
+.member { border-top: 1px dashed var(--line); margin-top: 12px; padding-top: 4px; }

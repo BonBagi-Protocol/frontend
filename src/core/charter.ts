@@ -146,3 +146,33 @@ export async function verifyCharter(signed: SignedCharter): Promise<VerifyResult
   }
   return { hash: await charterHash(charter), unsigned };
 }
+
+/** Read a charter file someone pasted or uploaded. Checks shape only; call verifyCharter for the rest. */
+export function parseCharterFile(text: string): SignedCharter {
+  let raw: unknown;
+  try {
+    raw = JSON.parse(text);
+  } catch {
+    throw new Error("not valid JSON");
+  }
+  const o = raw as Partial<SignedCharter> | null;
+  const c = o?.charter as Partial<Charter> | undefined;
+  if (!o || typeof o !== "object" || !c || typeof c !== "object") throw new Error('expected {"charter": …, "signatures": […]}');
+  if (!Array.isArray(c.members)) throw new Error("charter.members must be a list");
+  for (const m of c.members as unknown[]) {
+    const mm = m as Partial<Member>;
+    if (typeof mm?.label !== "string" || typeof mm.address !== "string" || typeof mm.bps !== "number" || typeof mm.pubkey !== "string") {
+      throw new Error("each member needs label, address, bps and pubkey");
+    }
+  }
+  if (typeof c.title !== "string" || typeof c.minShareZat !== "string" || typeof c.network !== "string") throw new Error("charter needs title, network and minShareZat");
+  const sigs = o.signatures ?? [];
+  if (!Array.isArray(sigs) || sigs.some((s) => typeof s?.pubkey !== "string" || typeof s?.sig !== "string")) throw new Error("signatures must be a list of {pubkey, sig}");
+  return { charter: c as Charter, signatures: sigs };
+}
+
+/** Add or replace this member's signature. */
+export async function addSignature(file: SignedCharter, privHex: string): Promise<SignedCharter> {
+  const s = await signCharter(file.charter, privHex);
+  return { charter: file.charter, signatures: [...file.signatures.filter((x) => x.pubkey !== s.pubkey), s] };
+}

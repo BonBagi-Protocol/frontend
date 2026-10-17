@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BonBagi · Charter</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <main>
+    <h1>Charter</h1>
+    <p class="sub">The collective's agreement: who gets paid, where, and what share. Every member signs it; any later change breaks the signatures. Everything here runs in this tab — keys and addresses are never sent anywhere.</p>
+
+    <section class="card">
+      <h2>1 · Your signing key</h2>
+      <p class="sub">Each member creates one key and keeps the private part to themselves. Share only the public key.</p>
+      <p><button type="button" id="genkey">Create a key</button></p>
+      <div id="keyout"></div>
+    </section>
+
+    <section class="card">
+      <h2>2 · Draft the charter</h2>
+      <label for="title">Title (what is being sold)</label>
+      <input id="title" maxlength="80" placeholder="Intro to Zcash — 3 mentors" />
+      <label for="network">Network</label>
+      <select id="network"><option value="main">Mainnet</option><option value="test">Testnet</option></select>
+      <label for="minshare">Minimum per member (ZEC)</label>
+      <input id="minshare" value="0.0001" inputmode="decimal" />
+      <div id="members"></div>
+      <p><button type="button" class="ghost" id="addmember">+ Member</button> <button type="button" id="draft">Create charter</button></p>
+      <div id="draftout"></div>
+    </section>
+
+    <section class="card">
+      <h2>3 · Sign</h2>
+      <label for="signin">Charter file (unsigned or partly signed)</label>
+      <textarea id="signin" spellcheck="false" placeholder='{"charter":{…},"signatures":[]}'></textarea>
+      <label for="priv">Your private key (64 hex characters)</label>
+      <input id="priv" type="password" spellcheck="false" autocomplete="off" />
+      <p><button type="button" id="sign">Add my signature</button></p>
+      <div id="signout"></div>
+    </section>
+
+    <section class="card">
+      <h2>4 · Check</h2>
+      <label for="verin">Signed charter file</label>
+      <textarea id="verin" spellcheck="false"></textarea>
+      <p><button type="button" id="verify">Check signatures</button></p>
+      <div id="verout"></div>
+    </section>
+  </main>
+  <script type="module" src="/src/charter-page.ts"></script>
+</body>
+</html>
