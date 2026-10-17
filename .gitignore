@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.env*
+# never commit real payment requests or address lists
+*.uri
+charters/private/
+.claude/

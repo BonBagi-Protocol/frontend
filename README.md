@@ -11,7 +11,19 @@ BonBagi lets a small collective (e.g. three mentors running one online class) ge
 Built for [ZECATHON](https://thezecathon.com) · track Shielded Payments.
 
 ## Status
-Day 1 — go/no-go gate: one 3-recipient ZIP-321 URI paid from Zingo PC on Ironwood mainnet. See `docs/PLAN.md`.
+- **Core library** (`src/core/`, tested): ZIP-321 multi-recipient builder + strict parser, deterministic zatoshi split with a minimum share, memo per output, signed charter (canonical JSON + Ed25519, every member must sign).
+- **Day-1 gate tool** (`gate.html`): three shielded addresses → one payment request (copy + QR). Next: pay it from Zingo PC on Ironwood mainnet. See `docs/PLAN.md`.
+- Pay page: in progress.
+
+## Develop
+```bash
+npm ci
+npm test        # unit tests
+npm run dev     # http://localhost:5173/gate.html
+npm run build
+```
+
+Code layout: `src/core/zip321.ts` (payment requests) · `split.ts` (who gets how much) · `charter.ts` (signed agreement) · `request.ts` (charter + price → request) · `memo.ts` · `address.ts` · `zatoshi.ts`.
 
 ## What stays private (honest threat model, draft)
 - Public observers cannot see who was paid or how much.
