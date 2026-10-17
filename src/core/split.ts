@@ -41,3 +41,12 @@ export function splitAmount(totalZat: bigint, bps: readonly number[], minShareZa
   }
   return out;
 }
+
+/** "33.33" → 3333 bp. At most two decimals, 0 < p ≤ 100. */
+export function percentToBps(text: string): number {
+  const m = /^(\d{1,3})(?:\.(\d{1,2}))?$/.exec(text.trim());
+  if (!m) throw new SplitError(`invalid percentage "${text}" (use e.g. 50 or 33.33)`);
+  const bps = Number(m[1]) * 100 + Number((m[2] ?? "").padEnd(2, "0"));
+  if (bps <= 0 || bps > TOTAL_BPS) throw new SplitError(`percentage must be between 0 and 100, got ${text}`);
+  return bps;
+}

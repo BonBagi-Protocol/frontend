@@ -7,6 +7,7 @@ export default defineConfig({
       input: {
         index: resolve(import.meta.dirname, "index.html"),
         gate: resolve(import.meta.dirname, "gate.html"),
+        charter: resolve(import.meta.dirname, "charter.html"),
       },
     },
   },
