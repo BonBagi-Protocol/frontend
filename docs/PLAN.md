@@ -1,7 +1,7 @@
 # Plan (deadline 28 Oct 2026 23:59 UTC = Thu 29 Oct 06:59 WIB)
 
 ## Day 1 gate (go / no-go)
-- [ ] Build one ZIP-321 URI with 3 recipients (team-owned addresses, tiny amounts) and memo per output.
+- [x] Build one ZIP-321 URI with 3 recipients (team-owned addresses, tiny amounts) and memo per output — `gate.html`.
 - [ ] Pay it from Zingo PC (2.0.26 pre-release) on Ironwood mainnet. Pass = one tx, 3 correct amounts, each recipient sees their share, and Zingo PC shows ALL recipients before confirm. Backup wallet: Zkool. Do not use Zodl (iOS rejects multi-recipient URIs; Android issue #2217 shows only the first recipient).
 
 ## Requirements

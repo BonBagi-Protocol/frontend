@@ -1,0 +1,23 @@
+{
+  "name": "bonbagi",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "One Zcash shielded payment, split to every member of a collective in one transaction.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@noble/ed25519": "2.3.0",
+    "qrcode-generator": "1.4.4"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "vite": "7.1.12",
+    "vitest": "3.2.4"
+  }
+}
