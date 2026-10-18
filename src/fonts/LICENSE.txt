@@ -6,3 +6,7 @@ Bundled fonts (served from this site only; the page never loads fonts from a thi
 - Caveat (SemiBold), Copyright 2014 The Caveat Project Authors.
   SIL Open Font License 1.1, full text in OFL-Caveat.txt.
   Source: https://github.com/googlefonts/caveat (latin subset, woff2 via the @fontsource/caveat 5.3.0 package).
+
+- Archivo (SemiBold 600, Black 900), Copyright The Archivo Project Authors (Omnibus-Type).
+  SIL Open Font License 1.1, full text in OFL-Archivo.txt.
+  Source: https://github.com/Omnibus-Type/Archivo (latin subset, woff2 via the @fontsource/archivo 5.2.5 package).
