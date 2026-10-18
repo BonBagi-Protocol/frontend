@@ -9,7 +9,8 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "deploy": "npm run build && node scripts/prepare-deploy.mjs && vercel deploy dist --prod --yes"
   },
   "dependencies": {
     "@noble/ed25519": "2.3.0",

@@ -6,7 +6,7 @@ BonBagi lets a small collective (three mentors running a class, a band, a co-op)
 
 *Bon* is Indonesian for a receipt or bill; *bagi* means to share or split.
 
-- **Demo:** _(Vercel URL, added at submission)_
+- **Demo:** https://bonbagi.vercel.app
 - **Video (2 min):** _(added at submission)_
 - **Track:** ZECATHON 2026 · Shielded Payments
 

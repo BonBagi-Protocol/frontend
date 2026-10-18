@@ -50,16 +50,24 @@ async function load(signed: SignedCharter, source: string, priceZat?: bigint) {
     const { hash, unsigned } = await verifyCharter(signed);
     const c = signed.charter;
     const ready = unsigned.length === 0;
+    const signedBy = new Set(signed.signatures.map((sg) => sg.pubkey));
+    const tampered = unsigned.filter((i) => signedBy.has(c.members[i]!.pubkey));
     check.innerHTML = `
       <section class="card ${ready ? "done" : ""}">
         ${
           ready
             ? banner("ok", `Verified in your browser — signed by all ${c.members.length} members.`, "Any change to an address or a share after signing breaks the signatures, and this page refuses to continue. Signatures prove the listed members agreed to this exact split; compare the fingerprint below with the one the seller published to know it is their collective.")
-            : banner(
-                "err",
-                `Not payable: ${unsigned.length} of ${c.members.length} signatures missing or invalid.`,
-                `Waiting for ${esc(unsigned.map((i) => c.members[i]!.label).join(", "))}. Every member must sign before anyone can pay. Ask the seller for the fully signed charter.`,
-              )
+            : tampered.length > 0
+              ? banner(
+                  "err",
+                  `Not payable: the charter was changed after it was signed.`,
+                  `${tampered.length} of ${c.members.length} signatures no longer match this exact text (${esc(tampered.map((i) => c.members[i]!.label).join(", "))}). Someone edited an address, a share or another field. Do not pay; ask the seller for the original link.`,
+                )
+              : banner(
+                  "err",
+                  `Not payable: ${unsigned.length} of ${c.members.length} signatures missing.`,
+                  `Waiting for ${esc(unsigned.map((i) => c.members[i]!.label).join(", "))}. Every member must sign before anyone can pay. Ask the seller for the fully signed charter.`,
+                )
         }
         <h2>${esc(c.title)}</h2>
         <p class="sub tight">${c.network === "main" ? "Mainnet" : "Testnet"} · fingerprint <code>${hash.slice(0, 16)}</code> · loaded from ${esc(source)}</p>
@@ -70,7 +78,7 @@ async function load(signed: SignedCharter, source: string, priceZat?: bigint) {
             .map(
               (m, i) =>
                 `<tr><td>${who(i, m.label, m.address)}</td><td class="num">${(m.bps / 100).toFixed(2)}%</td><td class="num">${
-                  unsigned.includes(i) ? '<span class="tag err">missing</span>' : '<span class="tag ok">valid</span>'
+                  !unsigned.includes(i) ? '<span class="tag ok">valid</span>' : tampered.includes(i) ? '<span class="tag err">broken</span>' : '<span class="tag err">missing</span>'
                 }</td></tr>`,
             )
             .join("")}

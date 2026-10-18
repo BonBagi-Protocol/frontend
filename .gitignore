@@ -5,3 +5,4 @@ dist/
 *.uri
 charters/private/
 .claude/
+.vercel/
