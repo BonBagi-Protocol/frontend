@@ -47,7 +47,7 @@ function payLinkBlock(target: HTMLElement, file: SignedCharter) {
     const out = box.querySelector<HTMLDivElement>("[data-link]")!;
     try {
       const p = box.querySelector<HTMLInputElement>("input")!.value.trim();
-      const link = payLink(new URL("./", location.href).href, file, p ? parseZec(p) : undefined);
+      const link = payLink(new URL("./pay.html", location.href).href, file, p ? parseZec(p) : undefined);
       out.innerHTML = `
         <textarea readonly spellcheck="false">${esc(link)}</textarea>
         <p class="actions"><button type="button" class="ghost" data-copy>Copy link</button> <a class="button" href="${esc(link)}" target="_blank" rel="noopener noreferrer">Open pay page</a></p>
