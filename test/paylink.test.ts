@@ -134,6 +134,35 @@ describe("split & memo review (#4, #5)", () => {
       });
     }
   });
+  it("50 members (the charter maximum) with uneven shares sum exactly and are stable", () => {
+    const bps = Array.from({ length: 50 }, (_, i) => (i < 49 ? 7 + (i % 5) * 40 : 0));
+    bps[49] = 10_000 - bps.reduce((a, b) => a + b, 0);
+    const total = 987_654_321n;
+    const out = splitAmount(total, bps, 1n);
+    expect(out).toHaveLength(50);
+    expect(out.reduce((a, b) => a + b, 0n)).toBe(total);
+    expect(splitAmount(total, bps, 1n)).toEqual(out);
+  });
+  it("leftover zatoshi go to the earliest members when three or more remainders tie", () => {
+    // 4 × 2500 bp of 10_003 zat: each exact share is 2500.75, so three leftovers go to members 1–3.
+    expect(splitAmount(10_003n, [2500, 2500, 2500, 2500], 1n)).toEqual([2501n, 2501n, 2501n, 2500n]);
+  });
+  it("a price near the 21M ZEC supply cap splits without loss", () => {
+    const total = 21_000_000n * 100_000_000n - 1n;
+    const out = splitAmount(total, [3333, 3333, 3334]);
+    expect(out.reduce((a, b) => a + b, 0n)).toBe(total);
+  });
+  it("the charter's own minShareZat overrides the default minimum", async () => {
+    const signed = await signedCharter();
+    // 0.0002 ZEC → 8,000 / 6,000 / 6,000 zat: below the default 10,000, fine with a 5,000 floor.
+    await expect(buildPaymentRequest(signed, parseZec("0.0002"), "ord-1")).rejects.toThrow(/below the minimum of 10000/);
+    const keys = [newPrivateKey(), newPrivateKey(), newPrivateKey()];
+    const pubs = await Promise.all(keys.map(publicKeyOf));
+    const charter: Charter = { ...signed.charter, minShareZat: "5000", members: signed.charter.members.map((m, i) => ({ ...m, pubkey: pubs[i]! })) };
+    const low = { charter, signatures: await Promise.all(keys.map((k) => signCharter(charter, k))) };
+    const req = await buildPaymentRequest(low, parseZec("0.0002"), "ord-1");
+    expect(req.lines.map((l) => l.amountZat)).toEqual([8_000n, 6_000n, 6_000n]);
+  });
   it("the longest possible BonBagi memo fits easily in 512 bytes", () => {
     const memo = bonbagiMemo("x".repeat(32), "f".repeat(64), 50, 50);
     expect(fromBase64url(encodeMemo(memo)).length).toBeLessThan(100);

@@ -71,7 +71,7 @@ async function load(signed: SignedCharter, source: string, priceZat?: bigint) {
                 )
         }
         <h2>${esc(c.title)}</h2>
-        <p class="sub tight">${c.network === "main" ? "Mainnet" : "Testnet"} · fingerprint <code>${hash.slice(0, 16)}</code> · loaded from ${esc(source)}</p>
+        <p class="sub tight">${c.network === "main" ? "Mainnet" : "Testnet"} · fingerprint <code>${hash.slice(0, 32)}</code> · loaded from ${esc(source)}</p>
         ${shareBar(c.members.map((m) => m.bps))}
         <table>
           <tr><th>Member</th><th class="num">Share</th><th class="num">Signature</th></tr>
