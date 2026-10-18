@@ -347,3 +347,50 @@ footer.foot .metaline { font-size: 10.5px; letter-spacing: .1em; text-transform:
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .js .reveal { opacity: 1; transform: none; }
 }
+
+/* ---------- hero v3 · "B1 poster Swiss" + kobalt & emas Zcash (chosen by Dex in Pemilih UI, 19 Oct) ----------
+   Segment 1 of the per-segment redesign. Other segments keep the v2 receipt style until they are chosen. */
+@font-face { font-family: "Archivo"; src: url("./fonts/Archivo-SemiBold.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "Archivo"; src: url("./fonts/Archivo-Black.woff2") format("woff2"); font-weight: 900; font-display: swap; }
+:root {
+  --k-bg: #f6f7fb; --k-ink: #0b1440; --k-mute: #46507a; --k-acc: #1d33c9; --k-on: #f4b728; --k-acc2: #c78a00;
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+}
+.hb1-band { --fg: var(--k-ink); background: var(--k-bg); color: var(--k-ink); margin: 0 calc(50% - 50vw) 36px; padding: 0 calc(50vw - 50%); border-bottom: 1px solid #dfe3f2; color-scheme: light; }
+.hb1 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 340px); gap: 0; min-height: 440px; }
+.hb1-copy { padding: 44px 40px 40px 0; display: flex; flex-direction: column; justify-content: center; }
+.hb1 h1 { font-family: var(--display); font-weight: 900; font-size: clamp(3.1rem, 8.4vw, 6.6rem); line-height: .86; letter-spacing: -.045em; word-spacing: .12em; margin: 0 0 26px; color: var(--k-ink); }
+.hb1-lede { font-family: var(--display); font-weight: 600; font-size: clamp(1.02rem, 1.6vw, 1.18rem); line-height: 1.45; color: var(--k-mute); max-width: 46ch; margin: 0 0 28px; }
+.hb1-lede strong { color: var(--k-ink); font-weight: 900; }
+.hb1-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 22px; }
+.hb1-btn { font-family: var(--display); font-weight: 900; font-size: 1.02rem; letter-spacing: -.01em; background: var(--k-acc); color: #fff; text-decoration: none; padding: 15px 24px; border-radius: 2px; min-height: 52px; display: inline-flex; align-items: center; }
+.hb1-btn:hover { background: #142594; }
+.hb1-link { font-family: var(--display); font-weight: 900; font-size: 1.02rem; color: var(--k-ink); text-decoration: none; border-bottom: 3px solid var(--k-ink); padding-bottom: 2px; }
+.hb1-btn:focus-visible, .hb1-link:focus-visible { outline: 3px solid var(--k-on); outline-offset: 3px; }
+.hb1-col { margin: 0; background: var(--k-acc); color: var(--k-on); position: relative; display: grid; place-items: center; overflow: hidden; }
+.hb1-one { font-family: var(--display); font-weight: 900; font-size: 22rem; line-height: .8; letter-spacing: -.06em; animation: hb1-one 6s ease-in-out infinite; }
+.hb1-parts { position: absolute; inset: 36px 28px auto; display: grid; gap: 14px; opacity: 0; animation: hb1-parts 6s ease-in-out infinite; }
+.hb1-parts div { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; border-top: 4px solid currentColor; padding-top: 8px; }
+.hb1-parts b { font-family: var(--display); font-weight: 900; font-size: 4.6rem; line-height: .9; letter-spacing: -.04em; }
+.hb1-parts span { font-family: var(--display); font-weight: 600; font-size: .95rem; text-align: right; }
+@keyframes hb1-one { 0%, 35% { opacity: 1; transform: none; } 45%, 90% { opacity: 0; transform: scale(.6); } 100% { opacity: 1; transform: none; } }
+@keyframes hb1-parts { 0%, 38% { opacity: 0; transform: translateY(18px); } 50%, 88% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+.hb1-facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0; border-top: 1px solid #dfe3f2; }
+.hb1-facts div { padding: 18px 16px 20px 0; display: flex; align-items: baseline; gap: 10px; }
+.hb1-facts dd { margin: 0; font-family: var(--display); font-weight: 900; font-size: 2.4rem; line-height: 1; color: var(--k-acc); }
+.hb1-facts dt { font-family: var(--display); font-weight: 600; font-size: .98rem; color: var(--k-ink); }
+@media (max-width: 760px) {
+  .hb1 { grid-template-columns: 1fr; min-height: 0; }
+  .hb1-copy { padding: 32px 0 28px; }
+  .hb1-col { min-height: 280px; margin: 0 calc(50% - 50vw); }
+  .hb1-one { font-size: 15rem; }
+  .hb1-parts { inset: 26px 20px auto; }
+  .hb1-parts b { font-size: 3.6rem; }
+  .hb1-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hb1-one { animation: none; opacity: 0; }
+  .hb1-parts { animation: none; opacity: 1; transform: none; }
+}
+
+html, body { overflow-x: clip; }

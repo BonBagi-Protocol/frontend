@@ -18,37 +18,27 @@
   </header>
 
   <main>
-    <div id="hero">
-      <section class="hero">
-        <div class="hero-copy">
-          <p class="kicker gloss"><span><i>bon</i> = receipt</span><span><i>bagi</i> = split</span></p>
-          <h1>Pay once.<br /><span class="hl">Everyone gets their&nbsp;share.</span></h1>
-          <p class="lede">One shielded Zcash payment is split to every member of a collective (three mentors, a band, a co-op) <strong>inside a single transaction</strong>. No treasurer holds the money, and nobody outside the deal can see who got how much.</p>
-          <div class="hero-cta"><a class="button" href="#load">Pay a collective</a><a class="button ghost" href="./charter.html">Make a charter</a></div>
+    <div id="hero" class="hb1-band">
+      <section class="hb1" aria-labelledby="hb1-title">
+        <div class="hb1-copy">
+          <h1 id="hb1-title">Pay once.<br />Split for all.</h1>
+          <p class="hb1-lede">One shielded Zcash payment is split to every member of a collective <strong>inside a single transaction</strong>. No treasurer holds the money. Nobody outside the deal sees who got how much.</p>
+          <div class="hb1-cta"><a class="hb1-btn" href="#load">Pay a collective</a><a class="hb1-link" href="./charter.html">Make a charter →</a></div>
         </div>
-        <figure class="tear" aria-labelledby="tear-cap">
-          <p class="pen n1" aria-hidden="true">1 payment ↓</p>
-          <div class="slip">
-            <p class="slip-brand">BONBAGI</p>
-            <p class="slip-meta">Intro to Zcash class · order 7K2M</p>
-            <p class="slip-line"><span>Class ticket ×1</span><span>0.0100</span></p>
-            <p class="slip-line total"><span>Total ZEC</span><span>0.0100</span></p>
-            <p class="slip-cut" aria-hidden="true"><span>✂</span></p>
+        <figure class="hb1-col" aria-label="One payment of 0.0100 ZEC becomes three shares: 40 percent to Mentor A, 30 percent to Mentor B, 30 percent to Mentor C, in the same transaction.">
+          <div class="hb1-one" aria-hidden="true">1</div>
+          <div class="hb1-parts" aria-hidden="true">
+            <div><b>40</b><span>Mentor A · 0.0040</span></div>
+            <div><b>30</b><span>Mentor B · 0.0030</span></div>
+            <div><b>30</b><span>Mentor C · 0.0030</span></div>
           </div>
-          <div class="strips" aria-hidden="true">
-            <div class="strip"><span class="bar c0"></span><span class="nm">Mentor A</span><b>40%</b><span class="amt">0.0040 ZEC</span><span class="stamp">Lunas</span></div>
-            <div class="strip"><span class="bar c1"></span><span class="nm">Mentor B</span><b>30%</b><span class="amt">0.0030 ZEC</span><span class="stamp">Lunas</span></div>
-            <div class="strip"><span class="bar c2"></span><span class="nm">Mentor C</span><b>30%</b><span class="amt">0.0030 ZEC</span><span class="stamp">Lunas</span></div>
-          </div>
-          <p class="pen n2" aria-hidden="true">3 shares, same transaction, all shielded</p>
-          <figcaption id="tear-cap">Illustration: one receipt for 0.01 ZEC is torn into three shares of 40, 30 and 30 percent, each stamped "lunas" (paid in full). All three are paid by the same shielded transaction.</figcaption>
         </figure>
       </section>
-      <dl class="tally" aria-label="Key numbers">
-        <div><dt>transaction</dt><dd class="g">1</dd></div>
-        <div><dt>shielded outputs, one per member</dt><dd>N</dd></div>
-        <div><dt>treasurers · custodians · servers</dt><dd>0</dd></div>
-        <div><dt>third-party requests</dt><dd>0</dd></div>
+      <dl class="hb1-facts" aria-label="Key numbers">
+        <div><dd>1</dd><dt>transaction</dt></div>
+        <div><dd>N</dd><dt>shielded outputs</dt></div>
+        <div><dd>0</dd><dt>custodians</dt></div>
+        <div><dd>0</dd><dt>third-party requests</dt></div>
       </dl>
     </div>
 
