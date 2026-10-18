@@ -2,6 +2,7 @@
 // Client-side only; nothing is stored or transmitted.
 
 import { addSignature, charterHash, newPrivateKey, parseCharterFile, publicKeyOf, verifyCharter, type Charter, type SignedCharter } from "./core/charter.ts";
+import { payLink } from "./core/paylink.ts";
 import { percentToBps } from "./core/split.ts";
 import { formatZec, parseZec } from "./core/zatoshi.ts";
 
@@ -30,15 +31,45 @@ function fileOutput(target: HTMLElement, file: SignedCharter, note: string) {
   target.querySelector("[data-dl]")!.addEventListener("click", () => download("bonbagi-charter.json", text));
 }
 
+/** Once every member has signed: a link to the pay page with the charter in the URL fragment. */
+function payLinkBlock(target: HTMLElement, file: SignedCharter) {
+  const box = document.createElement("div");
+  box.className = "note";
+  box.innerHTML = `
+    <strong>Ready to sell.</strong> Create the pay link buyers will open. The charter rides in the link's <code>#</code> part, which is never sent to the server.
+    <label for="${target.id}-price">Price (ZEC, optional — buyers can still change it)</label>
+    <input id="${target.id}-price" inputmode="decimal" placeholder="0.01" autocomplete="off" />
+    <p class="actions"><button type="button" data-mk>Create pay link</button></p>
+    <div data-link></div>`;
+  target.append(box);
+  box.querySelector("[data-mk]")!.addEventListener("click", () => {
+    const out = box.querySelector<HTMLDivElement>("[data-link]")!;
+    try {
+      const p = box.querySelector<HTMLInputElement>("input")!.value.trim();
+      const link = payLink(new URL("./", location.href).href, file, p ? parseZec(p) : undefined);
+      out.innerHTML = `
+        <textarea readonly spellcheck="false">${esc(link)}</textarea>
+        <p class="actions"><button type="button" class="ghost" data-copy>Copy link</button> <a class="button" href="${esc(link)}" target="_blank" rel="noopener noreferrer">Open pay page</a></p>
+        <p class="sub tight">Anyone with this link sees every member's address and share. Share it only with buyers, and use fresh addresses for each product or period.</p>`;
+      out.querySelector("[data-copy]")!.addEventListener("click", async (e) => {
+        await navigator.clipboard.writeText(link);
+        (e.target as HTMLButtonElement).textContent = "Copied";
+      });
+    } catch (e) {
+      out.innerHTML = errBox(e);
+    }
+  });
+}
+
 // 1 · key
 $("#genkey").addEventListener("click", async () => {
   const priv = newPrivateKey();
   const pub = await publicKeyOf(priv);
   $("#keyout").innerHTML = `
     <label>Public key — share this with the group</label>
-    <textarea readonly spellcheck="false" style="min-height:48px">${pub}</textarea>
+    <textarea class="key" readonly spellcheck="false">${pub}</textarea>
     <label>Private key — keep it secret, you need it to sign</label>
-    <textarea readonly spellcheck="false" style="min-height:48px">${priv}</textarea>
+    <textarea class="key" readonly spellcheck="false">${priv}</textarea>
     <p><button type="button" class="ghost" id="dlkey">Download private key</button></p>
     <p class="sub">Lose it and you cannot sign this charter again; anyone who has it can sign as you. It is not stored in this page.</p>`;
   $("#dlkey").addEventListener("click", () => download("bonbagi-private-key.txt", `${priv}\n`));
@@ -56,8 +87,8 @@ function addMemberRow() {
       <input data-f="label" placeholder="Name or role" maxlength="40" />
       <input data-f="pct" placeholder="Share %" inputmode="decimal" />
     </div>
-    <input data-f="address" placeholder="Shielded address (u1… or zs1…)" spellcheck="false" style="margin-top:8px" />
-    <input data-f="pubkey" placeholder="Public key (64 hex)" spellcheck="false" style="margin-top:8px" />`;
+    <input data-f="address" placeholder="Shielded address (u1… or zs1…)" spellcheck="false" />
+    <input data-f="pubkey" placeholder="Public key (64 hex)" spellcheck="false" />`;
   $("#members").append(row);
 }
 for (let i = 0; i < 3; i++) addMemberRow();
@@ -101,6 +132,7 @@ $("#sign").addEventListener("click", async () => {
     const { unsigned } = await verifyCharter(signed);
     const left = unsigned.map((i) => signed.charter.members[i]!.label);
     fileOutput(out, signed, `<p class="ok">Signed. ${left.length ? `Still waiting for: ${esc(left.join(", "))}.` : "Every member has signed — this charter is ready for the pay page."}</p>`);
+    if (!left.length) payLinkBlock(out, signed);
     $<HTMLTextAreaElement>("#signin").value = pretty(signed);
     $<HTMLTextAreaElement>("#verin").value = pretty(signed);
   } catch (e) {
@@ -122,6 +154,7 @@ $("#verify").addEventListener("click", async () => {
         <tr><th>Member</th><th class="num">Share</th><th>Signature</th></tr>
         ${c.members.map((m, i) => `<tr><td>${esc(m.label)}<div class="addr">${esc(m.address)}</div></td><td class="num">${(m.bps / 100).toFixed(2)}%</td><td>${unsigned.includes(i) ? '<span class="err">missing / invalid</span>' : '<span class="ok">valid</span>'}</td></tr>`).join("")}
       </table>`;
+    if (!unsigned.length) payLinkBlock(out, file);
   } catch (e) {
     out.innerHTML = errBox(e);
   }

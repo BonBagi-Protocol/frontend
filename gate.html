@@ -3,13 +3,22 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="referrer" content="no-referrer" />
   <title>BonBagi · Day-1 gate</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/src/style.css" />
 </head>
 <body>
+  <header class="top">
+    <a class="brand" href="./"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" class="c0" /><path class="cut" d="M16 16V3M16 16l7.6 10.5M16 16L3.6 20" /></svg>BonBagi</a>
+    <nav aria-label="Pages"><a href="./">Pay</a><a href="./charter.html">Charter</a><a href="./gate.html" aria-current="page">Raw request</a></nav>
+  </header>
   <main>
-    <h1>Day-1 gate</h1>
-    <p class="sub">Build one ZIP-321 request that pays three shielded addresses in a single transaction. Everything stays in this tab — nothing is sent anywhere or saved.</p>
+    <section class="hero">
+      <p class="eyebrow">Developer tool</p>
+      <h1>Raw multi-recipient request</h1>
+      <p class="lede">Build one ZIP-321 request that pays three shielded addresses in a single transaction. Everything stays in this tab — nothing is sent anywhere or saved. Use this to check that a wallet handles one request with several shielded recipients.</p>
+    </section>
     <form id="f" class="card" autocomplete="off">
       <div id="rows"></div>
       <label for="note">Memo prefix</label>
@@ -27,6 +36,12 @@
       <p class="sub">Backup wallet: Zkool. Do not use Zodl (iOS rejects multi-recipient requests; Android shows only the first recipient).</p>
     </div>
   </main>
+  <footer class="foot">
+    <div class="shield">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5l8-3z" /><path d="M8.5 12l2.5 2.5 4.5-5" /></svg>
+      <div><p><strong>Runs entirely in this tab.</strong> Keys, addresses and requests are never sent anywhere or saved; the page is not allowed to make network requests.</p></div>
+    </div>
+  </footer>
   <script type="module" src="/src/gate.ts"></script>
 </body>
 </html>
