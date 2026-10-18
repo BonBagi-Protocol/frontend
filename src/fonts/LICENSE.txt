@@ -1,0 +1,2 @@
+Geist and Geist Mono (Vercel) and Instrument Serif are licensed under the SIL Open Font License 1.1.
+They are bundled here so the page never loads fonts from a third party.
