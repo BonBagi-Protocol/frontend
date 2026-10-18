@@ -2,6 +2,7 @@
 // signature in this browser, then build one ZIP-321 request for the price.
 // Client-side only; nothing is stored, logged or transmitted.
 
+import "./fx.ts";
 import qrcode from "qrcode-generator";
 import { newPrivateKey, parseCharterFile, publicKeyOf, signCharter, verifyCharter, type Charter, type SignedCharter } from "./core/charter.ts";
 import { decodePayFragment, estimateFeeZat, newOrderId, shortAddress } from "./core/paylink.ts";
@@ -174,7 +175,9 @@ $("#build").addEventListener("click", async () => {
     const c = current.charter;
     pay.innerHTML = `
       <section class="bon" aria-labelledby="bon-title">
+        <span class="stamp">Signed ×${n}</span>
         <div class="head">
+          <div class="brandline">BonBagi · receipt</div>
           <div class="title" id="bon-title">${esc(c.title)}</div>
           <div class="meta">${esc(orderId.value.trim())} · charter ${req.charterHash.slice(0, 8)} · ${c.network === "main" ? "mainnet" : "testnet"}</div>
         </div>

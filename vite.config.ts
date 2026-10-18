@@ -11,6 +11,7 @@ export const CSP = [
   "script-src 'self'",
   "style-src 'self'",
   "img-src 'self' data:",
+  "font-src 'self'",
   "connect-src 'none'",
   "form-action 'none'",
   "base-uri 'none'",

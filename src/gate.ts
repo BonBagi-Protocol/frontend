@@ -1,6 +1,7 @@
 // Day-1 gate tool: three addresses + amounts → one ZIP-321 request (text + QR).
 // Runs entirely client-side; inputs are never stored or transmitted.
 
+import "./fx.ts";
 import qrcode from "qrcode-generator";
 import { formatZec, parseZec } from "./core/zatoshi.ts";
 import { buildUri, type Payment } from "./core/zip321.ts";

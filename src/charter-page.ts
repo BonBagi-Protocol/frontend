@@ -1,6 +1,7 @@
 // Charter page: create a key, draft a charter, sign it, check it.
 // Client-side only; nothing is stored or transmitted.
 
+import "./fx.ts";
 import { addSignature, charterHash, newPrivateKey, parseCharterFile, publicKeyOf, verifyCharter, type Charter, type SignedCharter } from "./core/charter.ts";
 import { payLink } from "./core/paylink.ts";
 import { percentToBps } from "./core/split.ts";
