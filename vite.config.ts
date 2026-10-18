@@ -12,6 +12,7 @@ export const CSP = [
   "style-src 'self'",
   "img-src 'self' data:",
   "font-src 'self'",
+  "media-src 'self'",
   "connect-src 'none'",
   "form-action 'none'",
   "base-uri 'none'",
@@ -31,6 +32,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         index: resolve(import.meta.dirname, "index.html"),
+        pay: resolve(import.meta.dirname, "pay.html"),
         gate: resolve(import.meta.dirname, "gate.html"),
         charter: resolve(import.meta.dirname, "charter.html"),
       },
