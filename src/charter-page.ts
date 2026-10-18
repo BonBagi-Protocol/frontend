@@ -114,7 +114,7 @@ $("#draft").addEventListener("click", async () => {
     };
     const file: SignedCharter = { charter, signatures: [] };
     await verifyCharter(file); // structural validation (throws with a readable reason)
-    fileOutput(out, file, `<p class="ok">Charter ready — fingerprint ${(await charterHash(charter)).slice(0, 16)}. Send this file to every member to sign.</p>`);
+    fileOutput(out, file, `<p class="ok">Charter ready — fingerprint ${(await charterHash(charter)).slice(0, 32)}. Send this file to every member to sign.</p>`);
     $<HTMLTextAreaElement>("#signin").value = pretty(file);
   } catch (e) {
     out.innerHTML = errBox(e);
@@ -150,7 +150,7 @@ $("#verify").addEventListener("click", async () => {
     const c = file.charter;
     out.innerHTML = `
       <p class="${unsigned.length ? "err" : "ok"}">${unsigned.length ? `Not ready: ${unsigned.length} of ${c.members.length} signatures missing or invalid.` : "All signatures valid."}</p>
-      <p class="sub">${esc(c.title)} · ${c.network}net · min ${formatZec(BigInt(c.minShareZat))} ZEC per member · fingerprint ${hash.slice(0, 16)}</p>
+      <p class="sub">${esc(c.title)} · ${c.network}net · min ${formatZec(BigInt(c.minShareZat))} ZEC per member · fingerprint ${hash.slice(0, 32)}</p>
       <table>
         <tr><th>Member</th><th class="num">Share</th><th>Signature</th></tr>
         ${c.members.map((m, i) => `<tr><td>${esc(m.label)}<div class="addr">${esc(m.address)}</div></td><td class="num">${(m.bps / 100).toFixed(2)}%</td><td>${unsigned.includes(i) ? '<span class="err">missing / invalid</span>' : '<span class="ok">valid</span>'}</td></tr>`).join("")}

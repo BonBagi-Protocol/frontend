@@ -19,6 +19,16 @@
 - [x] Privacy hygiene: strict CSP (no network), no storage, no logs, no referrer; threat model.
 - [x] Demo script and submission text (docs/DEMO-SCRIPT.md, docs/SUBMISSION.md).
 - [ ] Real three-recipient mainnet payment from Zingo PC (day-1 gate) and video.
+- [x] Testnet dry run of the full flow (Hans, 18 Oct): charter signed by 3 keys → `buildPaymentRequest` → one ZIP-321 request paid with zcash-devtool. One tx (`485623f7…f520`, testnet block 4514615), 3 Ironwood outputs 0.0012 / 0.0009 / 0.0009 TAZ + change, each memo read as text by the receiving wallet, fee 0.0002 TAZ = `estimateFeeZat(3)` (ZIP-317 holds on Ironwood). Does not replace the mainnet gate.
+
+## Progress log
+- **18 Oct · Hans** — reviewed #4, #5, #6 and ran the testnet dry run above.
+  - #4: keep the 0.0001 ZEC default floor (2× the ~5,000 zat cost of spending one note; collectives can raise it via `minShareZat`). Added split tests: 50 members, 3-way remainder ties, supply cap, charter override (39/39 pass).
+  - #5: memo format confirmed in a real wallet (testnet). Recheck on Zingo PC during the mainnet gate, then close.
+  - #6: audit clean (no console/storage/cookie/network APIs in `src/`, no external refs in HTML, no inline scripts in `dist/`, no real addresses or URIs in git history, live headers confirmed). Phone check pending with #3.
+  - Open: Dave (@agadape) is not yet a repo collaborator or org member.
+  - #7: threat model tightened — CSP cannot block top-level navigation, pay-link price is not signed, fragment stays in browser history/sync, clipboard exposure, downloaded key file. Pay and charter pages now show a 32-hex (128-bit) fingerprint for identity checks; memos keep 16 hex for reconciliation.
+  - #3: mobile check (headless Chrome at 320 / 360 / 390 px, live site): no horizontal scroll, no console errors or CSP violations, sample → receipt → QR and the tamper banner all work. Cosmetic notes in the issue. Real-device check still to do.
 
 ## Later (not MVP)
 - Pad the transaction with dummy outputs so the action count does not reveal the number of members.
@@ -27,5 +37,5 @@
 
 ## Split (owner 40%, others 30% each)
 - Dex: owner, charter + pay page, demo video
-- Hans: ? (backlog to be split)
+- Hans: split math (#4), memo (#5), privacy hygiene (#6), testnet dry run; next: mainnet gate receiving wallet (#1), sign the real charter (#2), receiving wallet in the demo (#8), phone review (#3), threat model review (#7)
 - Dave: ? (backlog to be split)
