@@ -4,21 +4,21 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="referrer" content="no-referrer" />
+  <meta name="theme-color" content="#efe6d3" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#1b1611" media="(prefers-color-scheme: dark)" />
   <title>BonBagi · Charter</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/src/style.css" />
 </head>
 <body>
   <header class="top">
-    <a class="brand" href="./"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" class="c0" /><path class="cut" d="M16 16V3M16 16l7.6 10.5M16 16L3.6 20" /></svg>BonBagi</a>
+    <a class="brand" href="./"><svg viewBox="0 0 32 32" aria-hidden="true"><path class="b-paper" d="M7 3h18v24l-3 2-3-2-3 2-3-2-3 2-3-2z" /><path class="b-cut" d="M13 12v14M19 12v14" /><circle class="b-dot" cx="21" cy="7.5" r="2.4" /></svg>BonBagi</a>
     <nav aria-label="Pages"><a href="./">Pay</a><a href="./charter.html" aria-current="page">Charter</a><a href="./gate.html">Raw request</a></nav>
   </header>
   <main>
-    <section class="hero hud">
-      <span class="hud-tr"></span><span class="hud-bl"></span>
-      <div class="hud-meta"><span class="live">BonBagi — 02 / Charter</span><span>Ed25519 · ZIP-321 · no server</span></div>
-      <p class="eyebrow">For the collective</p>
-      <h1>Agree once. <em>Every sale splits itself.</em></h1>
+    <section class="hero solo">
+      <p class="kicker">For the collective</p>
+      <h1>Agree once.<br /><span class="hl">Every sale splits itself.</span></h1>
       <p class="lede">The collective's agreement: who gets paid, where, and what share. Every member signs it; any later change breaks the signatures. Everything here runs in this tab — keys and addresses are never sent anywhere.</p>
       <ul class="how">
         <li><strong>Keys</strong>Each member creates a signing key on their own device and shares only the public half.</li>
@@ -68,7 +68,7 @@
   <footer class="foot">
     <div class="shield">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5l8-3z" /><path d="M8.5 12l2.5 2.5 4.5-5" /></svg>
-      <div><p><strong>Runs entirely in this tab.</strong> Keys, addresses and requests are never sent anywhere or saved; the page is not allowed to make network requests.</p></div>
+      <div><p><strong>Runs entirely in this tab.</strong> Keys, addresses and requests are never sent anywhere or saved. The page loads only its own files from this site, and its security policy stops its code from calling any server.</p></div>
     </div>
   </footer>
   <script type="module" src="/src/charter-page.ts"></script>

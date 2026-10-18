@@ -1,2 +1,8 @@
-Geist and Geist Mono (Vercel) and Instrument Serif are licensed under the SIL Open Font License 1.1.
-They are bundled here so the page never loads fonts from a third party.
+Bundled fonts (served from this site only; the page never loads fonts from a third party):
+
+- IBM Plex Mono (Regular, Italic, Medium, Bold), Copyright 2017 IBM Corp.
+  SIL Open Font License 1.1, full text in OFL-IBMPlexMono.txt.
+  Source: https://github.com/IBM/plex (latin subset, woff2 via the @fontsource/ibm-plex-mono 5.3.0 package).
+- Caveat (SemiBold), Copyright 2014 The Caveat Project Authors.
+  SIL Open Font License 1.1, full text in OFL-Caveat.txt.
+  Source: https://github.com/googlefonts/caveat (latin subset, woff2 via the @fontsource/caveat 5.3.0 package).

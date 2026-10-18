@@ -175,7 +175,7 @@ $("#build").addEventListener("click", async () => {
     const c = current.charter;
     pay.innerHTML = `
       <section class="bon" aria-labelledby="bon-title">
-        <span class="stamp">Signed ×${n}</span>
+        <span class="stamp" title="bagi = split">Bagi ×${n}<small>split · signed</small></span>
         <div class="head">
           <div class="brandline">BonBagi · receipt</div>
           <div class="title" id="bon-title">${esc(c.title)}</div>
