@@ -3,17 +3,80 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BonBagi</title>
+  <meta name="referrer" content="no-referrer" />
+  <meta name="description" content="One Zcash shielded payment, split to every member of a collective in one transaction. No treasurer, no custodian, no server." />
+  <meta name="theme-color" content="#f6f2e9" />
+  <title>BonBagi · Pay a collective in one shielded payment</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/src/style.css" />
 </head>
 <body>
+  <header class="top">
+    <a class="brand" href="./"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" class="c0" /><path class="cut" d="M16 16V3M16 16l7.6 10.5M16 16L3.6 20" /></svg>BonBagi</a>
+    <nav aria-label="Pages"><a href="./" aria-current="page">Pay</a><a href="./charter.html">Charter</a><a href="./gate.html">Raw request</a></nav>
+  </header>
+
   <main>
-    <h1>BonBagi</h1>
-    <p class="sub">One payment, every share, nobody's business.</p>
-    <div class="card">
-      <p>The pay page is under construction. Developer tools:</p>
-      <ul><li><a href="./gate.html">Day-1 gate: build a 3-recipient payment request</a></li><li><a href="./charter.html">Charter: create keys, draft, sign, check</a></li></ul>
-    </div>
+    <section class="hero" id="hero">
+      <p class="eyebrow">Zcash · shielded payments</p>
+      <h1>One payment. Every share. <em>Nobody's business.</em></h1>
+      <p class="lede">Pay a collective (three mentors, a band, a co-op) once from your Zcash wallet. Every member receives their share directly, in a single shielded transaction. No treasurer holds the money, and no server ever sees who got what.</p>
+      <svg class="flow" viewBox="0 0 560 180" role="img" aria-label="One buyer pays one shielded transaction, which splits into three member shares of 40, 30 and 30 percent">
+        <path class="line" d="M97 90H170" />
+        <path class="line" d="M320 90C370 90 360 30 410 30" />
+        <path class="line" d="M320 90H410" />
+        <path class="line" d="M320 90C370 90 360 150 410 150" />
+        <circle class="node" cx="55" cy="90" r="42" />
+        <text x="55" y="88" text-anchor="middle" font-weight="700">Buyer</text>
+        <text class="muted" x="55" y="105" text-anchor="middle">pays once</text>
+        <rect class="tx" x="170" y="56" width="150" height="68" rx="12" />
+        <text x="245" y="86" text-anchor="middle" font-weight="700">1 shielded tx</text>
+        <text class="muted" x="245" y="104" text-anchor="middle">who &amp; how much: hidden</text>
+        <rect class="node" x="410" y="10" width="145" height="40" rx="10" /><rect class="c0" x="422" y="25" width="10" height="10" rx="3" /><text x="440" y="35">Mentor A · 40%</text>
+        <rect class="node" x="410" y="70" width="145" height="40" rx="10" /><rect class="c1" x="422" y="85" width="10" height="10" rx="3" /><text x="440" y="95">Mentor B · 30%</text>
+        <rect class="node" x="410" y="130" width="145" height="40" rx="10" /><rect class="c2" x="422" y="145" width="10" height="10" rx="3" /><text x="440" y="155">Mentor C · 30%</text>
+      </svg>
+      <ul class="how">
+        <li><strong>Members sign</strong>Each member signs one charter: addresses and shares. Change anything and the signatures break.</li>
+        <li><strong>Buyer checks</strong>This page verifies every signature in your browser and shows exactly who gets how much.</li>
+        <li><strong>One payment</strong>Your wallet sends one transaction with a shielded output per member. Done.</li>
+      </ul>
+    </section>
+
+    <section class="card" id="load">
+      <h2><span class="step">1</span>Load the charter</h2>
+      <p class="sub tight" id="loadstate">Opened a pay link from the seller? It loads by itself. Otherwise paste or upload their signed charter.</p>
+      <label for="paste">Signed charter (JSON)</label>
+      <textarea id="paste" spellcheck="false" placeholder='{"charter":{…},"signatures":[…]}'></textarea>
+      <label for="file">or upload the charter file</label>
+      <input id="file" type="file" accept="application/json,.json" />
+      <p class="actions"><button type="button" id="loadbtn">Check charter</button> <button type="button" class="ghost" id="sample">Try a sample charter</button></p>
+    </section>
+
+    <div id="check"></div>
+
+    <section class="card" id="order" hidden>
+      <h2><span class="step">2</span>Your order</h2>
+      <div class="row">
+        <div><label for="price">Price (ZEC)</label><input id="price" inputmode="decimal" placeholder="0.01" autocomplete="off" /></div>
+        <div><label for="orderid">Order ID</label><input id="orderid" spellcheck="false" maxlength="32" autocomplete="off" /></div>
+      </div>
+      <p class="sub tight">The order ID goes into each member's encrypted memo so the collective can match your payment. Never put a name or email here.</p>
+      <p class="actions"><button type="button" id="build">Create payment request</button></p>
+    </section>
+
+    <div id="pay"></div>
   </main>
+
+  <footer class="foot">
+    <div class="shield">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5l8-3z" /><path d="M8.5 12l2.5 2.5 4.5-5" /></svg>
+      <div>
+        <p><strong>Runs entirely in this tab.</strong> No server code, no analytics, no cookies, nothing saved, and the page is not allowed to make network requests at all. The charter travels in the link's <code>#</code> part, which browsers never send to the server.</p>
+        <p>BonBagi never touches funds and never sees your wallet. Built for ZECATHON 2026 · Shielded Payments. <a href="./charter.html">Make a charter for your own collective →</a></p>
+      </div>
+    </div>
+  </footer>
+  <script type="module" src="/src/pay-page.ts"></script>
 </body>
 </html>
