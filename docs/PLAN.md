@@ -4,7 +4,7 @@
 - [x] Build one ZIP-321 URI with 3 recipients (team-owned addresses, tiny amounts) and memo per output — `gate.html`.
 - [ ] Pay it from Zingo PC (2.0.26 pre-release) on Ironwood mainnet. Pass = one tx, 3 correct amounts, each recipient sees their share, and Zingo PC shows ALL recipients before confirm. Backup wallet: Zkool. Do not use Zodl (iOS rejects multi-recipient URIs; Android issue #2217 shows only the first recipient).
 
-## Requirements
+## Requirements (status 18 Oct: all built and tested; see docs/THREAT-MODEL.md)
 - Canonical charter + Ed25519 signatures from every member; verified client-side; reject on any change.
 - Minimum amount per member (avoid dust / note bloat under ZIP-317 fees).
 - Deterministic zatoshi rounding for uneven splits.
@@ -12,7 +12,16 @@
 - Memo per output: order ID + charter hash (no personal data).
 - Static pay page (no scanning backend needed).
 
+## Built
+- [x] Core library + tests (ZIP-321, split, memo, charter, request, pay links).
+- [x] Charter page: keys, draft, sign, check, create pay link.
+- [x] Pay page: charter from link fragment / paste / file, verify, receipt, request + QR; refuses partly signed charters.
+- [x] Privacy hygiene: strict CSP (no network), no storage, no logs, no referrer; threat model.
+- [x] Demo script and submission text (docs/DEMO-SCRIPT.md, docs/SUBMISSION.md).
+- [ ] Real three-recipient mainnet payment from Zingo PC (day-1 gate) and video.
+
 ## Later (not MVP)
+- Pad the transaction with dummy outputs so the action count does not reveal the number of members.
 - Referrer/affiliate share as a charter member, via a pay page hosted by the referrer (not in MVP).
 - Charter drafted by an AI agent from the seller–affiliate chat; both parties review and sign. Privacy check needed first: the chat must not leak to a third-party model provider in a way that breaks the threat model.
 
