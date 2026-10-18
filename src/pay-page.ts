@@ -3,6 +3,7 @@
 // Client-side only; nothing is stored, logged or transmitted.
 
 import "./fx.ts";
+import "./scrub.ts";
 import qrcode from "qrcode-generator";
 import { newPrivateKey, parseCharterFile, publicKeyOf, signCharter, verifyCharter, type Charter, type SignedCharter } from "./core/charter.ts";
 import { decodePayFragment, estimateFeeZat, newOrderId, shortAddress } from "./core/paylink.ts";
