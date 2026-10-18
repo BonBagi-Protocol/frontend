@@ -193,7 +193,7 @@ $("#build").addEventListener("click", async () => {
           <div class="qr" role="img" aria-label="QR code of the payment request">${qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true })}</div>
           <div>
             <p class="sub tight">Scan with a mobile wallet, open it in a desktop wallet, or copy the request into your wallet's “pay URI” field. One transaction, ${n} shielded outputs.</p>
-            <p class="actions"><a class="button" id="open" href="${esc(req.uri)}">Open in wallet</a> <button type="button" class="ghost" id="copy">Copy request</button></p>
+            <p class="actions"><a class="button" id="open" href="${esc(req.uri)}">Open in wallet</a> <button type="button" class="ghost" id="copy">Copy request</button> <button type="button" class="ghost" id="bigqr">Enlarge QR</button></p>
             <label for="uri">Payment request (ZIP-321)</label>
             <textarea id="uri" readonly spellcheck="false">${esc(req.uri)}</textarea>
           </div>
@@ -205,6 +205,24 @@ $("#build").addEventListener("click", async () => {
       (ev.target as HTMLButtonElement).textContent = "Copied";
     });
     $("#uri").addEventListener("focus", (ev) => (ev.target as HTMLTextAreaElement).select());
+    // A 3-member request is ~1,000 characters (≈109×109 modules); at thumbnail size a phone
+    // camera struggles, so let the buyer show it full-screen on a white background.
+    const svg = qr.createSvgTag({ cellSize: 4, margin: 4, scalable: true });
+    const openBig = () => {
+      const full = document.createElement("div");
+      full.className = "qr-full";
+      full.setAttribute("role", "dialog");
+      full.setAttribute("aria-label", "Payment request QR, full screen. Tap to close.");
+      full.tabIndex = 0;
+      full.innerHTML = `${svg}<p>Tap anywhere to close</p>`;
+      const close = () => full.remove();
+      full.addEventListener("click", close);
+      full.addEventListener("keydown", (k) => { if (k.key === "Escape" || k.key === "Enter") close(); });
+      document.body.append(full);
+      full.focus();
+    };
+    $("#bigqr").addEventListener("click", openBig);
+    $(".paygrid .qr").addEventListener("click", openBig);
     pay.scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (e) {
     pay.innerHTML = errCard("Could not create the payment request.", esc(msg(e)));

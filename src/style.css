@@ -228,6 +228,12 @@ td.num, th.num { text-align: right; font-family: var(--mono); font-variant-numer
 @media (max-width: 620px) { .paygrid { grid-template-columns: 1fr; } .bon .stamp { display: none; } }
 .qr { padding: 12px; background: #fff; border-radius: 10px; border: 1px solid var(--line); display: flex; justify-content: center; }
 .qr svg { width: 100%; max-width: 260px; height: auto; display: block; }
+.paygrid .qr { cursor: zoom-in; }
+@media (max-width: 620px) { .paygrid .qr svg { max-width: 100%; } }
+.qr-full { position: fixed; inset: 0; z-index: 100; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; cursor: zoom-out;
+  padding: max(12px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); }
+.qr-full svg { width: min(96vw, 86vh); height: auto; display: block; }
+.qr-full p { margin: 0; color: #444; font-size: 13px; font-family: var(--mono, monospace); }
 .paygrid .actions { margin-top: 12px; }
 .paygrid textarea { min-height: 120px; }
 
