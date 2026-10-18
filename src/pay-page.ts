@@ -54,7 +54,7 @@ async function load(signed: SignedCharter, source: string, priceZat?: bigint) {
       <section class="card ${ready ? "done" : ""}">
         ${
           ready
-            ? banner("ok", `Verified in your browser — signed by all ${c.members.length} members.`, "Any change to an address or a share after signing would break these signatures, and this page would refuse to continue.")
+            ? banner("ok", `Verified in your browser — signed by all ${c.members.length} members.`, "Any change to an address or a share after signing breaks the signatures, and this page refuses to continue. Signatures prove the listed members agreed to this exact split; compare the fingerprint below with the one the seller published to know it is their collective.")
             : banner(
                 "err",
                 `Not payable: ${unsigned.length} of ${c.members.length} signatures missing or invalid.`,
