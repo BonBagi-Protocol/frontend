@@ -1,5 +1,5 @@
 // Landing page: infinite looping scroll (the page wraps back to the hero),
-// the WebGL stage behind it, the "letter" chapter over video, scramble text.
+// the WebGL stage behind it, the "letter" chapter over a 3D table, scramble text.
 // No network, no storage. With prefers-reduced-motion the page is a normal,
 // still, non-looping page.
 
@@ -21,6 +21,7 @@ const smooth = (a: number, b: number, v: number) => {
   return t * t * (3 - 2 * t);
 };
 const $ = <T extends HTMLElement>(sel: string) => document.querySelector<T>(sel);
+const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/#%*+=<>_";
 
 const hero = $<HTMLElement>("#hero")!;
 const table = $<HTMLElement>("#table")!;
@@ -67,7 +68,12 @@ setTimeout(() => {
 
 // ---------- stage
 const canvas = $<HTMLCanvasElement>("#gl")!;
-const stage = createStage(canvas, { mobile, still: reduced });
+let stage: ReturnType<typeof createStage> = null;
+try {
+  stage = createStage(canvas, { mobile, still: reduced });
+} catch {
+  stage = null;
+}
 if (!stage) {
   root.classList.add("no-gl");
   stageReady = true;
@@ -92,7 +98,6 @@ if (!reduced) {
 }
 
 // ---------- scramble text
-const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/#%*+=<>_";
 function scramble(el: HTMLElement) {
   const final = el.dataset.text ?? el.textContent ?? "";
   el.dataset.text = final;
@@ -131,41 +136,15 @@ document.querySelectorAll<HTMLElement>("[data-split]").forEach((el) => {
   el.querySelectorAll<HTMLElement>(".ch").forEach((s) => s.style.setProperty("--i", s.dataset.i ?? "0"));
 });
 
-// ---------- letter chapter: crossfade videos by the paragraph in view
-const vids = [...table.querySelectorAll<HTMLVideoElement>("video")];
-let active = -1;
-let tableOn = false;
-function play(v: HTMLVideoElement) {
-  if (reduced) return;
-  v.play().catch(() => undefined);
+// ---------- letter chapter: the 3D table follows the paragraph being read
+const parts = [...table.querySelectorAll<HTMLElement>(".tb-part")];
+function story() {
+  const mid = window.innerHeight * 0.55;
+  return parts.reduce((sum, el) => {
+    const r = el.getBoundingClientRect();
+    return sum + clamp((mid - r.top) / r.height);
+  }, 0);
 }
-function setVideo(i: number) {
-  if (i === active) return;
-  active = i;
-  vids.forEach((v, k) => {
-    v.classList.toggle("on", k === i);
-    if (k === i && tableOn) play(v);
-    else v.pause();
-  });
-}
-setVideo(0);
-const partIO = new IntersectionObserver(
-  (entries) => {
-    for (const e of entries) if (e.isIntersecting) setVideo(Number((e.target as HTMLElement).dataset.v ?? 0));
-  },
-  { rootMargin: "-45% 0px -45% 0px" },
-);
-table.querySelectorAll<HTMLElement>(".tb-part").forEach((p) => partIO.observe(p));
-new IntersectionObserver((entries) => {
-  for (const e of entries) {
-    tableOn = e.isIntersecting;
-    const v = vids[active];
-    if (v) {
-      if (tableOn) play(v);
-      else v.pause();
-    }
-  }
-}).observe(table);
 
 // ---------- glance cards tilt (Zentry-style)
 if (!reduced && !mobile) {
@@ -212,9 +191,10 @@ function onScroll() {
     assemble: smooth(0.04, 0.8, hp),
     burst: smooth(0.12, 0.55, ep),
     split: smooth(0.22, 0.5, ep) * (1 - smooth(0.78, 0.97, ep)),
-    dim: cover,
+    dim: 0,
+    table: cover,
+    story: story(),
   });
-  canvas.style.opacity = String(1 - cover);
   if (capEl) capEl.textContent = hp > 0.82 ? "// sealed · shielded · 51 blocks" : "// loose · exposed · scroll to seal";
   if (chapterEl) {
     const mid = window.innerHeight / 2;
