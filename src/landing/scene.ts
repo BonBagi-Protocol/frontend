@@ -11,6 +11,8 @@ import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+import { makeCoin } from "./coin.ts";
+import { createTable } from "./table.ts";
 
 export interface Look {
   /** 0 = loose blocks floating, 1 = sealed dome. */
@@ -21,6 +23,10 @@ export interface Look {
   split: number;
   /** 1 = fully covered by page content; rendering pauses. */
   dim: number;
+  /** > 0.5 = the letter chapter is on screen: render the table scene. */
+  table: number;
+  /** progress through the letter, 0..3 (one unit per part). */
+  story: number;
 }
 
 export interface Stage {
@@ -76,37 +82,6 @@ function makeTerrain(): THREE.Mesh {
   return new THREE.Mesh(geo, mat);
 }
 
-function makeCoin(material: THREE.Material): THREE.Group {
-  const g = new THREE.Group();
-  const body = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 0.14, 96), material);
-  body.rotation.x = Math.PI / 2;
-  g.add(body);
-  for (const z of [0.07, -0.07]) {
-    const rim = new THREE.Mesh(new THREE.TorusGeometry(0.565, 0.034, 16, 96), material);
-    rim.position.z = z;
-    g.add(rim);
-  }
-  // A "Z" with a tick above and below, extruded on both faces.
-  const s = new THREE.Shape();
-  s.moveTo(-0.24, 0.25); s.lineTo(0.24, 0.25); s.lineTo(0.24, 0.16); s.lineTo(-0.09, -0.16);
-  s.lineTo(0.24, -0.16); s.lineTo(0.24, -0.25); s.lineTo(-0.24, -0.25); s.lineTo(-0.24, -0.16);
-  s.lineTo(0.09, 0.16); s.lineTo(-0.24, 0.16); s.closePath();
-  const zGeo = new THREE.ExtrudeGeometry(s, { depth: 0.025, bevelEnabled: true, bevelThickness: 0.01, bevelSize: 0.01, bevelSegments: 2 });
-  const tick = new THREE.BoxGeometry(0.06, 0.09, 0.035);
-  for (const side of [1, -1]) {
-    const z = new THREE.Mesh(zGeo, material);
-    z.position.z = 0.07 * side;
-    if (side < 0) z.rotation.y = Math.PI;
-    g.add(z);
-    for (const y of [0.3, -0.3]) {
-      const t = new THREE.Mesh(tick, material);
-      t.position.set(0, y, 0.085 * side);
-      g.add(t);
-    }
-  }
-  return g;
-}
-
 function snowTexture(): THREE.Texture {
   const c = document.createElement("canvas");
   c.width = c.height = 32;
@@ -154,6 +129,8 @@ export function createStage(canvas: HTMLCanvasElement, o: { mobile: boolean; sti
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, o.mobile ? 1.3 : 1.75));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
+  renderer.shadowMap.enabled = !o.mobile;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(NIGHT);
@@ -258,14 +235,16 @@ export function createStage(canvas: HTMLCanvasElement, o: { mobile: boolean; sti
 
   // ---- post
   const composer = new EffectComposer(renderer);
-  composer.addPass(new RenderPass(scene, camera));
+  const renderPass = new RenderPass(scene, camera);
+  composer.addPass(renderPass);
+  const table = createTable(renderer, { mobile: o.mobile });
   const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.55, 0.65, 0.8);
   if (!o.mobile) composer.addPass(bloom);
   const glitchPass = new ShaderPass(GlitchShader);
   composer.addPass(glitchPass);
   composer.addPass(new OutputPass());
 
-  const target: Look = { assemble: 0, burst: 0, split: 0, dim: 0 };
+  const target: Look = { assemble: 0, burst: 0, split: 0, dim: 0, table: 0, story: 0 };
   const cur: Look = { ...target };
   let glitchAmt = 0;
   const parallax = new THREE.Vector2();
@@ -284,6 +263,7 @@ export function createStage(canvas: HTMLCanvasElement, o: { mobile: boolean; sti
     camera.fov = w < h ? 58 : 36;
     portrait = w < h;
     camera.updateProjectionMatrix();
+    table.resize(w, h);
   }
   resize();
   window.addEventListener("resize", () => {
@@ -299,6 +279,21 @@ export function createStage(canvas: HTMLCanvasElement, o: { mobile: boolean; sti
     const t = clock.elapsedTime;
     const k = o.still ? 1 : 0.075;
     (Object.keys(target) as (keyof Look)[]).forEach((key) => (cur[key] += (target[key] - cur[key]) * k));
+    if (target.table > 0.5) {
+      cur.story += (target.story - cur.story) * (o.still ? 1 : 0.1);
+      table.update(t, dt, cur.story);
+      renderPass.scene = table.scene;
+      renderPass.camera = table.camera;
+      bloom.enabled = false;
+      glitchAmt *= 0.9;
+      glitchPass.uniforms.uAmt!.value = glitchAmt;
+      glitchPass.uniforms.uTime!.value = t;
+      composer.render(dt);
+      return;
+    }
+    renderPass.scene = scene;
+    renderPass.camera = camera;
+    bloom.enabled = true;
     const A = clamp(cur.assemble * (1 - cur.burst));
     const burstKick = Math.sin(clamp(cur.burst) * Math.PI);
 
@@ -410,7 +405,7 @@ export function createStage(canvas: HTMLCanvasElement, o: { mobile: boolean; sti
   } else {
     const loop = () => {
       const dt = Math.min(clock.getDelta(), 0.05);
-      if (cur.dim < 0.985 && !document.hidden) frame(dt);
+      if (!document.hidden) frame(dt);
       requestAnimationFrame(loop);
     };
     requestAnimationFrame(loop);
@@ -419,7 +414,7 @@ export function createStage(canvas: HTMLCanvasElement, o: { mobile: boolean; sti
   return {
     set(look) {
       Object.assign(target, look);
-      cur.dim = target.dim;
+      if (o.still) frame(0);
     },
     glitch(amount = 1) {
       if (!o.still) glitchAmt = Math.max(glitchAmt, amount);

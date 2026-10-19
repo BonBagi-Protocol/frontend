@@ -1,7 +1,7 @@
 /* BonBagi landing v4 · "Malam Es" (night ice).
    Chosen by Dex in the style picker, 19 Oct: hero = Igloo Inc + Lusion (3D ice vault,
    pushable glossy blocks, looping scroll, glitch seams, scramble HUD); explanation =
-   Opal (video table with one centered text column); numbers = Zentry-style tilt cards.
+   Opal (3D table, objects along both edges, one centered text column); numbers = Zentry-style tilt cards.
    Fonts are bundled (CSP font-src 'self'). */
 @font-face { font-family: "Archivo"; src: url("./fonts/Archivo-SemiBold.woff2") format("woff2"); font-weight: 600; font-display: swap; }
 @font-face { font-family: "Archivo"; src: url("./fonts/Archivo-Black.woff2") format("woff2"); font-weight: 900; font-display: swap; }
@@ -79,13 +79,8 @@ a { color: inherit; }
 .btn-ghost:hover { border-color: var(--ice); color: var(--ice); }
 .hero-cap { position: absolute; right: var(--gutr); bottom: clamp(70px, 12vh, 120px); margin: 0; font: 400 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ice); }
 
-/* the letter (Opal-style): one centred column over a video table */
-.ch-table { display: grid; background: var(--night); }
-.tb-media, .tb-letter { grid-area: 1 / 1; }
-.tb-media { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
-.tb-media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.06); transition: opacity 1.1s ease, transform 6s ease-out; background: var(--deep); }
-.tb-media video.on { opacity: 1; transform: scale(1); }
-.tb-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(10, 13, 18, .35), rgba(10, 13, 18, .62) 32%, rgba(10, 13, 18, .62) 68%, rgba(10, 13, 18, .35)), linear-gradient(rgba(10, 13, 18, .9), transparent 18%, transparent 82%, rgba(10, 13, 18, .95)); }
+/* the letter (Opal-style): one centred column over the 3D table (src/landing/table.ts) */
+.ch-table { position: relative; }
 .tb-letter { position: relative; width: min(31rem, calc(100% - 40px)); margin-inline: auto; padding-block: 38vh 55vh; }
 .tb-part { padding-block: 6vh; }
 .tb-letter h2 { margin: 0; font: 900 clamp(2.6rem, 5vw, 3.6rem)/1 var(--display); letter-spacing: -.04em; text-align: center; }
@@ -136,6 +131,5 @@ a { color: inherit; }
 /* ---------- reduced motion: still, normal page */
 @media (prefers-reduced-motion: reduce) {
   .grain, .hud-arrow { animation: none; }
-  .tb-media video { transition: none; transform: none; }
-  .btn { transition: none; }
+    .btn { transition: none; }
 }
