@@ -4,6 +4,8 @@
 // still, non-looping page.
 
 import { createStage } from "./scene.ts";
+import { createGlance } from "./glance.ts";
+import { mountDots } from "./dots.ts";
 
 // Old pay links pointed at the site root: forward them to the pay page,
 // keeping the fragment (it never leaves the browser).
@@ -78,6 +80,22 @@ if (!stage) {
   root.classList.add("no-gl");
   stageReady = true;
 } else stage.onReady(() => (stageReady = true));
+
+// ---------- at-a-glance cards: one small 3D object per card
+const cardsGl = (() => {
+  try {
+    return createGlance($<HTMLCanvasElement>("#glcards")!, [...glance.querySelectorAll<HTMLElement>(".gl-card")], { mobile, still: reduced });
+  } catch {
+    return null;
+  }
+})();
+new IntersectionObserver((entries) => {
+  for (const e of entries) cardsGl?.active(e.isIntersecting);
+}).observe(glance);
+
+// ---------- footer wordmark made of dots
+const dotsHost = $<HTMLElement>(".ch-end .dots");
+if (dotsHost) mountDots(dotsHost, "bonbagi", { still: reduced });
 
 window.addEventListener(
   "pointermove",
@@ -171,6 +189,10 @@ function progress(el: HTMLElement) {
   return run > 0 ? clamp(-r.top / run) : r.top <= 0 ? 1 : 0;
 }
 let lastCover = 0;
+function cover2(el: HTMLElement) {
+  const r = el.getBoundingClientRect();
+  return clamp((Math.min(r.bottom, window.innerHeight) - Math.max(r.top, 0)) / window.innerHeight);
+}
 let wrapping = false;
 function onScroll() {
   if (clone && !wrapping) {
@@ -191,7 +213,7 @@ function onScroll() {
     assemble: smooth(0.04, 0.8, hp),
     burst: smooth(0.12, 0.55, ep),
     split: smooth(0.22, 0.5, ep) * (1 - smooth(0.78, 0.97, ep)),
-    dim: 0,
+    dim: cover2(glance),
     table: cover,
     story: story(),
   });
@@ -205,6 +227,9 @@ function onScroll() {
     chapterEl.textContent = (cur ?? CHAPTERS[0]!)[1];
   }
 }
-window.addEventListener("scroll", onScroll, { passive: true });
+window.addEventListener("scroll", () => {
+  onScroll();
+  if (reduced) cardsGl?.redraw();
+}, { passive: true });
 window.addEventListener("resize", onScroll);
 onScroll();

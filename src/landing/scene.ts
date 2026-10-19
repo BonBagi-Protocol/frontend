@@ -405,7 +405,7 @@ export function createStage(canvas: HTMLCanvasElement, o: { mobile: boolean; sti
   } else {
     const loop = () => {
       const dt = Math.min(clock.getDelta(), 0.05);
-      if (!document.hidden) frame(dt);
+      if (target.dim < 0.985 && !document.hidden) frame(dt);
       requestAnimationFrame(loop);
     };
     requestAnimationFrame(loop);

@@ -1,8 +1,10 @@
 // Table props built from code: fountain pen, brass seal stamp, leather wallet,
-// padlock and balance scale. Used when no model file is shipped for them.
+// padlock, balance scale and a phone showing the pay QR. Used when no model
+// file is shipped for them.
 
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
+import qrcode from "qrcode-generator";
 
 const brass = () => new THREE.MeshPhysicalMaterial({ color: 0xc89b4a, metalness: 1, roughness: 0.28, clearcoat: 0.3 });
 const steel = () => new THREE.MeshPhysicalMaterial({ color: 0xb9c1c9, metalness: 1, roughness: 0.22 });
@@ -107,6 +109,62 @@ export function makeScale(): THREE.Group {
     g.add(pan);
   }
   return g;
+}
+
+/** Canvas-backed texture (drawn once by `draw`, redrawable through `c`). */
+export function canvasTex(w: number, h: number, draw: (c: CanvasRenderingContext2D) => void) {
+  const cv = document.createElement("canvas");
+  cv.width = w;
+  cv.height = h;
+  const c = cv.getContext("2d")!;
+  draw(c);
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 8;
+  return { tex, c, cv };
+}
+
+function drawPhoneScreen(c: CanvasRenderingContext2D) {
+  const W = c.canvas.width, H = c.canvas.height;
+  c.fillStyle = "#0c1218";
+  c.fillRect(0, 0, W, H);
+  c.fillStyle = "#e9eef2";
+  c.textAlign = "center";
+  c.font = "900 44px Archivo, 'Arial Black', sans-serif";
+  c.fillText("Pay 0.0100 ZEC", W / 2, 120);
+  c.font = "500 24px 'Plex Mono', monospace";
+  c.fillStyle = "#93a6b5";
+  c.fillText("3 members · signatures valid", W / 2, 166);
+  const qr = qrcode(0, "M");
+  qr.addData("https://bonbagi.vercel.app/pay.html");
+  qr.make();
+  const n = qr.getModuleCount(), size = W - 140, cell = size / n, x0 = 70, y0 = 230;
+  c.fillStyle = "#f3f6f8";
+  c.fillRect(x0 - 24, y0 - 24, size + 48, size + 48);
+  c.fillStyle = "#0b1016";
+  for (let r = 0; r < n; r++) for (let k = 0; k < n; k++) if (qr.isDark(r, k)) c.fillRect(x0 + k * cell, y0 + r * cell, cell + 0.5, cell + 0.5);
+  c.fillStyle = "#f4b728";
+  const by = y0 + size + 90;
+  c.fillRect(70, by, W - 140, 96);
+  c.fillStyle = "#141006";
+  c.font = "900 40px Archivo, 'Arial Black', sans-serif";
+  c.fillText("Open in wallet", W / 2, by + 62);
+}
+
+/** Phone lying flat with the pay QR on screen; userData.screen is the screen material. */
+export function makePhone(): THREE.Group {
+  const phone = new THREE.Group();
+  const body = new THREE.Mesh(new RoundedBoxGeometry(1.9, 0.14, 3.8, 4, 0.2), new THREE.MeshPhysicalMaterial({ color: 0x0d1117, metalness: 0.6, roughness: 0.3, clearcoat: 1 }));
+  body.position.y = 0.07;
+  body.castShadow = true;
+  const screenTex = canvasTex(640, 1280, drawPhoneScreen);
+  const screenMat = new THREE.MeshBasicMaterial({ map: screenTex.tex, toneMapped: false });
+  const screen = new THREE.Mesh(new THREE.PlaneGeometry(1.68, 3.52), screenMat);
+  screen.rotation.x = -Math.PI / 2;
+  screen.position.y = 0.145;
+  phone.add(body, screen);
+  phone.userData.screen = screenMat;
+  return phone;
 }
 
 export const PROPS: Record<string, () => THREE.Group> = {

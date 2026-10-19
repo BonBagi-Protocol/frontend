@@ -59,12 +59,48 @@
     </section>
 
     <section class="ch ch-glance" id="glance" aria-labelledby="glance-title">
-      <h2 class="mono-k" id="glance-title" data-scramble>BonBagi at a glance</h2>
-      <div class="gl-grid">
-        <div class="gl-card"><b>1</b><span>transaction, whatever the size of the collective</span></div>
-        <div class="gl-card"><b>N</b><span>shielded outputs, one per member, each with a private memo</span></div>
-        <div class="gl-card"><b>0</b><span>custodians: the money never sits with anyone in between</span></div>
-        <div class="gl-card"><b>0</b><span>third-party requests: the pages load only their own files</span></div>
+      <canvas id="glcards" aria-hidden="true"></canvas>
+      <div class="gl-head">
+        <p class="mono-k" data-scramble>BonBagi at a glance</p>
+        <h2 id="glance-title">What one payment<br />actually does.</h2>
+      </div>
+      <div class="gl-bento">
+        <article class="gl-card k-a" data-obj="coin">
+          <p class="gl-k">The buyer pays</p>
+          <b class="gl-n">1&nbsp;TX</b>
+          <div class="gl-obj"></div>
+          <p class="gl-d">One shielded transaction, whether the collective has three members or thirty.</p>
+        </article>
+        <article class="gl-card k-b" data-obj="shares">
+          <p class="gl-k">Every member is paid</p>
+          <b class="gl-n">40/30/30</b>
+          <div class="gl-obj"></div>
+          <p class="gl-d">Each share lands in its owner's own shielded wallet, with a private memo.</p>
+        </article>
+        <article class="gl-card k-c" data-obj="vault">
+          <p class="gl-k">Custodians</p>
+          <b class="gl-n">0</b>
+          <div class="gl-obj"></div>
+          <p class="gl-d">No treasurer, no escrow, no BonBagi wallet. Nobody holds the money in between.</p>
+        </article>
+        <article class="gl-card k-d" data-obj="stamp">
+          <p class="gl-k">Signatures checked</p>
+          <b class="gl-n">3/3</b>
+          <div class="gl-obj"></div>
+          <p class="gl-d">Every member signs the charter. Your browser checks every signature before you pay.</p>
+        </article>
+        <article class="gl-card k-e" data-obj="lock">
+          <p class="gl-k">Servers that see your payment</p>
+          <b class="gl-n">0</b>
+          <div class="gl-obj"></div>
+          <p class="gl-d">BonBagi has no backend. The pay page cannot make a single network call.</p>
+        </article>
+        <article class="gl-card k-f" data-obj="phone">
+          <p class="gl-k">Scan to pay</p>
+          <b class="gl-n">1&nbsp;QR</b>
+          <div class="gl-obj"></div>
+          <p class="gl-d">A standard Zcash payment request (ZIP-321) for wallets that support several recipients.</p>
+        </article>
       </div>
     </section>
 
