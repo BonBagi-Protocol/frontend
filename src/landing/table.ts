@@ -4,15 +4,14 @@
 // out each paragraph: the charter gets signed and sealed, the phone shows one
 // QR for one payment, one coin becomes three shares that slide to three
 // wallets, and a lock and frosted glass close over them.
-// Props are built from code (props.ts); a prop listed in SHIPPED is loaded
-// from a GLB model file on this site instead.
+// Props come from props.ts: a shipped shape-only model with its material, or
+// the code-built version.
 
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { makeCoin } from "./coin.ts";
-import { PROPS, canvasTex, makePhone } from "./props.ts";
+import { canvasTex, loadProp, makePhone } from "./props.ts";
 
 export interface Table {
   scene: THREE.Scene;
@@ -23,8 +22,6 @@ export interface Table {
 }
 
 const GOLD = 0xf4b728;
-/** Props shipped as model files in public/models/<name>.glb. */
-const SHIPPED: string[] = [];
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
 const seg = (v: number, a: number, b: number) => ease(clamp((v - a) / (b - a)));
@@ -282,7 +279,6 @@ export function createTable(renderer: THREE.WebGLRenderer, o: { mobile: boolean 
   cube(1, 0.9, 10.2, 0.5);
 
   // ---------- props (model file when shipped, otherwise built from code)
-  const loader = new GLTFLoader();
   const want: [string, number, (g: THREE.Group) => void][] = [
     ["pen", 3.2, (g) => {
       put(g, 1, 0.66, -8.1, 0.5);
@@ -299,21 +295,10 @@ export function createTable(renderer: THREE.WebGLRenderer, o: { mobile: boolean 
     ["scale", 2.4, (g) => put(g, 1, 0.72, 9.1, 0.2)],
   ];
   for (const [name, size, place] of want) {
-    // laid out by the first resize(), which runs right after creation
-    const build = () => place(fit(PROPS[name]!(), size));
-    if (!SHIPPED.includes(name)) {
-      build();
-      continue;
-    }
-    loader.load(
-      `/models/${name}.glb`,
-      (gltf) => {
-        place(fit(gltf.scene, size));
-        layout();
-      },
-      undefined,
-      build,
-    );
+    void loadProp(name).then((g) => {
+      place(fit(g, size));
+      layout();
+    });
   }
 
   let halfW = 6;
