@@ -29,6 +29,9 @@
   - Open: Dave (@agadape) is not yet a repo collaborator or org member.
   - #7: threat model tightened — CSP cannot block top-level navigation, pay-link price is not signed, fragment stays in browser history/sync, clipboard exposure, downloaded key file. Pay and charter pages now show a 32-hex (128-bit) fingerprint for identity checks; memos keep 16 hex for reconciliation.
   - #3: mobile check (headless Chrome at 320 / 360 / 390 px, live site): no horizontal scroll, no console errors or CSP violations, sample → receipt → QR and the tamper banner all work. Cosmetic notes in the issue. Real-device check still to do.
+- **19 Oct · Hans** — #4 and #6 closed after #10 merged. Rechecked v2 (cd75952) at 320 / 360 / 390 px: no horizontal scroll once the stamp animation settles, console clean, tamper banner and full-screen QR work.
+  - Mainnet gate prep: fresh receiving address and signing key ready; Hans sends them to Dex directly (not in the repo).
+  - Orchard-only unified addresses receive into Ironwood (seen on testnet) and are 106 instead of 213 characters: the 3-member request drops from ~1,034 to ~713 characters and the QR from 109 to 89 modules. Suggest everyone uses one for the demo.
 
 ## Later (not MVP)
 - Pad the transaction with dummy outputs so the action count does not reveal the number of members.
