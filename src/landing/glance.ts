@@ -6,7 +6,7 @@ import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { makeCoin } from "./coin.ts";
-import { makePadlock, makePhone, makeStamp } from "./props.ts";
+import { loadProp, makePhone } from "./props.ts";
 
 const GOLD = 0xf4b728;
 
@@ -70,7 +70,8 @@ function build(kind: string, gold: THREE.MeshPhysicalMaterial): { root: THREE.Gr
       return { root, tick: (t) => (root.rotation.y = 0.6 + t * 0.35) };
     }
     case "stamp": {
-      const s = centred(makeStamp(), 2.2);
+      const s = new THREE.Group();
+      void loadProp("stamp").then((m) => s.add(centred(m, 2.2)));
       const seal = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.45, 0.1, 48), new THREE.MeshPhysicalMaterial({ color: 0x9c1d16, roughness: 0.35, clearcoat: 0.8 }));
       seal.position.y = -1.25;
       root.add(s, seal);
@@ -81,8 +82,12 @@ function build(kind: string, gold: THREE.MeshPhysicalMaterial): { root: THREE.Gr
       } };
     }
     case "lock": {
-      const l = centred(makePadlock(), 2.0);
-      l.rotation.x = Math.PI / 2;
+      const l = new THREE.Group();
+      void loadProp("padlock").then((m) => {
+        const c = centred(m, 2.0);
+        if (!m.userData.shipped) c.rotation.x = Math.PI / 2;
+        l.add(c);
+      });
       root.add(l);
       return { root, tick: (t) => (root.rotation.y = Math.sin(t * 0.7) * 0.6) };
     }

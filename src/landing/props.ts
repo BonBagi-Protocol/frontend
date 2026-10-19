@@ -5,6 +5,7 @@
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 import qrcode from "qrcode-generator";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 const brass = () => new THREE.MeshPhysicalMaterial({ color: 0xc89b4a, metalness: 1, roughness: 0.28, clearcoat: 0.3 });
 const steel = () => new THREE.MeshPhysicalMaterial({ color: 0xb9c1c9, metalness: 1, roughness: 0.22 });
@@ -174,3 +175,47 @@ export const PROPS: Record<string, () => THREE.Group> = {
   padlock: makePadlock,
   scale: makeScale,
 };
+
+/** Props shipped as shape-only model files in public/models/<name>.glb (made
+ * with an image-to-3D model); they get their material here. */
+export const SHIPPED = new Set<string>(["scale", "wallet", "padlock", "stamp", "pen"]);
+/** Turn a shipped model into the pose the code-built prop has. */
+const POSE: Record<string, [number, number, number]> = {};
+const MATERIAL: Record<string, () => THREE.Material> = {
+  pen: () => new THREE.MeshPhysicalMaterial({ color: 0x0c0d10, roughness: 0.14, clearcoat: 1, clearcoatRoughness: 0.05 }),
+  stamp: brass,
+  wallet: () => new THREE.MeshPhysicalMaterial({ color: 0x1a2438, roughness: 0.72, sheen: 0.6, sheenRoughness: 0.6, sheenColor: new THREE.Color(0x5c6c8c) }),
+  padlock: brass,
+  scale: brass,
+};
+
+/** A prop by name: the shipped model with its material, or the code-built one. */
+export function loadProp(name: string): Promise<THREE.Group> {
+  const built = () => PROPS[name]!();
+  if (!SHIPPED.has(name)) return Promise.resolve(built());
+  return new Promise((resolve) => {
+    new GLTFLoader().load(
+      `/models/${name}.glb`,
+      (gltf) => {
+        const mat = MATERIAL[name]!();
+        gltf.scene.traverse((o) => {
+          const m = o as THREE.Mesh;
+          if (m.isMesh) {
+            // shape-only exports carry no normals: compute smooth ones
+            if (!m.geometry.getAttribute("normal")) m.geometry.computeVertexNormals();
+            m.material = mat;
+            m.castShadow = m.receiveShadow = true;
+          }
+        });
+        const pose = POSE[name];
+        if (pose) gltf.scene.rotation.set(...pose);
+        const g = new THREE.Group();
+        g.add(gltf.scene);
+        g.userData.shipped = true;
+        resolve(g);
+      },
+      undefined,
+      () => resolve(built()),
+    );
+  });
+}
