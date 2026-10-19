@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="referrer" content="no-referrer" />
+  <meta name="description" content="One Zcash shielded payment, split to every member of a collective in one transaction. No treasurer, no custodian, no server." />
+  <meta name="theme-color" content="#0a0d12" />
+  <title>BonBagi · Pay a collective</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="./"><svg viewBox="0 0 32 32" aria-hidden="true"><path class="b-paper" d="M7 3h18v24l-3 2-3-2-3 2-3-2-3 2-3-2z" /><path class="b-cut" d="M13 12v14M19 12v14" /><circle class="b-dot" cx="21" cy="7.5" r="2.4" /></svg>BonBagi</a>
+    <nav aria-label="Pages"><a href="./pay.html" aria-current="page">Pay</a><a href="./charter.html">Charter</a><a href="./gate.html">Raw request</a></nav>
+  </header>
+
+  <main>
+    <section class="hero solo" id="hero">
+      <p class="kicker">// Pay a collective</p>
+      <h1>Check the charter.<br /><em>Pay once.</em></h1>
+      <p class="lede">Load the signed charter from the seller. Your browser checks every member's signature, prints the receipt and builds one Zcash payment that pays everyone at once.</p>
+    </section>
+
+    <section class="card reveal" id="load">
+      <h2><span class="step">1</span>Load the charter</h2>
+      <p class="sub tight" id="loadstate">Opened a pay link from the seller? It loads by itself. Otherwise paste or upload their signed charter.</p>
+      <label for="paste">Signed charter (JSON)</label>
+      <textarea id="paste" spellcheck="false" placeholder='{"charter":{…},"signatures":[…]}'></textarea>
+      <label for="file">or upload the charter file</label>
+      <input id="file" type="file" accept="application/json,.json" />
+      <p class="actions"><button type="button" id="loadbtn">Check charter</button> <button type="button" class="ghost" id="sample">Try a sample charter</button></p>
+    </section>
+
+    <div id="check"></div>
+
+    <section class="card" id="order" hidden>
+      <h2><span class="step">2</span>Your order</h2>
+      <div class="row">
+        <div><label for="price">Price (ZEC)</label><input id="price" inputmode="decimal" placeholder="0.01" autocomplete="off" /></div>
+        <div><label for="orderid">Order ID</label><input id="orderid" spellcheck="false" maxlength="32" autocomplete="off" /></div>
+      </div>
+      <p class="sub tight">The order ID goes into each member's encrypted memo so the collective can match your payment. Never put a name or email here.</p>
+      <p class="actions"><button type="button" id="build">Print the receipt</button></p>
+    </section>
+
+    <div id="pay"></div>
+  </main>
+
+  <footer class="foot">
+    <div class="shield">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5l8-3z" /><path d="M8.5 12l2.5 2.5 4.5-5" /></svg>
+      <div>
+        <p><strong>Runs entirely in this tab.</strong> The page loads only its own files from this site. It has no server code, no analytics and no cookies, it saves nothing, and its security policy stops its code from calling any server or loading anything from another site. The charter travels in the link's <code>#</code> part, which browsers never send to the server.</p>
+        <p>BonBagi never touches funds and never sees your wallet. <a href="./charter.html">Make a charter for your own collective →</a></p>
+        <p class="pen thanks" aria-hidden="true">terima kasih — thank you!</p>
+        <p class="metaline">BonBagi v4 · ZECATHON 2026 · Shielded Payments · CSP connect-src 'none'</p>
+      </div>
+    </div>
+  </footer>
+  <script type="module" src="/src/pay-page.ts"></script>
+</body>
+</html>

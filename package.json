@@ -13,10 +13,13 @@
     "deploy": "npm run build && node scripts/prepare-deploy.mjs && vercel deploy dist --prod --yes"
   },
   "dependencies": {
+    "@fontsource-variable/archivo": "^5.2.5",
     "@noble/ed25519": "2.3.0",
-    "qrcode-generator": "1.4.4"
+    "qrcode-generator": "1.4.4",
+    "three": "^0.170.0"
   },
   "devDependencies": {
+    "@types/three": "^0.170.0",
     "typescript": "5.9.3",
     "vite": "7.1.12",
     "vitest": "3.2.4"
