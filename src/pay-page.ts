@@ -110,7 +110,9 @@ function loadFromFragment() {
     const frag = decodePayFragment(location.hash);
     if (!frag) return;
     $("#loadstate").textContent = "Charter loaded from the pay link you opened.";
-    $("#hero").hidden = true;
+    // a buyer who opened a pay link goes straight to the verification
+    const hero = document.querySelector<HTMLElement>("#hero");
+    if (hero) hero.hidden = true;
     void load(frag.signed, "the pay link", frag.priceZat);
   } catch (e) {
     reset();
