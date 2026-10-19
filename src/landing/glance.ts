@@ -62,7 +62,7 @@ function build(kind: string, gold: THREE.MeshPhysicalMaterial): { root: THREE.Gr
       // an empty glass box: nothing (and nobody) sits in the middle
       const glass = new THREE.Mesh(
         new RoundedBoxGeometry(1.7, 1.7, 1.7, 4, 0.12),
-        new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.08, transmission: 0.96, thickness: 0.6, ior: 1.4, transparent: true, opacity: 0.55 }),
+        new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.15, clearcoat: 1, transparent: true, opacity: 0.32 }),
       );
       const edges = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1.7, 1.7, 1.7)), new THREE.LineBasicMaterial({ color: 0x141006 }));
       root.add(glass, edges);
@@ -108,7 +108,7 @@ export function createGlance(canvas: HTMLCanvasElement, cards: HTMLElement[], o:
   } catch {
     return null;
   }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, o.mobile ? 1.5 : 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, o.mobile ? 1 : 1.25));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.setScissorTest(true);
   renderer.setClearColor(0x000000, 0);
@@ -156,8 +156,11 @@ export function createGlance(canvas: HTMLCanvasElement, cards: HTMLElement[], o:
     }
     void dt;
   }
+  let odd = false;
   function loop() {
-    if (on) draw();
+    // small objects: 30 frames a second is plenty
+    odd = !odd;
+    if (on && odd) draw();
     if (!o.still) requestAnimationFrame(loop);
   }
   requestAnimationFrame(loop);
