@@ -11,7 +11,7 @@ import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js"
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { createBon } from "./bon.ts";
-import { createTable } from "./table.ts";
+import type { Table } from "./table.ts";
 
 export interface Look {
   /** 0 = no ice, 1 = the signed ice slabs closed in front of the receipt. */
@@ -35,6 +35,8 @@ export interface Stage {
   glitch(amount?: number): void;
   pointer(nx: number, ny: number): void;
   onReady(fn: () => void): void;
+  /** Load the letter chapter's 3D table (call when it is about to come on screen). */
+  prepare(): void;
 }
 
 const NIGHT = 0x0d0c0b; // warm black, close to the Zcash black
@@ -90,7 +92,15 @@ export function createStage(canvas: HTMLCanvasElement, o: { mobile: boolean; sti
   } catch {
     return null;
   }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, o.mobile ? 1.3 : 1.75));
+  // Quality tier: 2 = full (transmission ice, bloom), 1 = light, 0 = lightest.
+  // Weak devices start light; a slow frame rate drops a tier at runtime.
+  // ?q=0|1|2 forces a tier for testing.
+  const q = new URLSearchParams(location.search).get("q");
+  const nav = navigator as Navigator & { deviceMemory?: number };
+  const weak = o.mobile || (navigator.hardwareConcurrency ?? 8) <= 4 || (nav.deviceMemory ?? 8) <= 4;
+  let tier = q === "0" || q === "1" || q === "2" ? Number(q) : weak ? 1 : 2;
+  const dprFor = () => Math.min(window.devicePixelRatio, tier === 2 ? 1.5 : tier === 1 ? 1 : 0.75);
+  renderer.setPixelRatio(dprFor());
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.0;
   renderer.shadowMap.enabled = !o.mobile;
@@ -134,13 +144,24 @@ export function createStage(canvas: HTMLCanvasElement, o: { mobile: boolean; sti
     sp[i * 3 + 2] = (hash(i, 10) - 0.7) * 20;
   }
   snowGeo.setAttribute("position", new THREE.BufferAttribute(sp, 3));
-  scene.add(new THREE.Points(snowGeo, new THREE.PointsMaterial({ size: 0.05, map: snowTexture(), transparent: true, depthWrite: false, opacity: 0.7, color: 0xf3f6f8 })));
+  const snow = new THREE.Points(snowGeo, new THREE.PointsMaterial({ size: 0.05, map: snowTexture(), transparent: true, depthWrite: false, opacity: 0.7, color: 0xf3f6f8 }));
+  scene.add(snow);
 
   // ---- post
   const composer = new EffectComposer(renderer);
   const renderPass = new RenderPass(scene, camera);
   composer.addPass(renderPass);
-  const table = createTable(renderer, { mobile: o.mobile });
+  // the letter chapter's table is a separate chunk, loaded only when needed
+  let table: Table | null = null;
+  let tableLoading = false;
+  function prepareTable() {
+    if (table || tableLoading) return;
+    tableLoading = true;
+    void import("./table.ts").then(({ createTable }) => {
+      table = createTable(renderer, { mobile: o.mobile, lite: tier < 2 });
+      table.resize(window.innerWidth, window.innerHeight);
+    });
+  }
   const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.35, 0.6, 0.86);
   if (!o.mobile) composer.addPass(bloom);
   const glitchPass = new ShaderPass(GlitchShader);
@@ -156,7 +177,9 @@ export function createStage(canvas: HTMLCanvasElement, o: { mobile: boolean; sti
   let portrait = false;
   function resize() {
     const w = window.innerWidth, h = window.innerHeight;
+    renderer.setPixelRatio(dprFor());
     renderer.setSize(w, h, false);
+    composer.setPixelRatio(renderer.getPixelRatio());
     composer.setSize(w, h);
     bloom.setSize(w, h);
     portrait = w < h;
@@ -164,17 +187,26 @@ export function createStage(canvas: HTMLCanvasElement, o: { mobile: boolean; sti
     camera.fov = portrait ? 50 : 32;
     camera.updateProjectionMatrix();
     // receipt to the right of the headline on wide screens, above it on phones
-    bon.root.position.set(portrait ? 0 : 2.3, portrait ? 2.2 : -0.15, 0);
+    // keep the receipt (and its ice) inside the frame on narrower screens
+    const halfW = 9.2 * Math.tan(THREE.MathUtils.degToRad(16)) * camera.aspect;
+    bon.root.position.set(portrait ? 0 : Math.max(0.9, Math.min(2.3, halfW - 1.4)), portrait ? 2.2 : -0.15, 0);
     bon.root.scale.setScalar(portrait ? 0.56 : 0.82);
-    table.resize(w, h);
+    table?.resize(w, h);
   }
-  resize();
+  function applyTier() {
+    bon.setLite(tier < 2);
+    snow.visible = tier > 0;
+    if (tier < 2) table?.setLite();
+    resize();
+  }
+  applyTier();
   window.addEventListener("resize", () => {
     resize();
     if (o.still) frame(0);
   });
 
   const clock = new THREE.Clock();
+  let lastInput = performance.now();
   let readyFns: (() => void)[] = [];
   let ready = false;
 
@@ -186,7 +218,9 @@ export function createStage(canvas: HTMLCanvasElement, o: { mobile: boolean; sti
     glitchPass.uniforms.uAmt!.value = glitchAmt;
     glitchPass.uniforms.uTime!.value = t;
 
-    if (target.table > 0.5) {
+    if (target.table > 0.5 && !table) prepareTable();
+    glitchPass.enabled = tier > 0 || glitchAmt > 0.02;
+    if (target.table > 0.5 && table) {
       cur.story += (target.story - cur.story) * (o.still ? 1 : 0.1);
       table.update(t, dt, cur.story);
       renderPass.scene = table.scene;
@@ -197,7 +231,7 @@ export function createStage(canvas: HTMLCanvasElement, o: { mobile: boolean; sti
     }
     renderPass.scene = scene;
     renderPass.camera = camera;
-    bloom.enabled = true;
+    bloom.enabled = tier === 2;
 
     tiltCur.lerp(tilt, 0.06);
     camera.position.set(tiltCur.x * 0.35, 0.35 + tiltCur.y * 0.2, portrait ? 10.5 : 9.2);
@@ -226,9 +260,32 @@ export function createStage(canvas: HTMLCanvasElement, o: { mobile: boolean; sti
     clock.getDelta();
     frame(0);
   } else {
-    const loop = () => {
-      const dt = Math.min(clock.getDelta(), 0.05);
-      if (target.dim < 0.985 && !document.hidden) frame(dt);
+    // Full rate while the page moves; every other frame (30 fps) once it has
+    // been still for a moment. The frame interval is sampled after load and a
+    // slow device drops a quality tier (at most twice).
+    let acc = 0, odd = false, samples = 0, sum = 0, drops = 0;
+    const loop = (now: number) => {
+      const d = clock.getDelta();
+      acc += d;
+      if (target.dim < 0.985 && !document.hidden) {
+        if (samples < 150) {
+          samples++;
+          if (samples > 30) sum += d;
+          if (samples === 150 && sum / 119 > 1 / 45 && tier > 0 && drops < 2) {
+            tier--;
+            drops++;
+            applyTier();
+            samples = 0;
+            sum = 0;
+          }
+        }
+        const idle = now - lastInput > 2500;
+        odd = !odd;
+        if (!idle || odd) {
+          frame(Math.min(acc, 0.05));
+          acc = 0;
+        }
+      } else acc = 0;
       requestAnimationFrame(loop);
     };
     requestAnimationFrame(loop);
@@ -236,6 +293,7 @@ export function createStage(canvas: HTMLCanvasElement, o: { mobile: boolean; sti
 
   return {
     set(look) {
+      lastInput = performance.now();
       Object.assign(target, look);
       if (o.still) frame(0);
     },
@@ -243,8 +301,10 @@ export function createStage(canvas: HTMLCanvasElement, o: { mobile: boolean; sti
       if (!o.still) glitchAmt = Math.max(glitchAmt, amount);
     },
     pointer(nx, ny) {
+      lastInput = performance.now();
       tilt.set(nx, ny);
     },
+    prepare: prepareTable,
     onReady(fn) {
       if (ready) fn();
       else readyFns.push(fn);

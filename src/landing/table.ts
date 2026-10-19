@@ -19,6 +19,7 @@ export interface Table {
   /** story: 0..3, one unit per letter part (charter, pay, split). */
   update(t: number, dt: number, story: number): void;
   resize(w: number, h: number): void;
+  setLite(): void;
 }
 
 const GOLD = 0xf4b728;
@@ -163,7 +164,7 @@ function fit(obj: THREE.Object3D, size: number) {
   return g;
 }
 
-export function createTable(renderer: THREE.WebGLRenderer, o: { mobile: boolean }): Table {
+export function createTable(renderer: THREE.WebGLRenderer, o: { mobile: boolean; lite?: boolean }): Table {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x0b0a09);
   const pmrem = new THREE.PMREMGenerator(renderer);
@@ -361,5 +362,17 @@ export function createTable(renderer: THREE.WebGLRenderer, o: { mobile: boolean 
     paneG.position.y = 0.04 + (1 - pane) * 0.5;
   }
 
-  return { scene, camera, update, resize };
+  /** Light mode for weak GPUs: no shadows, no transmission. */
+  function setLite() {
+    key.castShadow = false;
+    for (const m of [ice, frostPane.material as THREE.MeshPhysicalMaterial]) {
+      m.transmission = 0;
+      m.transparent = true;
+      m.opacity = 0.7;
+      m.needsUpdate = true;
+    }
+  }
+  if (o.lite) setLite();
+
+  return { scene, camera, update, resize, setLite };
 }
