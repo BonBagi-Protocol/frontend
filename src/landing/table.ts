@@ -165,7 +165,7 @@ function fit(obj: THREE.Object3D, size: number) {
 
 export function createTable(renderer: THREE.WebGLRenderer, o: { mobile: boolean }): Table {
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x070a0e);
+  scene.background = new THREE.Color(0x0b0a09);
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.02).texture;
   scene.environmentIntensity = 0.45;
@@ -190,7 +190,7 @@ export function createTable(renderer: THREE.WebGLRenderer, o: { mobile: boolean 
   const frost = frostTexture();
   frost.wrapS = frost.wrapT = THREE.RepeatWrapping;
   frost.repeat.set(6, 12);
-  const tableMat = new THREE.MeshPhysicalMaterial({ color: 0x18222c, roughness: 0.6, roughnessMap: frost, bumpMap: frost, bumpScale: 0.05, clearcoat: 0.5, clearcoatRoughness: 0.5, metalness: 0.05 });
+  const tableMat = new THREE.MeshPhysicalMaterial({ color: 0x1d1a16, roughness: 0.6, roughnessMap: frost, bumpMap: frost, bumpScale: 0.05, clearcoat: 0.5, clearcoatRoughness: 0.5, metalness: 0.05 });
   const tableTop = new THREE.Mesh(new THREE.PlaneGeometry(60, 90), tableMat);
   tableTop.rotation.x = -Math.PI / 2;
   tableTop.receiveShadow = true;

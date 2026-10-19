@@ -210,14 +210,15 @@ function onScroll() {
   if ((lastCover < 0.5) !== (cover < 0.5)) stage?.glitch(0.8);
   lastCover = cover;
   stage?.set({
-    assemble: smooth(0.04, 0.8, hp),
-    burst: smooth(0.12, 0.55, ep),
-    split: smooth(0.22, 0.5, ep) * (1 - smooth(0.78, 0.97, ep)),
+    assemble: smooth(0.04, 0.5, hp),
+    tear: smooth(0.55, 0.9, hp) * (1 - smooth(0.82, 0.97, ep)),
+    burst: smooth(0.08, 0.38, ep),
+    split: smooth(0.25, 0.55, ep) * (1 - smooth(0.8, 0.97, ep)),
     dim: cover2(glance),
     table: cover,
     story: story(),
   });
-  if (capEl) capEl.textContent = hp > 0.82 ? "// sealed · shielded · 51 blocks" : "// loose · exposed · scroll to seal";
+  if (capEl) capEl.textContent = hp < 0.3 ? "// what the buyer sees: every share" : hp < 0.6 ? "// what the internet sees: a payment, nothing more" : "// behind the ice: one payment, three shares";
   if (chapterEl) {
     const mid = window.innerHeight / 2;
     const cur = CHAPTERS.find(([el]) => {
