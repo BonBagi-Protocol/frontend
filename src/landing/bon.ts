@@ -229,8 +229,9 @@ export function createBon(o: { mobile: boolean }) {
 
   // three ice slabs, one per member, each carrying that member's signature
   const slabs = [0, 1, 2].map((i) => {
+    const lite = new THREE.MeshPhysicalMaterial({ color: 0xe9f3f6, roughness: 0.5, transparent: true, opacity: 0.9, clearcoat: 1, emissive: 0xf2f7f8, emissiveMap: signatureTexture(i), emissiveIntensity: 0.2 });
     const mat = o.mobile
-      ? new THREE.MeshPhysicalMaterial({ color: 0xe9f3f6, roughness: 0.5, transparent: true, opacity: 0.9, clearcoat: 1, emissive: 0xf2f7f8, emissiveMap: signatureTexture(i), emissiveIntensity: 0.2 })
+      ? lite
       : new THREE.MeshPhysicalMaterial({
           color: 0xffffff, roughness: 0.55, transmission: 1, thickness: 0.8, ior: 1.31, clearcoat: 1, clearcoatRoughness: 0.2,
           attenuationColor: new THREE.Color(0xe4f2f6), attenuationDistance: 3,
@@ -241,7 +242,7 @@ export function createBon(o: { mobile: boolean }) {
     const from = new THREE.Vector3((i - 1) * 5.5, [4.5, -5, 4.5][i]!, 2.5);
     m.position.copy(from);
     root.add(m);
-    return { m, home, from, spin: [0.9, -0.7, 0.6][i]! };
+    return { m, home, from, spin: [0.9, -0.7, 0.6][i]!, full: mat, lite };
   });
 
   const tmp = new THREE.Vector3();
@@ -275,5 +276,10 @@ export function createBon(o: { mobile: boolean }) {
     });
   }
 
-  return { root, update };
+  /** Light mode: frosted slabs without the transmission pass (much cheaper on weak GPUs). */
+  function setLite(on: boolean) {
+    for (const s of slabs) s.m.material = on ? s.lite : s.full;
+  }
+
+  return { root, update, setLite };
 }

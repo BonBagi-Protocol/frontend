@@ -4,7 +4,6 @@
 // still, non-looping page.
 
 import { createStage } from "./scene.ts";
-import { createGlance } from "./glance.ts";
 import { mountDots } from "./dots.ts";
 
 // Old pay links pointed at the site root: forward them to the pay page,
@@ -82,16 +81,38 @@ if (!stage) {
 } else stage.onReady(() => (stageReady = true));
 
 // ---------- at-a-glance cards: one small 3D object per card
-const cardsGl = (() => {
-  try {
-    return createGlance($<HTMLCanvasElement>("#glcards")!, [...glance.querySelectorAll<HTMLElement>(".gl-card")], { mobile, still: reduced });
-  } catch {
-    return null;
-  }
-})();
+// (its own chunk, loaded when the section is about a screen away)
+let cardsGl: { active(v: boolean): void; redraw(): void } | null = null;
+let glanceOn = false;
+let glanceLoading = false;
+new IntersectionObserver(
+  (entries) => {
+    if (!entries.some((e) => e.isIntersecting) || glanceLoading) return;
+    glanceLoading = true;
+    void import("./glance.ts").then(({ createGlance }) => {
+      try {
+        cardsGl = createGlance($<HTMLCanvasElement>("#glcards")!, [...glance.querySelectorAll<HTMLElement>(".gl-card")], { mobile, still: reduced });
+        cardsGl?.active(glanceOn);
+      } catch {
+        cardsGl = null;
+      }
+    });
+  },
+  { rootMargin: "100% 0px" },
+).observe(glance);
 new IntersectionObserver((entries) => {
-  for (const e of entries) cardsGl?.active(e.isIntersecting);
+  for (const e of entries) {
+    glanceOn = e.isIntersecting;
+    cardsGl?.active(glanceOn);
+  }
 }).observe(glance);
+// the letter's 3D table (and its model files) load when it is about to show
+new IntersectionObserver(
+  (entries) => {
+    if (entries.some((e) => e.isIntersecting)) stage?.prepare();
+  },
+  { rootMargin: "150% 0px" },
+).observe(table);
 
 // ---------- footer wordmark made of dots
 const dotsHost = $<HTMLElement>(".ch-end .dots");
