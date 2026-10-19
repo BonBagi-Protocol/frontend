@@ -23,6 +23,7 @@ export function mountDots(host: HTMLElement, word: string, o: { still: boolean }
     }
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     W = host.clientWidth;
+    if (W < 1) return; // not laid out yet (hidden, or mid-resize); the next resize lays it out
     step = W < 600 ? 5 : 7;
     // size the word to the box width
     const probe = document.createElement("canvas").getContext("2d")!;

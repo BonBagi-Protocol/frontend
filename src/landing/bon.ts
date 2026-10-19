@@ -32,6 +32,11 @@ const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
 const seg = (v: number, a: number, b: number) => ease(clamp((v - a) / (b - a)));
 
+// Every texture is drawn on a canvas; they are redrawn once the bundled fonts
+// have loaded, otherwise the first draw uses a fallback face and stays that way.
+const drawn: { c: CanvasRenderingContext2D; t: THREE.CanvasTexture; draw: (c: CanvasRenderingContext2D, w: number, h: number) => void }[] = [];
+let maxAniso = 8;
+
 function tex(w: number, h: number, draw: (c: CanvasRenderingContext2D, w: number, h: number) => void) {
   const cv = document.createElement("canvas");
   cv.width = Math.round(w * PX);
@@ -40,8 +45,27 @@ function tex(w: number, h: number, draw: (c: CanvasRenderingContext2D, w: number
   draw(c, cv.width, cv.height);
   const t = new THREE.CanvasTexture(cv);
   t.colorSpace = THREE.SRGBColorSpace;
-  t.anisotropy = 8;
+  // the receipt is seen at an angle and much smaller than its texture on
+  // phones: trilinear mipmaps + the GPU's full anisotropy keep the type clean
+  t.anisotropy = maxAniso;
+  drawn.push({ c, t, draw });
   return t;
+}
+
+function redrawWhenFontsLoad() {
+  if (!document.fonts) return;
+  void Promise.all(['900 64px "Archivo"', '500 30px "Plex Mono"'].map((ff) => document.fonts.load(ff))).then(() => {
+    for (const d of drawn) {
+      const { width: w, height: h } = d.c.canvas;
+      d.c.save();
+      d.c.globalCompositeOperation = "source-over";
+      d.c.setLineDash([]);
+      d.c.clearRect(0, 0, w, h);
+      d.c.restore();
+      d.draw(d.c, w, h);
+      d.t.needsUpdate = true;
+    }
+  }, () => {});
 }
 
 const INK = "#14120f";
@@ -192,10 +216,12 @@ function paperGeometry(w: number, h: number) {
   return g;
 }
 
-export function createBon(o: { mobile: boolean }) {
+export function createBon(o: { mobile: boolean; anisotropy?: number }) {
+  maxAniso = Math.max(1, Math.min(16, o.anisotropy ?? 8));
   const root = new THREE.Group();
-  // opaque with an alpha cut-out, so the ice (transmission) can see and blur it
-  const paper = (map: THREE.Texture) => new THREE.MeshStandardMaterial({ map, color: 0xe9e6df, roughness: 0.92, side: THREE.DoubleSide, alphaTest: 0.5 });
+  // opaque with an alpha cut-out, so the ice (transmission) can see and blur it;
+  // alpha-to-coverage turns the hard cut-out of the torn edges into MSAA-smooth ones
+  const paper = (map: THREE.Texture) => new THREE.MeshStandardMaterial({ map, color: 0xe9e6df, roughness: 0.92, side: THREE.DoubleSide, alphaTest: 0.5, alphaToCoverage: true });
 
   // the receipt: header + three shares
   const receipt = new THREE.Group();
@@ -275,6 +301,8 @@ export function createBon(o: { mobile: boolean }) {
       s.stamp.scale.setScalar(1 + (1 - stampIn) * 0.8);
     });
   }
+
+  redrawWhenFontsLoad();
 
   /** Light mode: frosted slabs without the transmission pass (much cheaper on weak GPUs). */
   function setLite(on: boolean) {

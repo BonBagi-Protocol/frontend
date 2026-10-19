@@ -73,7 +73,7 @@ const GlitchShader = {
       float tick = floor(uTime * 18.0);
       float on = step(0.55, rnd(vec2(band * 1.7, tick)));
       uv.x += (rnd(vec2(band, tick)) - 0.5) * 0.09 * uAmt * on;
-      float ca = 0.014 * uAmt + 0.0012;
+      float ca = 0.014 * uAmt + 0.0004;
       vec4 c;
       c.r = texture2D(tDiffuse, uv + vec2(ca, 0.0)).r;
       c.g = texture2D(tDiffuse, uv).g;
@@ -88,18 +88,23 @@ const GlitchShader = {
 export function createStage(canvas: HTMLCanvasElement, o: { mobile: boolean; still: boolean }): Stage | null {
   let renderer: THREE.WebGLRenderer;
   try {
-    renderer = new THREE.WebGLRenderer({ canvas, antialias: !o.mobile, powerPreference: "high-performance" });
+    // MSAA on every device: phones are tile GPUs where it is nearly free, and
+    // without it the receipt's edges and type shimmer at low pixel ratios.
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
   } catch {
     return null;
   }
-  // Quality tier: 2 = full (transmission ice, bloom), 1 = light, 0 = lightest.
+  // Quality tier: 2 = full (transmission ice, bloom, post), 1 = light, 0 = lightest.
   // Weak devices start light; a slow frame rate drops a tier at runtime.
   // ?q=0|1|2 forces a tier for testing.
+  // The light tiers save on effects, not on resolution: below a pixel ratio of
+  // 1 the receipt's type turns to mush (Dave, v5.1), so every tier renders at
+  // least 1 CSS px per pixel (tier 0 drops bloom, snow and the lens pass instead).
   const q = new URLSearchParams(location.search).get("q");
   const nav = navigator as Navigator & { deviceMemory?: number };
   const weak = o.mobile || (navigator.hardwareConcurrency ?? 8) <= 4 || (nav.deviceMemory ?? 8) <= 4;
   let tier = q === "0" || q === "1" || q === "2" ? Number(q) : weak ? 1 : 2;
-  const dprFor = () => Math.min(window.devicePixelRatio, tier === 2 ? 1.5 : tier === 1 ? 1 : 0.75);
+  const dprFor = () => Math.min(window.devicePixelRatio, tier === 0 ? 1.25 : 1.5);
   renderer.setPixelRatio(dprFor());
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.0;
@@ -131,7 +136,7 @@ export function createStage(canvas: HTMLCanvasElement, o: { mobile: boolean; sti
   floor.position.y = -3.4;
   scene.add(floor);
 
-  const bon = createBon({ mobile: o.mobile });
+  const bon = createBon({ mobile: o.mobile, anisotropy: renderer.capabilities.getMaxAnisotropy() });
   scene.add(bon.root);
 
   // a little snow, the cold that makes the ice
@@ -148,7 +153,8 @@ export function createStage(canvas: HTMLCanvasElement, o: { mobile: boolean; sti
   scene.add(snow);
 
   // ---- post
-  const composer = new EffectComposer(renderer);
+  // multisampled target: the composer otherwise renders without antialiasing
+  const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: 4 }));
   const renderPass = new RenderPass(scene, camera);
   composer.addPass(renderPass);
   // the letter chapter's table is a separate chunk, loaded only when needed
