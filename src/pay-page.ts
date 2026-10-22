@@ -27,6 +27,9 @@ const ICON_BAD = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 const banner = (kind: "ok" | "err", title: string, detail = "") => `<div class="banner ${kind}">${kind === "ok" ? ICON_OK : ICON_BAD}<div>${title}${detail ? `<span>${detail}</span>` : ""}</div></div>`;
 const errCard = (title: string, detail = "") => `<section class="card">${banner("err", title, detail)}</section>`;
 const colour = (i: number) => `c${i % 6}`;
+/** One letter per member for the avatar stack: "Mentor A (host)" -> "A", "Hans" -> "H". */
+const initial = (label: string) => label.match(/\b([A-Z0-9])\b/)?.[1] ?? (label.trim().charAt(0).toUpperCase() || "?");
+const avatars = (labels: string[]) => `<span class="av" aria-hidden="true">${labels.slice(0, 6).map((l, i) => `<i class="${colour(i)}">${esc(initial(l))}</i>`).join("")}</span>`;
 const who = (i: number, label: string, address: string) => `<div class="who"><span class="dot ${colour(i)}"></span><div>${esc(label)}<div class="addr">${esc(shortAddress(address))}</div></div></div>`;
 /** Share bar as SVG rects: widths are attributes, so the strict CSP (no inline styles) allows it. */
 function shareBar(bps: number[]): string {
@@ -70,7 +73,7 @@ async function load(signed: SignedCharter, source: string, priceZat?: bigint) {
                   `Waiting for ${esc(unsigned.map((i) => c.members[i]!.label).join(", "))}. Every member must sign before anyone can pay. Ask the seller for the fully signed charter.`,
                 )
         }
-        <h2>${esc(c.title)}</h2>
+        <div class="check-head"><h2>${esc(c.title)}</h2>${avatars(c.members.map((m) => m.label))}</div>
         <p class="sub tight">${c.network === "main" ? "Mainnet" : "Testnet"} · fingerprint <code>${hash.slice(0, 32)}</code> · loaded from ${esc(source)}</p>
         ${shareBar(c.members.map((m) => m.bps))}
         <table>
@@ -175,33 +178,38 @@ $("#build").addEventListener("click", async () => {
     qr.addData(req.uri, "Byte");
     qr.make();
     const c = current.charter;
+    const svgSmall = qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
+    const fee = formatZec(estimateFeeZat(n));
     pay.innerHTML = `
-      <section class="bon" aria-labelledby="bon-title">
-        <span class="stamp" title="bagi = split">Bagi ×${n}<small>split · signed</small></span>
-        <div class="head">
-          <div class="brandline">BonBagi · receipt</div>
-          <div class="title" id="bon-title">${esc(c.title)}</div>
-          <div class="meta">${esc(orderId.value.trim())} · charter ${req.charterHash.slice(0, 8)} · ${c.network === "main" ? "mainnet" : "testnet"}</div>
-        </div>
-        <table>
-          <tr><th>Recipient</th><th class="num">Share</th><th class="num">ZEC</th></tr>
-          ${req.lines.map((l, i) => `<tr><td>${who(i, l.label, l.address)}</td><td class="num">${(l.bps / 100).toFixed(2)}%</td><td class="num">${formatZec(l.amountZat)}</td></tr>`).join("")}
-        </table>
-        <div class="grand"><span>Total to ${n} members</span><span class="amt">${formatZec(req.totalZat)} <small>ZEC</small></span></div>
-        <p class="fee"><span>+ network fee, added by your wallet (ZIP-317)</span><span>≈ ${formatZec(estimateFeeZat(n))} ZEC</span></p>
-        <div class="note inside"><strong>Before you confirm,</strong> check that your wallet lists all ${n} recipients and amounts above. If it shows only one, stop and use a wallet that supports multi-recipient requests (e.g. Zingo PC or Zkool).</div>
-        <h2><span><span class="step">3</span> Pay with your wallet</span></h2>
-        <div class="paygrid">
-          <div class="qr" role="img" aria-label="QR code of the payment request">${qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true })}</div>
-          <div>
-            <p class="sub tight">Scan with a mobile wallet, open it in a desktop wallet, or copy the request into your wallet's “pay URI” field. One transaction, ${n} shielded outputs.</p>
-            <p class="actions"><a class="button" id="open" href="${esc(req.uri)}">Open in wallet</a> <button type="button" class="ghost" id="copy">Copy request</button> <button type="button" class="ghost" id="bigqr">Enlarge QR</button></p>
-            <label for="uri">Payment request (ZIP-321)</label>
-            <textarea id="uri" readonly spellcheck="false">${esc(req.uri)}</textarea>
+      <div class="paywrap">
+        <section class="wallet glass" aria-labelledby="w-title">
+          <div class="w-who"><h2 id="w-title">${esc(c.title)}</h2>${avatars(req.lines.map((l) => l.label))}</div>
+          <div class="w-amt" aria-label="Total ${formatZec(req.totalZat)} ZEC">${formatZec(req.totalZat)}<small>ZEC</small></div>
+          <p class="w-fee">+ network fee ≈ ${fee} ZEC, added by your wallet · one transaction, ${n} shielded outputs</p>
+          <ul class="chips" aria-label="Who gets what">${req.lines.map((l, i) => `<li><i class="${colour(i)}"></i>${esc(l.label)} · ${(l.bps / 100).toFixed(0)}% · ${formatZec(l.amountZat)}</li>`).join("")}</ul>
+          <button type="button" class="qrveil" id="qrveil" aria-expanded="false"><span class="qrimg" role="img" aria-label="QR code of the payment request">${svgSmall}</span><em>Tap to show QR</em></button>
+          <p class="actions"><a class="button ink" id="open" href="${esc(req.uri)}">Open in wallet</a> <button type="button" class="ghost" id="copy">Copy request</button> <button type="button" class="ghost" id="bigqr">Full-screen QR</button></p>
+          <p class="w-ok">✓ Signed by all ${n} members · checked in your browser · charter ${req.charterHash.slice(0, 8)}</p>
+        </section>
+        <div class="note"><strong>Before you confirm,</strong> check that your wallet lists all ${n} recipients and amounts. If it shows only one, stop and use a wallet that supports multi-recipient requests (e.g. Zingo PC or Zkool).</div>
+        <section class="bon" aria-labelledby="bon-title">
+          <span class="stamp" title="bagi = split">Bagi ×${n}<small>split · signed</small></span>
+          <div class="head">
+            <div class="brandline">BonBagi · receipt</div>
+            <div class="title" id="bon-title">${esc(c.title)}</div>
+            <div class="meta">${esc(orderId.value.trim())} · charter ${req.charterHash.slice(0, 8)} · ${c.network === "main" ? "mainnet" : "testnet"}</div>
           </div>
-        </div>
-        <p class="sub tight">Each member's encrypted memo (only they can read it): <code>${esc(req.lines[0]!.memo.replace(/m=1\//, "m=…/"))}</code></p>
-      </section>`;
+          <table>
+            <tr><th>Recipient</th><th class="num">Share</th><th class="num">ZEC</th></tr>
+            ${req.lines.map((l, i) => `<tr><td>${who(i, l.label, l.address)}</td><td class="num">${(l.bps / 100).toFixed(2)}%</td><td class="num">${formatZec(l.amountZat)}</td></tr>`).join("")}
+          </table>
+          <div class="grand"><span>Total to ${n} members</span><span class="amt">${formatZec(req.totalZat)} <small>ZEC</small></span></div>
+          <p class="fee"><span>+ network fee, added by your wallet (ZIP-317)</span><span>≈ ${fee} ZEC</span></p>
+          <label for="uri">Payment request (ZIP-321)</label>
+          <textarea id="uri" readonly spellcheck="false">${esc(req.uri)}</textarea>
+          <p class="sub tight">Each member's encrypted memo (only they can read it): <code>${esc(req.lines[0]!.memo.replace(/m=1\//, "m=…/"))}</code></p>
+        </section>
+      </div>`;
     $("#copy").addEventListener("click", async (ev) => {
       await navigator.clipboard.writeText(req.uri);
       (ev.target as HTMLButtonElement).textContent = "Copied";
@@ -224,7 +232,15 @@ $("#build").addEventListener("click", async () => {
       full.focus();
     };
     $("#bigqr").addEventListener("click", openBig);
-    $(".paygrid .qr").addEventListener("click", openBig);
+    // The QR holds every member's address, so it sits under frost until the buyer taps it
+    // (a glance over the shoulder shows nothing); a second tap shows it full screen.
+    const reveal = $<HTMLButtonElement>("#qrveil");
+    reveal.addEventListener("click", () => {
+      if (reveal.classList.contains("open")) return openBig();
+      reveal.classList.add("open");
+      reveal.setAttribute("aria-expanded", "true");
+      reveal.querySelector("em")!.textContent = "Tap again for full screen";
+    });
     pay.scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (e) {
     pay.innerHTML = errCard("Could not create the payment request.", esc(msg(e)));

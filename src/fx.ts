@@ -3,6 +3,19 @@
 
 document.documentElement.classList.add("js");
 
+// Frosted glass (backdrop blur) is the expensive part of this look. Phones, small or
+// low-memory machines and anyone who asks for less transparency get solid panels
+// instead ("lite"); ?q=0 forces lite and ?q=2 forces glass, same as the landing.
+{
+  const q = new URLSearchParams(location.search).get("q");
+  const nav = navigator as Navigator & { deviceMemory?: number };
+  const weak =
+    matchMedia("(max-width: 760px), (pointer: coarse), (prefers-reduced-transparency: reduce)").matches ||
+    (navigator.hardwareConcurrency ?? 8) <= 4 ||
+    (nav.deviceMemory ?? 8) <= 4;
+  if (q === "0" || (q !== "2" && weak)) document.documentElement.classList.add("lite");
+}
+
 // Reveal blocks once as they scroll into view (content is visible without JS).
 const io = new IntersectionObserver(
   (entries) => {
