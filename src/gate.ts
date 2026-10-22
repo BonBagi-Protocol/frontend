@@ -1,36 +1,50 @@
-// Day-1 gate tool: three addresses + amounts → one ZIP-321 request (text + QR).
-// Runs entirely client-side; inputs are never stored or transmitted.
+// Day-1 gate tool: two or three addresses + amounts -> one ZIP-321 request (text + QR).
+// Runs entirely client-side; inputs are never stored or transmitted. Addresses can be
+// prefilled from the link fragment (#to=u1...,u1...), which browsers never send to a server.
 
 import "./fx.ts";
 import qrcode from "qrcode-generator";
 import { formatZec, parseZec } from "./core/zatoshi.ts";
 import { buildUri, type Payment } from "./core/zip321.ts";
 
-const DEFAULTS = ["0.0005", "0.0003", "0.0002"];
+// Demo collective (Dex 23 Oct): two members, 60/40, 0.001 ZEC in total for the gate test.
+const DEFAULTS = ["0.0006", "0.0004", "0.0002"];
+const MAX = 3;
 const rows = document.querySelector<HTMLDivElement>("#rows")!;
 const out = document.querySelector<HTMLDivElement>("#out")!;
 const form = document.querySelector<HTMLFormElement>("#f")!;
 const note = document.querySelector<HTMLInputElement>("#note")!;
+const addBtn = document.querySelector<HTMLButtonElement>("#addrow")!;
+const prefill = new URLSearchParams(location.hash.slice(1)).get("to")?.split(",").map((a) => a.trim()).filter(Boolean).slice(0, MAX) ?? [];
+let count = Math.max(2, prefill.length);
 
-rows.innerHTML = DEFAULTS.map(
-  (amt, i) => `
-  <div class="row">
+function addRow(i: number) {
+  const row = document.createElement("div");
+  row.className = "row";
+  row.innerHTML = `
     <div><label for="a${i}">Recipient ${i + 1} — shielded address (u1… or zs1…)</label>
       <input id="a${i}" spellcheck="false" required /></div>
     <div><label for="z${i}">Amount (ZEC)</label>
-      <input id="z${i}" inputmode="decimal" value="${amt}" required /></div>
-  </div>`,
-).join("");
+      <input id="z${i}" inputmode="decimal" value="${DEFAULTS[i]}" required /></div>`;
+  rows.append(row);
+  row.querySelector<HTMLInputElement>(`#a${i}`)!.value = prefill[i] ?? "";
+}
+for (let i = 0; i < count; i++) addRow(i);
+addBtn.hidden = count >= MAX;
+addBtn.addEventListener("click", () => {
+  addRow(count++);
+  addBtn.hidden = count >= MAX;
+});
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   try {
-    const payments: Payment[] = [0, 1, 2].map((i) => ({
+    const payments: Payment[] = Array.from({ length: count }, (_, i) => ({
       address: document.querySelector<HTMLInputElement>(`#a${i}`)!.value.trim(),
       amountZat: parseZec(document.querySelector<HTMLInputElement>(`#z${i}`)!.value),
-      memo: `${note.value.trim() || "bonbagi gate test"} ${i + 1}/3`,
+      memo: `${note.value.trim() || "bonbagi gate test"} ${i + 1}/${count}`,
     }));
     const uri = buildUri(payments);
     const total = payments.reduce((a, p) => a + p.amountZat, 0n);

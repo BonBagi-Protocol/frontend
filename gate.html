@@ -18,19 +18,19 @@
     <section class="hero solo">
       <p class="kicker">Developer tool</p>
       <h1>Raw multi-recipient request</h1>
-      <p class="lede">Build one ZIP-321 request that pays three shielded addresses in a single transaction. Everything stays in this tab — nothing is sent anywhere or saved. Use this to check that a wallet handles one request with several shielded recipients.</p>
+      <p class="lede">Build one ZIP-321 request that pays two or three shielded addresses in a single transaction. Everything stays in this tab — nothing is sent anywhere or saved. Use this to check that a wallet handles one request with several shielded recipients.</p>
     </section>
     <form id="f" class="card" autocomplete="off">
       <div id="rows"></div>
       <label for="note">Memo prefix</label>
       <input id="note" value="bonbagi gate test" maxlength="60" />
-      <p><button type="submit">Build request</button></p>
+      <p class="actions"><button type="submit">Build request</button> <button type="button" class="ghost" id="addrow">+ Recipient</button></p>
     </form>
     <div id="out"></div>
     <div class="card">
       <strong>Pass criteria</strong>
       <ol>
-        <li>Zingo PC (2.0.26 pre-release) shows <em>all three</em> recipients and amounts before you confirm.</li>
+        <li>Zingo PC (2.0.26 pre-release) shows <em>every</em> recipient and amount before you confirm.</li>
         <li>It sends <em>one</em> transaction.</li>
         <li>Each receiving wallet shows exactly its amount and its memo.</li>
       </ol>

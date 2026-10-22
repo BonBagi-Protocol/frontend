@@ -44,7 +44,7 @@ Enforced in code, not just promised:
 
 - **Pay page** (`/`): press *Try a sample charter* to load a charter signed by three throw-away keys with made-up testnet addresses (wallets reject them, so the sample cannot move funds). Edit any address or share in the JSON and press *Check charter*: it is rejected.
 - **Charter page** (`/charter.html`): create keys, draft, sign one by one, check, then create the pay link.
-- **Raw request** (`/gate.html`): build a plain three-recipient request to test whether a wallet supports multi-recipient payments.
+- **Raw request** (`/gate.html`): build a plain request for two or three recipients to test whether a wallet supports multi-recipient payments.
 
 Wallets: tested target is Zingo PC (2.0.26); backup Zkool. Some mobile wallets show only the first recipient of a multi-recipient request; the pay page warns the buyer to check that every recipient is listed before confirming.
 
