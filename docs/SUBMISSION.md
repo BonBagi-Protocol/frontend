@@ -12,7 +12,7 @@ Deadline: **28 Oct 2026 23:59 UTC** (Thu 29 Oct 06:59 WIB). Submit early; editin
 | Repository | https://github.com/BonBagi/bonbagi (make public before submitting) |
 | Team | Dex Bennett (owner), Hans, Dave |
 
-## Description (1650 / 2,000 characters)
+## Description (1679 / 2,000 characters)
 
 The last sentence is true only after the real two-recipient payment from Zingo PC has succeeded. If it has not, delete that sentence before submitting.
 
@@ -21,12 +21,12 @@ BonBagi lets a small collective (three mentors running a class, a band, a co-op)
 
 How it works: members sign a charter (each member's shielded address and share) with their own Ed25519 keys; changing anything breaks every signature. The seller shares a pay link that carries the signed charter in the URL fragment, which browsers never send to a server. The buyer's browser verifies every signature, shows a receipt (each recipient, exact ZEC amount, total, estimated fee) and builds one ZIP-321 multi-recipient request as a link or QR. The buyer's wallet sends one transaction with one shielded output per member, each with an encrypted memo (order ID + charter fingerprint) so members can reconcile.
 
-Privacy, stated narrowly: public observers see that a shielded transaction happened and its action count, but not who paid, who was paid, or how much. The buyer does see the member list and amounts, by design, so they can check before paying. The page is fully static: a strict Content-Security-Policy blocks all network requests, there are no cookies, no storage, no analytics and no logs. Transparent addresses are rejected. Our threat model lists the limits honestly (visible action count, signatures prove agreement not identity, address reuse).
+Privacy, stated narrowly: public observers see that a shielded transaction happened and its action count, but not who paid, who was paid, or how much. The buyer does see the member list and amounts, by design, so they can check before paying. The site is fully static: the pay and charter pages run under a Content-Security-Policy that forbids any network call; there are no cookies, no storage, no analytics and no logs. Transparent addresses are rejected. Our threat model lists the limits honestly (visible action count, signatures prove agreement not identity, address reuse).
 
 Built with TypeScript, Vite, @noble/ed25519 and a deterministic zatoshi split with a minimum share to avoid dust. Tested end to end with a real mainnet payment from Zingo PC to two members.
 ```
 
-Character count checked with `len()` on the exact text above: **1650**.
+Character count checked with `len()` on the exact text above: **1679**.
 
 ## Before pressing submit
 

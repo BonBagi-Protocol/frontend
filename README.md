@@ -35,14 +35,14 @@ The page is fully static and client-side. There is no backend, database or accou
 The claim is deliberately narrow: BonBagi adds no privacy of its own; it avoids removing the privacy Zcash already provides. Known limits (visible action count, buyer sees the member list, signatures prove agreement but not identity, address reuse) are listed in **[docs/THREAT-MODEL.md](docs/THREAT-MODEL.md)**.
 
 Enforced in code, not just promised:
-- Strict Content-Security-Policy with `connect-src 'none'`: the page cannot make network requests, load third-party scripts, fonts or images.
+- Strict Content-Security-Policy on the pay, charter and raw-request pages with `connect-src 'none'`: they cannot make network requests or load third-party scripts, fonts or images. The landing page may only fetch its own 3D model files from this site.
 - No cookies, no `localStorage`, no logging of addresses or payment requests.
 - Transparent addresses are rejected; every share is shielded.
 - Deterministic zatoshi split (largest-remainder, ties to the first member) and a minimum per member to avoid dust.
 
 ## Try it
 
-- **Pay page** (`/`): press *Try a sample charter* to load a charter signed by three throw-away keys with made-up testnet addresses (wallets reject them, so the sample cannot move funds). Edit any address or share in the JSON and press *Check charter*: it is rejected.
+- **Pay page** (`/pay.html`): press *Try a sample charter* to load a charter signed by three throw-away keys with made-up testnet addresses (wallets reject them, so the sample cannot move funds). Edit any address or share in the JSON and press *Check charter*: it is rejected.
 - **Charter page** (`/charter.html`): create keys, draft, sign one by one, check, then create the pay link.
 - **Raw request** (`/gate.html`): build a plain request for two or three recipients to test whether a wallet supports multi-recipient payments.
 
@@ -70,7 +70,7 @@ Code layout (`src/core/`, all pure and tested):
 | `address.ts` | Light address classification (shielded only) |
 | `zatoshi.ts` | Integer zatoshi ↔ decimal ZEC |
 
-Pages: `index.html` + `src/pay-page.ts`, `charter.html` + `src/charter-page.ts`, `gate.html` + `src/gate.ts`. Dependencies: `@noble/ed25519` (Ed25519) and `qrcode-generator`, both bundled; nothing is loaded from a CDN.
+Pages: `index.html` + `src/landing/` (landing), `pay.html` + `src/pay-page.ts`, `charter.html` + `src/charter-page.ts`, `gate.html` + `src/gate.ts`. Dependencies: `@noble/ed25519` (Ed25519), `qrcode-generator` and `three` (landing only), all bundled; nothing is loaded from a CDN. Fonts are bundled too (SIL Open Font License, see `src/fonts/LICENSE.txt`).
 
 ## Team
 
