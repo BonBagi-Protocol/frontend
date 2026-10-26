@@ -34,3 +34,25 @@ Narration is in English, calm, about 140 words per minute (the script below is a
 - Add on-screen captions for the three key moments: "verified in the browser", "one transaction, two shielded outputs", "public sees nothing".
 - Write the transaction ID in `docs/SUBMISSION.md` only if the team agrees; the ID reveals nothing about recipients or amounts.
 - Upload (YouTube unlisted or as the form requires) and paste the link into the submission.
+
+## Short cut (75 seconds, for posts and as a backup)
+
+| Time | On screen | Narration |
+|---|---|---|
+| 0:00–0:08 | Landing hero, the ice closes over the receipt | "One payment to a group, split to every member, and nobody else can see who got what." |
+| 0:08–0:25 | Pay link opens → "Verified … signed by all 2 members" → glass card with the shares | "The members signed this split. The buyer's browser checks every signature before showing a single QR." |
+| 0:25–0:35 | Sample charter, one share edited → red refusal | "Change one number and the page refuses to pay." |
+| 0:35–0:58 | Zingo PC lists both recipients → send → both wallets receive with memos | "One transaction. Each member gets their share directly, with a private memo." |
+| 0:58–1:10 | Explorer: shielded actions only | "The public sees a shielded transaction. No names, no amounts." |
+| 1:10–1:15 | URL | "BonBagi." |
+
+If the mainnet payment is not available, replace 0:35–0:58 with the testnet run (one transaction, three shielded outputs, memos read by each member) and say "on Zcash testnet".
+
+## Backup if something fails
+
+| Level | What | Ready when |
+|---|---|---|
+| 0 | Signed demo charter, pay link and funded Zingo PC ready before recording; explorer tab open | the gate test passed once |
+| 1 | Sample charter flow (no wallet, no funds) for every in-browser step | always available on the live site |
+| 2 | Testnet run as the payment proof (see "Short cut") | Hans's recording of the receiving wallet is on hand |
+| 3 | Screenshots of every key screen (`docs/img/`) | already in the repository |
