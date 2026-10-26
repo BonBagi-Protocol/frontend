@@ -60,7 +60,7 @@ async function load(signed: SignedCharter, source: string, priceZat?: bigint) {
       <section class="card ${ready ? "done" : ""}">
         ${
           ready
-            ? banner("ok", `Verified in your browser — signed by all ${c.members.length} members.`, "Any change to an address or a share after signing breaks the signatures, and this page refuses to continue. Signatures prove the listed members agreed to this exact split; compare the fingerprint below with the one the seller published to know it is their collective.")
+            ? banner("ok", `Verified in your browser — signed by ${c.members.length === 2 ? "both" : `all ${c.members.length}`} members.`, "Any change to an address or a share after signing breaks the signatures, and this page refuses to continue. Signatures prove the listed members agreed to this exact split; compare the fingerprint below with the one the seller published to know it is their collective.")
             : tampered.length > 0
               ? banner(
                   "err",
@@ -189,7 +189,7 @@ $("#build").addEventListener("click", async () => {
           <ul class="chips" aria-label="Who gets what">${req.lines.map((l, i) => `<li><i class="${colour(i)}"></i>${esc(l.label)} · ${(l.bps / 100).toFixed(0)}% · ${formatZec(l.amountZat)}</li>`).join("")}</ul>
           <button type="button" class="qrveil" id="qrveil" aria-expanded="false"><span class="qrimg" role="img" aria-label="QR code of the payment request">${svgSmall}</span><em>Tap to show QR</em></button>
           <p class="actions"><a class="button ink" id="open" href="${esc(req.uri)}">Open in wallet</a> <button type="button" class="ghost" id="copy">Copy request</button> <button type="button" class="ghost" id="bigqr">Full-screen QR</button></p>
-          <p class="w-ok">✓ Signed by all ${n} members · checked in your browser · charter ${req.charterHash.slice(0, 8)}</p>
+          <p class="w-ok">✓ Signed by ${n === 2 ? "both" : `all ${n}`} members · checked in your browser · charter ${req.charterHash.slice(0, 8)}</p>
         </section>
         <div class="note"><strong>Before you confirm,</strong> check that your wallet lists all ${n} recipients and amounts. If it shows only one, stop and use a wallet that supports multi-recipient requests (e.g. Zingo PC or Zkool).</div>
         <section class="bon" aria-labelledby="bon-title">

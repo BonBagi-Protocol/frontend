@@ -12,7 +12,7 @@ Deadline: **28 Oct 2026 23:59 UTC** (Thu 29 Oct 06:59 WIB). Submit early; editin
 | Repository | https://github.com/BonBagi/bonbagi (make public before submitting) |
 | Team | Dex Bennett (owner), Hans, Dave |
 
-## Description (1852 / 2,000 characters)
+## Description (1860 / 2,000 characters)
 
 This text claims only what has happened (testnet run). After the real two-recipient mainnet payment succeeds, change the end of the "What is real" sentence to "…each memo read by its member), and on mainnet from Zingo PC to two members." and recount.
 
@@ -23,10 +23,10 @@ How it works: members sign a charter (each member's shielded address and share) 
 
 Privacy, stated narrowly: public observers see that a shielded transaction happened and its action count, but not who paid, who was paid, or how much. The buyer does see the member list and amounts, by design, so they can check before paying. The site is fully static: the pay and charter pages run under a Content-Security-Policy that forbids any network call; there are no cookies, no storage, no analytics and no logs. Transparent addresses are rejected. Our threat model lists the limits honestly (visible action count, signatures prove agreement not identity, address reuse).
 
-Built with TypeScript, Vite and @noble/ed25519, with a deterministic zatoshi split and a minimum share to avoid dust. What is real: every check runs in the browser, the same request was paid on Zcash testnet (one transaction, three shielded outputs, each memo read by its member). What is a mock: only the sample charter, whose made-up addresses no wallet accepts.
+Built with TypeScript, Vite and @noble/ed25519, with a deterministic zatoshi split and a minimum share to avoid dust. What is real: every check runs in the browser, the same kind of request was paid on Zcash testnet (one transaction, three shielded outputs, each memo read by its member). What is a mock: only the sample charter, whose made-up addresses no wallet accepts.
 ```
 
-Character count checked with `len()` on the exact text above: **1852**.
+Character count checked with `len()` on the exact text above: **1860**.
 
 ## Before pressing submit
 
