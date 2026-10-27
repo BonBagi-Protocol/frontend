@@ -12,7 +12,7 @@
 | BB-08 | Two-minute demo video with the real payment | frontend | open |
 | BB-09 | Public repositories and ZECATHON submission | all | open |
 | BB-10 | `@bonbagi/core` package, tests, CI, v0.1.0 | core | done |
-| BB-11 | Watcher: each member verifies their own share with a viewing key, signed receipt, no server | watcher | in progress (planned public with green CI) |
+| BB-11 | Watcher: each member verifies their own share with a viewing key, signed receipt, no server | watcher | done (v0.1.0) |
 | BB-12 | Charter and raw-request pages in the pay page's visual language | frontend | in progress |
 | BB-13 | Scan the full-screen QR from a real phone into a second wallet | frontend | open |
 | BB-14 | Pad transactions with dummy outputs so the action count hides the member count | core | later |
