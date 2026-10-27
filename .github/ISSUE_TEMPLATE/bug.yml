@@ -1,0 +1,14 @@
+name: Bug
+description: Something behaves differently from what the README promises
+title: "BB-xx: "
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes: { label: What happened, description: "Steps, input (with throw-away keys only) and the output you got" }
+    validations: { required: true }
+  - type: textarea
+    id: expected
+    attributes: { label: What you expected }
+  - type: markdown
+    attributes: { value: "Never paste a seed, spending key, private signing key or a real payment request. Security problems: use a private security advisory instead." }

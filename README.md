@@ -1,5 +1,7 @@
 # BonBagi
 
+[![CI](https://github.com/BonBagi/frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/BonBagi/frontend/actions/workflows/ci.yml) ![tests](https://img.shields.io/badge/tests-39%20passing-2ea44f) ![license](https://img.shields.io/badge/license-MIT-blue)
+
 **One payment. Every share. Nobody's business.**
 
 BonBagi lets a small collective (two mentors running a class, a band, a co-op) get paid with **one Zcash shielded payment that splits to every member in a single transaction**. No treasurer collects the money, no custodian holds it, and no server learns who was paid how much. Built for ZECATHON 2026, track **Shielded Payments**, October 2026.
@@ -115,6 +117,16 @@ Code layout (`src/core/`, all pure and tested):
 | `zatoshi.ts` | Integer zatoshi ↔ decimal ZEC |
 
 Pages: `index.html` + `src/landing/` (landing), `pay.html` + `src/pay-page.ts`, `charter.html` + `src/charter-page.ts`, `gate.html` + `src/gate.ts`. Dependencies: `@noble/ed25519` (Ed25519), `qrcode-generator` and `three` (landing only), all bundled; nothing is loaded from a CDN. Fonts are bundled too (SIL Open Font License, see `src/fonts/LICENSE.txt`).
+
+## Repositories
+
+| Repo | What |
+|---|---|
+| **frontend** (this) | The live site: landing, pay, charter and raw-request pages |
+| [core](https://github.com/BonBagi/core) | `@bonbagi/core`: charter, split, ZIP-321, memos, pay links (v0.1.0) |
+| [watcher](https://github.com/BonBagi/watcher) | Member-run verifier: confirms your own share with a viewing key, no server |
+
+Backlog with shared IDs: [docs/BACKLOG.md](docs/BACKLOG.md). Security: [SECURITY.md](SECURITY.md). Contributing: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Team
 
