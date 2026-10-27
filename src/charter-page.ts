@@ -2,10 +2,10 @@
 // Client-side only; nothing is stored or transmitted.
 
 import "./fx.ts";
-import { addSignature, charterHash, newPrivateKey, parseCharterFile, publicKeyOf, verifyCharter, type Charter, type SignedCharter } from "./core/charter.ts";
-import { payLink } from "./core/paylink.ts";
-import { percentToBps } from "./core/split.ts";
-import { formatZec, parseZec } from "./core/zatoshi.ts";
+import { addSignature, charterHash, newPrivateKey, parseCharterFile, publicKeyOf, verifyCharter, type Charter, type SignedCharter } from "@bonbagi/core";
+import { payLink } from "@bonbagi/core";
+import { percentToBps } from "@bonbagi/core";
+import { formatZec, parseZec } from "@bonbagi/core";
 
 const $ = <T extends HTMLElement>(sel: string) => document.querySelector<T>(sel)!;
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);

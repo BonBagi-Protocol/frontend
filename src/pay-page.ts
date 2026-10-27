@@ -4,10 +4,10 @@
 
 import "./fx.ts";
 import qrcode from "qrcode-generator";
-import { newPrivateKey, parseCharterFile, publicKeyOf, signCharter, verifyCharter, type Charter, type SignedCharter } from "./core/charter.ts";
-import { decodePayFragment, estimateFeeZat, newOrderId, shortAddress } from "./core/paylink.ts";
-import { buildPaymentRequest } from "./core/request.ts";
-import { formatZec, parseZec } from "./core/zatoshi.ts";
+import { newPrivateKey, parseCharterFile, publicKeyOf, signCharter, verifyCharter, type Charter, type SignedCharter } from "@bonbagi/core";
+import { decodePayFragment, estimateFeeZat, newOrderId, shortAddress } from "@bonbagi/core";
+import { buildPaymentRequest } from "@bonbagi/core";
+import { formatZec, parseZec } from "@bonbagi/core";
 
 const $ = <T extends HTMLElement>(sel: string) => document.querySelector<T>(sel)!;
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);

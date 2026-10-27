@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { newPrivateKey, publicKeyOf, signCharter, verifyCharter, type Charter, type SignedCharter } from "../src/core/charter.ts";
-import { base64url, bonbagiMemo, encodeMemo, fromBase64url } from "../src/core/memo.ts";
-import { decodePayFragment, encodePayFragment, estimateFeeZat, newOrderId, payLink, shortAddress } from "../src/core/paylink.ts";
-import { buildPaymentRequest } from "../src/core/request.ts";
-import { splitAmount } from "../src/core/split.ts";
-import { parseZec } from "../src/core/zatoshi.ts";
-import { parseUri } from "../src/core/zip321.ts";
+import { newPrivateKey, publicKeyOf, signCharter, verifyCharter, type Charter, type SignedCharter } from "@bonbagi/core";
+import { base64url, bonbagiMemo, encodeMemo, fromBase64url } from "@bonbagi/core";
+import { decodePayFragment, encodePayFragment, estimateFeeZat, newOrderId, payLink, shortAddress } from "@bonbagi/core";
+import { buildPaymentRequest } from "@bonbagi/core";
+import { splitAmount } from "@bonbagi/core";
+import { parseZec } from "@bonbagi/core";
+import { parseUri } from "@bonbagi/core";
 
 const fake = (hrp: string, seed: string, len: number) => hrp + "1" + (seed + "qpzry9x8gf2tvdw0s3jn54khce6mua7l".repeat(6)).slice(0, len);
 const ADDRS = [fake("u", "aaa", 100), fake("u", "ccc", 100), fake("u", "ddd", 100)];

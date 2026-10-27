@@ -25,7 +25,7 @@ BonBagi lets a small collective (two mentors running a class, a band, a co-op) g
 
 | Real | Mock |
 |---|---|
-| Ed25519 charter signing and verification, the deterministic zatoshi split, the ZIP-321 request, the QR and the memos are all computed in your browser by the code in `src/core/` (39 unit tests). | The **sample charter** on the pay page: its testnet addresses are made up and fail the wallet checksum, so the sample cannot move funds. |
+| Ed25519 charter signing and verification, the deterministic zatoshi split, the ZIP-321 request, the QR and the memos are all computed in your browser by [@bonbagi/core](https://github.com/BonBagi/core) (39 unit tests). | The **sample charter** on the pay page: its testnet addresses are made up and fail the wallet checksum, so the sample cannot move funds. |
 | A real payment on **Zcash testnet** (Hans, 18 Oct): one ZIP-321 request built by `buildPaymentRequest`, one transaction (`485623f7…f520`, block 4514615), three shielded outputs of 0.0012 / 0.0009 / 0.0009 TAZ, each memo read by the receiving wallet, fee 0.0002 = our ZIP-317 estimate. | The numbers in the landing page animation (0.01 ZEC, 40/30/30) are illustration only. |
 
 ## How it maps to the judging criteria
@@ -103,18 +103,7 @@ npm run dev      # http://localhost:5173
 npm run build    # static site in dist/
 ```
 
-Code layout (`src/core/`, all pure and tested):
-
-| File | Purpose |
-|---|---|
-| `zip321.ts` | Build and strictly parse ZIP-321 multi-recipient requests |
-| `split.ts` | Deterministic zatoshi split, minimum share, percent → basis points |
-| `charter.ts` | Canonical JSON, Ed25519 sign/verify, structural validation |
-| `request.ts` | Signed charter + price → one payment request (refuses unless fully signed) |
-| `paylink.ts` | Charter in the URL fragment, fee estimate, order IDs |
-| `memo.ts` | Memo encoding (`bonbagi:v1 o=… c=… m=n/of`) |
-| `address.ts` | Light address classification (shielded only) |
-| `zatoshi.ts` | Integer zatoshi ↔ decimal ZEC |
+Payment logic lives in **[@bonbagi/core](https://github.com/BonBagi/core)** (signed charter, split, ZIP-321, memos, pay links; pure and tested). This app installs it from the `v0.1.0` tag and runs the same 39 tests against the installed package (`test/`).
 
 Pages: `index.html` + `src/landing/` (landing), `pay.html` + `src/pay-page.ts`, `charter.html` + `src/charter-page.ts`, `gate.html` + `src/gate.ts`. Dependencies: `@noble/ed25519` (Ed25519), `qrcode-generator` and `three` (landing only), all bundled; nothing is loaded from a CDN. Fonts are bundled too (SIL Open Font License, see `src/fonts/LICENSE.txt`).
 

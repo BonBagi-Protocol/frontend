@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { classifyAddress } from "../src/core/address.ts";
-import { newPrivateKey, publicKeyOf, signCharter, verifyCharter, type Charter, type SignedCharter } from "../src/core/charter.ts";
-import { encodeMemo, fromBase64url } from "../src/core/memo.ts";
-import { buildPaymentRequest } from "../src/core/request.ts";
-import { splitAmount, SplitError } from "../src/core/split.ts";
-import { formatZec, parseZec } from "../src/core/zatoshi.ts";
-import { buildUri, parseUri } from "../src/core/zip321.ts";
+import { classifyAddress } from "@bonbagi/core";
+import { newPrivateKey, publicKeyOf, signCharter, verifyCharter, type Charter, type SignedCharter } from "@bonbagi/core";
+import { encodeMemo, fromBase64url } from "@bonbagi/core";
+import { buildPaymentRequest } from "@bonbagi/core";
+import { splitAmount, SplitError } from "@bonbagi/core";
+import { formatZec, parseZec } from "@bonbagi/core";
+import { buildUri, parseUri } from "@bonbagi/core";
 
 // Syntactically plausible fake addresses (not real wallets).
 const fake = (hrp: string, seed: string, len: number) => hrp + "1" + (seed + "qpzry9x8gf2tvdw0s3jn54khce6mua7l".repeat(6)).slice(0, len);
@@ -161,8 +161,8 @@ describe("payment request", () => {
   });
 });
 
-import { addSignature, parseCharterFile } from "../src/core/charter.ts";
-import { percentToBps } from "../src/core/split.ts";
+import { addSignature, parseCharterFile } from "@bonbagi/core";
+import { percentToBps } from "@bonbagi/core";
 
 describe("charter file helpers", () => {
   it("percentToBps", () => {

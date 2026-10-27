@@ -4,8 +4,8 @@
 
 import "./fx.ts";
 import qrcode from "qrcode-generator";
-import { formatZec, parseZec } from "./core/zatoshi.ts";
-import { buildUri, type Payment } from "./core/zip321.ts";
+import { formatZec, parseZec } from "@bonbagi/core";
+import { buildUri, type Payment } from "@bonbagi/core";
 
 // Demo collective (Dex 23 Oct): two members, 60/40, 0.001 ZEC in total for the gate test.
 const DEFAULTS = ["0.0006", "0.0004", "0.0002"];
