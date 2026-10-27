@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="referrer" content="no-referrer" />
+  <meta name="description" content="Every member of a collective signs the same split with their own key. Change one address or share and every signature breaks." />
   <meta name="theme-color" content="#0d0c0b" />
   <title>BonBagi · Charter</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -15,59 +16,56 @@
     <nav aria-label="Pages"><a href="./pay.html">Pay</a><a href="./charter.html" aria-current="page">Charter</a><a href="./gate.html">Raw request</a></nav>
   </header>
   <main>
-    <section class="hero solo">
+    <section class="hero solo compact">
       <p class="kicker">For the collective</p>
       <h1>Agree once.<br /><span class="hl">Every sale splits itself.</span></h1>
-      <p class="lede">The collective's agreement: who gets paid, where, and what share. Every member signs it; any later change breaks the signatures. Everything here runs in this tab — keys and addresses are never sent anywhere.</p>
-      <ul class="how">
-        <li><strong>Keys</strong>Each member creates a signing key on their own device and shares only the public half.</li>
-        <li><strong>Draft</strong>One person enters every member's shielded address, share and public key.</li>
-        <li><strong>Sign &amp; sell</strong>Everyone signs the same file. When all have signed, create the pay link for buyers.</li>
-      </ul>
+      <p class="lede">The charter says who gets paid, to which shielded address, and what share. Every member signs it with their own key. Change one address or share and every signature breaks.</p>
     </section>
 
-    <section class="card">
-      <h2><span class="step">1</span>Your signing key</h2>
-      <p class="sub">Each member creates one key and keeps the private part to themselves. Share only the public key.</p>
-      <p><button type="button" id="genkey">Create a key</button></p>
+    <!-- The charter that is open in this tab: one ice block per member, frozen once they sign. -->
+    <section class="sigwrap" aria-labelledby="board-title">
+      <div class="board glass" id="board" tabindex="-1"></div>
+    </section>
+
+    <section class="card" id="keycard" aria-labelledby="key-title">
+      <h2 id="key-title"><span class="step">1</span>Your signing key</h2>
+      <p class="sub">Every member makes one key on their own device. Send the public key to whoever drafts the charter; keep the key file to yourself.</p>
+      <p class="actions"><button type="button" id="genkey">Create my key</button></p>
       <div id="keyout"></div>
     </section>
 
-    <section class="card">
-      <h2><span class="step">2</span>Draft the charter</h2>
-      <label for="title">Title (what is being sold)</label>
-      <input id="title" maxlength="80" placeholder="Intro to Zcash — 3 mentors" />
-      <label for="network">Network</label>
-      <select id="network"><option value="main">Mainnet</option><option value="test">Testnet</option></select>
-      <label for="minshare">Minimum per member (ZEC)</label>
-      <input id="minshare" value="0.0001" inputmode="decimal" />
-      <div id="members"></div>
-      <p><button type="button" class="ghost" id="addmember">+ Member</button> <button type="button" id="draft">Create charter</button></p>
-      <div id="draftout"></div>
-    </section>
-
-    <section class="card">
-      <h2><span class="step">3</span>Sign</h2>
-      <label for="signin">Charter file (unsigned or partly signed)</label>
-      <textarea id="signin" spellcheck="false" placeholder='{"charter":{…},"signatures":[]}'></textarea>
-      <label for="priv">Your private key (64 hex characters)</label>
-      <input id="priv" type="password" spellcheck="false" autocomplete="off" />
-      <p><button type="button" id="sign">Add my signature</button></p>
-      <div id="signout"></div>
-    </section>
-
-    <section class="card">
-      <h2><span class="step">4</span>Check</h2>
-      <label for="verin">Signed charter file</label>
-      <textarea id="verin" spellcheck="false"></textarea>
-      <p><button type="button" id="verify">Check signatures</button></p>
-      <div id="verout"></div>
+    <section class="card" id="draftcard" aria-labelledby="draft-title">
+      <h2 id="draft-title"><span class="step">2</span>Draft the charter</h2>
+      <p class="sub">One person enters every member. When it is created, the charter opens above and everyone signs the same file.</p>
+      <form id="draft" novalidate autocomplete="off">
+        <label for="title">What is being sold</label>
+        <input id="title" maxlength="80" placeholder="Intro to Zcash — 2 mentors" aria-describedby="title-err" />
+        <p class="field-err" id="title-err" hidden></p>
+        <div class="row">
+          <div>
+            <label for="network">Network</label>
+            <select id="network"><option value="main">Mainnet</option><option value="test">Testnet</option></select>
+          </div>
+          <div>
+            <label for="minshare">Smallest share per member (ZEC)</label>
+            <input id="minshare" value="0.0001" inputmode="decimal" aria-describedby="minshare-err" />
+            <p class="field-err" id="minshare-err" hidden></p>
+          </div>
+        </div>
+        <div id="members"></div>
+        <div class="draft-foot">
+          <button type="button" class="ghost" id="addmember">+ Member</button>
+          <span class="pill" id="total" aria-live="polite"></span>
+        </div>
+        <p class="actions"><button type="submit" id="create">Create charter</button></p>
+        <p class="field-err" id="draft-err" role="alert" hidden></p>
+      </form>
     </section>
   </main>
   <footer class="foot">
     <div class="shield">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5l8-3z" /><path d="M8.5 12l2.5 2.5 4.5-5" /></svg>
-      <div><p><strong>Runs entirely in this tab.</strong> Keys, addresses and requests are never sent anywhere or saved. The page loads only its own files from this site, and its security policy stops its code from calling any server.</p></div>
+      <div><p><strong>Runs entirely in this tab.</strong> Keys, addresses and charters are never sent anywhere or saved. The page loads only its own files from this site, and its security policy stops its code from calling any server.</p></div>
     </div>
   </footer>
   <script type="module" src="/src/charter-page.ts"></script>

@@ -46,6 +46,17 @@
     </section>
 
     <div id="pay"></div>
+
+    <section class="how-pay" id="how" aria-labelledby="how-title">
+      <h2 id="how-title" class="h-sm">How this payment works</h2>
+      <ul class="how">
+        <li><strong>The members signed one charter</strong>Each member signed the same split with their own key, before this link existed.</li>
+        <li><strong>Your browser checks it</strong>This page verifies every signature here and refuses a charter that was edited after signing.</li>
+        <li><strong>One payment pays everyone</strong>Your wallet sends one shielded transaction with one output per member. Anyone else sees only that a shielded transaction happened, not who paid, who was paid or how much.</li>
+      </ul>
+      <!-- becomes a link to https://github.com/BonBagi/watcher#readme once that repo is public with green CI -->
+      <p class="verify">Members: a tool to verify your own share on your own machine (BonBagi watcher) is in progress.</p>
+    </section>
   </main>
 
   <footer class="foot">
@@ -55,7 +66,7 @@
         <p><strong>Runs entirely in this tab.</strong> The page loads only its own files from this site. It has no server code, no analytics and no cookies, it saves nothing, and its security policy stops its code from calling any server or loading anything from another site. The charter travels in the link's <code>#</code> part, which browsers never send to the server.</p>
         <p>BonBagi never touches funds and never sees your wallet. <a href="./charter.html">Make a charter for your own collective →</a></p>
         <p class="pen thanks" aria-hidden="true">terima kasih — thank you!</p>
-        <p class="metaline">BonBagi v6 · ZECATHON 2026 · Shielded Payments · CSP connect-src 'none'</p>
+        <p class="metaline">BonBagi v7 · ZECATHON 2026 · Shielded Payments · CSP connect-src 'none'</p>
       </div>
     </div>
   </footer>

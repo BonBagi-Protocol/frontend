@@ -1,77 +1,180 @@
-// Day-1 gate tool: two or three addresses + amounts -> one ZIP-321 request (text + QR).
+// Raw request tool: two or three addresses + amounts -> one ZIP-321 request, rebuilt on every
+// keystroke and shown parameter by parameter (one colour per recipient), plus its QR.
 // Runs entirely client-side; inputs are never stored or transmitted. Addresses can be
 // prefilled from the link fragment (#to=u1...,u1...), which browsers never send to a server.
 
 import "./fx.ts";
 import qrcode from "qrcode-generator";
+import { assertShielded } from "@bonbagi/core";
+import { estimateFeeZat } from "@bonbagi/core";
 import { formatZec, parseZec } from "@bonbagi/core";
 import { buildUri, type Payment } from "@bonbagi/core";
 
 // Demo collective (Dex 23 Oct): two members, 60/40, 0.001 ZEC in total for the gate test.
 const DEFAULTS = ["0.0006", "0.0004", "0.0002"];
 const MAX = 3;
-const rows = document.querySelector<HTMLDivElement>("#rows")!;
-const out = document.querySelector<HTMLDivElement>("#out")!;
-const form = document.querySelector<HTMLFormElement>("#f")!;
-const note = document.querySelector<HTMLInputElement>("#note")!;
-const addBtn = document.querySelector<HTMLButtonElement>("#addrow")!;
+const $ = <T extends HTMLElement>(sel: string) => document.querySelector<T>(sel)!;
+const esc = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+const sentence = (e: unknown) => {
+  const s = e instanceof Error ? e.message : String(e);
+  return `${s.charAt(0).toUpperCase()}${s.slice(1)}${/[.!?]$/.test(s) ? "" : "."}`;
+};
+
+const rows = $<HTMLDivElement>("#rows");
+const note = $<HTMLInputElement>("#note");
+const addBtn = $<HTMLButtonElement>("#addrow");
+const uriBox = $<HTMLPreElement>("#uri");
+const sum = $<HTMLParagraphElement>("#sum");
+const qrBox = $<HTMLDivElement>("#qr");
+const copyBtn = $<HTMLButtonElement>("#copy");
+const openA = $<HTMLAnchorElement>("#open");
 const prefill = new URLSearchParams(location.hash.slice(1)).get("to")?.split(",").map((a) => a.trim()).filter(Boolean).slice(0, MAX) ?? [];
-let count = Math.max(2, prefill.length);
+/** Fields the person has left at least once: their errors show from then on, not while typing the first time. */
+const touched = new Set<string>();
+let current = "";
 
 function addRow(i: number) {
-  const row = document.createElement("div");
-  row.className = "row";
+  const row = document.createElement("fieldset");
+  row.className = "rcp";
   row.innerHTML = `
-    <div><label for="a${i}">Recipient ${i + 1} — shielded address (u1… or zs1…)</label>
-      <input id="a${i}" spellcheck="false" required /></div>
-    <div><label for="z${i}">Amount (ZEC)</label>
-      <input id="z${i}" inputmode="decimal" value="${DEFAULTS[i]}" required /></div>`;
+    <legend><i class="dot c${i}"></i>Recipient ${i + 1}</legend>
+    <div class="rcp-grid">
+      <div><label for="a${i}">Shielded address</label><input id="a${i}" spellcheck="false" placeholder="u1… or zs1…" aria-describedby="a${i}-err" /><p class="field-err" id="a${i}-err" hidden></p></div>
+      <div><label for="z${i}">ZEC</label><input id="z${i}" inputmode="decimal" value="${DEFAULTS[i]}" aria-describedby="z${i}-err" /><p class="field-err" id="z${i}-err" hidden></p></div>
+    </div>
+    ${i === MAX - 1 ? `<p class="m-remove"><button type="button" class="ghost small" id="rm">Remove recipient 3</button></p>` : ""}`;
   rows.append(row);
-  row.querySelector<HTMLInputElement>(`#a${i}`)!.value = prefill[i] ?? "";
+  $<HTMLInputElement>(`#a${i}`).value = prefill[i] ?? "";
+  row.querySelector("#rm")?.addEventListener("click", () => {
+    row.remove();
+    touched.delete("a2");
+    touched.delete("z2");
+    addBtn.hidden = false;
+    update();
+    addBtn.focus();
+  });
 }
-for (let i = 0; i < count; i++) addRow(i);
-addBtn.hidden = count >= MAX;
+const count = () => rows.querySelectorAll(".rcp").length;
+for (let i = 0; i < Math.max(2, prefill.length); i++) addRow(i);
+addBtn.hidden = count() >= MAX;
 addBtn.addEventListener("click", () => {
-  addRow(count++);
-  addBtn.hidden = count >= MAX;
+  addRow(count());
+  addBtn.hidden = count() >= MAX;
+  $<HTMLInputElement>(`#a${count() - 1}`).focus();
+  update();
 });
 
-const esc = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+function showError(id: string, msg: string | null) {
+  const input = $<HTMLInputElement>(`#${id}`);
+  const err = $<HTMLElement>(`#${id}-err`);
+  const show = msg !== null && touched.has(id);
+  err.hidden = !show;
+  if (show) err.textContent = msg;
+  if (show) input.setAttribute("aria-invalid", "true");
+  else input.removeAttribute("aria-invalid");
+}
 
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  try {
-    const payments: Payment[] = Array.from({ length: count }, (_, i) => ({
-      address: document.querySelector<HTMLInputElement>(`#a${i}`)!.value.trim(),
-      amountZat: parseZec(document.querySelector<HTMLInputElement>(`#z${i}`)!.value),
-      memo: `${note.value.trim() || "bonbagi gate test"} ${i + 1}/${count}`,
-    }));
-    const uri = buildUri(payments);
-    const total = payments.reduce((a, p) => a + p.amountZat, 0n);
-    const qr = qrcode(0, "M");
-    qr.addData(uri, "Byte");
-    qr.make();
-    out.innerHTML = `
-      <div class="card">
-        <p class="ok">Request built — ${payments.length} shielded outputs, total ${formatZec(total)} ZEC (+ network fee).</p>
-        <table>
-          <tr><th>#</th><th>Address</th><th class="num">ZEC</th></tr>
-          ${payments.map((p, i) => `<tr><td>${i + 1}</td><td class="addr">${esc(p.address)}</td><td class="num">${formatZec(p.amountZat)}</td></tr>`).join("")}
-        </table>
-        <label for="uri">Payment request (paste into the wallet's send / pay-URI field)</label>
-        <textarea id="uri" readonly>${esc(uri)}</textarea>
-        <p><button type="button" id="copy">Copy request</button> <button type="button" class="ghost" id="clear">Clear</button></p>
-        <div class="qr">${qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true })}</div>
-      </div>`;
-    document.querySelector("#copy")!.addEventListener("click", async (ev) => {
-      await navigator.clipboard.writeText(uri);
-      (ev.target as HTMLButtonElement).textContent = "Copied";
-    });
-    document.querySelector("#clear")!.addEventListener("click", () => {
-      out.innerHTML = "";
-      form.reset();
-    });
-  } catch (err) {
-    out.innerHTML = `<div class="card"><p class="err">${esc(err instanceof Error ? err.message : String(err))}</p></div>`;
+/** One coloured line per parameter: address / amount / memo for recipient 0, then .1, .2. */
+function colourUri(uri: string): string {
+  const [head, query = ""] = uri.split("?");
+  const lines = query.split("&").map((p, n) => {
+    const i = Number(/^[a-z]+\.(\d+)=/.exec(p)?.[1] ?? 0);
+    return `${n ? '<span class="kq">&amp;</span>' : ""}<span class="k${i}">${esc(p)}</span>`;
+  });
+  return `<span class="kq">${esc(head!)}?</span>${lines.join("\n")}`;
+}
+
+function update() {
+  const n = count();
+  /** Problems in fields the person has left are red; the rest just say what is still missing. */
+  const problems: { text: string; red: boolean }[] = [];
+  const payments: Payment[] = [];
+  let network: string | undefined;
+  const seen = new Map<string, number>();
+  for (let i = 0; i < n; i++) {
+    const a = $<HTMLInputElement>(`#a${i}`).value.trim();
+    let aErr: string | null = null;
+    if (!a) aErr = "Paste a shielded address (u1… or zs1…).";
+    else {
+      try {
+        const info = assertShielded(a);
+        network ??= info.network;
+        if (info.network !== network) aErr = `This is a ${info.network}net address; recipient 1 is on ${network}net.`;
+        else if (seen.has(a)) aErr = `Recipient ${seen.get(a)! + 1} already uses this address.`;
+      } catch (e) {
+        aErr = sentence(e);
+      }
+      seen.set(a, i);
+    }
+    let zat = 0n;
+    let zErr: string | null = null;
+    try {
+      zat = parseZec($<HTMLInputElement>(`#z${i}`).value);
+      if (zat === 0n) zErr = "Use an amount above 0.";
+    } catch {
+      zErr = "Use a ZEC amount such as 0.0005.";
+    }
+    showError(`a${i}`, aErr);
+    showError(`z${i}`, zErr);
+    const lower = (s: string) => `${s.charAt(0).toLowerCase()}${s.slice(1)}`;
+    if (aErr) problems.push(touched.has(`a${i}`) ? { text: `Recipient ${i + 1}: ${lower(aErr)}`, red: true } : { text: `Recipient ${i + 1}: waiting for an address`, red: false });
+    if (zErr) problems.push(touched.has(`z${i}`) ? { text: `Recipient ${i + 1} amount: ${lower(zErr)}`, red: true } : { text: `Recipient ${i + 1}: waiting for an amount`, red: false });
+    payments.push({ address: a, amountZat: zat, memo: `${note.value.trim() || "bonbagi gate test"} ${i + 1}/${n}` });
+  }
+
+  current = "";
+  if (!problems.length) {
+    try {
+      current = buildUri(payments);
+    } catch (e) {
+      problems.push({ text: sentence(e), red: true });
+    }
+  }
+  if (!current) {
+    uriBox.classList.add("waiting");
+    uriBox.innerHTML = `<span class="kq">zcash:?</span>…\n${problems.map((p) => `<span class="${p.red ? "miss" : "todo"}">${esc(p.text)}</span>`).join("\n")}`;
+    sum.textContent = `${n} recipients · the request appears once every address and amount is valid.`;
+    qrBox.hidden = true;
+    copyBtn.disabled = true;
+    openA.removeAttribute("href");
+    openA.setAttribute("aria-disabled", "true");
+    return;
+  }
+  const total = payments.reduce((t, p) => t + p.amountZat, 0n);
+  uriBox.classList.remove("waiting");
+  uriBox.innerHTML = colourUri(current);
+  sum.textContent = `Total ${formatZec(total)} ZEC · ${n} shielded outputs in one transaction · + network fee ≈ ${formatZec(estimateFeeZat(n))} ZEC, added by your wallet.`;
+  const qr = qrcode(0, "M");
+  qr.addData(current, "Byte");
+  qr.make();
+  qrBox.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
+  qrBox.hidden = false;
+  copyBtn.disabled = false;
+  openA.href = current;
+  openA.removeAttribute("aria-disabled");
+}
+
+let timer = 0;
+$("#f").addEventListener("input", () => {
+  clearTimeout(timer);
+  timer = window.setTimeout(update, 120);
+});
+$("#f").addEventListener("focusout", (e) => {
+  const id = (e.target as HTMLElement).id;
+  if (/^[az]\d$/.test(id)) {
+    touched.add(id);
+    update();
   }
 });
+$("#f").addEventListener("submit", (e) => e.preventDefault());
+copyBtn.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(current);
+    copyBtn.textContent = "Copied";
+  } catch {
+    getSelection()?.selectAllChildren(uriBox);
+    copyBtn.textContent = "Press Ctrl+C";
+  }
+  setTimeout(() => (copyBtn.textContent = "Copy request"), 1800);
+});
+update();
