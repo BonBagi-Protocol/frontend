@@ -9,7 +9,7 @@ Deadline: **28 Oct 2026 23:59 UTC** (Thu 29 Oct 06:59 WIB). Submit early; editin
 | Tagline | One payment. Every share. Nobody's business. |
 | Demo URL | https://bonbagi.vercel.app |
 | Video | _(2-minute video link)_ |
-| Repository | https://github.com/BonBagi/bonbagi (make public before submitting) |
+| Repository | https://github.com/BonBagi/frontend (with https://github.com/BonBagi/core) |
 | Team | Dex Bennett (owner), Hans, Dave |
 
 ## Description (1860 / 2,000 characters)

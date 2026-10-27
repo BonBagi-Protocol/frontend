@@ -124,7 +124,7 @@ Pages: `index.html` + `src/landing/` (landing), `pay.html` + `src/pay-page.ts`, 
 |---|---|
 | **frontend** (this) | The live site: landing, pay, charter and raw-request pages |
 | [core](https://github.com/BonBagi/core) | `@bonbagi/core`: charter, split, ZIP-321, memos, pay links (v0.1.0) |
-| [watcher](https://github.com/BonBagi/watcher) | Member-run verifier: confirms your own share with a viewing key, no server |
+| watcher (planned, BB-11) | Member-run verifier: confirms your own share with a viewing key, no server. Linked here once its repository is public with green CI |
 
 Backlog with shared IDs: [docs/BACKLOG.md](docs/BACKLOG.md). Security: [SECURITY.md](SECURITY.md). Contributing: [CONTRIBUTING.md](CONTRIBUTING.md).
 
