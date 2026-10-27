@@ -22,7 +22,7 @@ BonBagi is a static web page that turns a signed charter and a price into one ZI
 - **Nothing logged.** The source contains no `console` calls; payment requests and addresses are never printed or sent anywhere.
 - **No referrer leak.** `Referrer-Policy: no-referrer`, and browsers never include the fragment in a referrer anyway.
 - **Charter integrity.** Each member signs the canonical charter bytes (sorted-key JSON, NFC strings, domain-separated) with Ed25519. The pay page refuses to build a request unless every listed member's signature verifies. Changing any address, share, title or minimum breaks every signature. The price in a pay link (`p=`) is **not** signed: it only pre-fills the form, and the buyer can see and change it. Buyers should confirm the price with the seller.
-- **The summary is the request.** The table the buyer reads and the ZIP-321 URI are built from the same array in one function (`src/core/request.ts`); the tests parse the URI back and compare it with the table.
+- **The summary is the request.** The table the buyer reads and the ZIP-321 URI are built from the same array in one function (`request.ts` in [@bonbagi/core](https://github.com/BonBagi/core)); the tests parse the URI back and compare it with the table.
 - **Shielded only.** Transparent addresses are rejected when drafting the charter and again when building the request, so no share can land somewhere public.
 - **Memos carry no personal data.** `bonbagi:v1 o=<order ID> c=<16-hex fingerprint> m=<n>/<of>`. Order IDs are restricted to letters, digits and dashes (max 32), so an email or name with spaces is rejected.
 
