@@ -4,7 +4,7 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "redirects": [
-    { "source": "/try", "destination": "/pay.html#try", "permanent": false }
+    { "source": "/try", "destination": "/pay.html?try", "permanent": false }
   ],
   "headers": [
     {

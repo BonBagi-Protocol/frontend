@@ -181,8 +181,8 @@ $("#cheat").addEventListener("click", () => {
   }
 });
 
-// /try (pay.html#try): load the sample straight away and point at the cheat button.
-if (location.hash === "#try") {
+// /try (redirects to pay.html?try; pay.html#try also works): load the sample and show the cheat button.
+if (location.hash === "#try" || new URLSearchParams(location.search).has("try")) {
   const hero = document.querySelector<HTMLElement>("#hero");
   if (hero) hero.hidden = true;
   $("#cheat").hidden = false;
