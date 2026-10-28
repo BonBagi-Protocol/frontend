@@ -8,7 +8,7 @@ Deadline: **28 Oct 2026 23:59 UTC** (Thu 29 Oct 06:59 WIB). Submit early; editin
 | Track | Shielded Payments |
 | Tagline | One payment. Every share. Nobody's business. |
 | Demo URL | https://bonbagi.vercel.app (try to cheat the split: https://bonbagi.vercel.app/try) |
-| Video | _(2-minute video link)_ |
+| Video | https://github.com/BonBagi/frontend/releases/download/v6.2/BonBagi-demo.mp4 |
 | Repository | https://github.com/BonBagi/frontend (with https://github.com/BonBagi/core and https://github.com/BonBagi/watcher) |
 | Team | Dex Bennett (owner), Hans, Dave |
 

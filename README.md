@@ -10,7 +10,7 @@ BonBagi lets a small collective (two mentors running a class, a band, a co-op) g
 
 - **Live demo:** https://bonbagi.vercel.app (no install, no account, no wallet needed to try it)
 - **Try to cheat the split:** https://bonbagi.vercel.app/try
-- **Video (2 min):** _(link added at submission)_
+- **Video (81 s, captions, no sound needed):** https://github.com/BonBagi/frontend/releases/download/v6.2/BonBagi-demo.mp4
 
 ![The pay page: one frosted card, the total, each member's share, and the QR kept under frost until the buyer taps it](docs/img/pay-card.webp)
 
@@ -28,8 +28,8 @@ Shortcut: **https://bonbagi.vercel.app/try** opens the pay page with the sample 
 
 | Real | Mock |
 |---|---|
-| Ed25519 charter signing and verification, the deterministic zatoshi split, the ZIP-321 request, the QR and the memos are all computed in your browser by [@bonbagi/core](https://github.com/BonBagi/core) (39 unit tests). | The **sample charter** on the pay page: its testnet addresses are made up and fail the wallet checksum, so the sample cannot move funds. |
-| A real payment on **Zcash testnet** (Hans, 18 Oct): one ZIP-321 request built by `buildPaymentRequest`, one transaction (`485623f7…f520`, block 4514615), three shielded outputs of 0.0012 / 0.0009 / 0.0009 TAZ, each memo read by the receiving wallet, fee 0.0002 = our ZIP-317 estimate. | The numbers in the landing page animation (0.01 ZEC, 40/30/30) are illustration only. |
+| Ed25519 charter signing and verification, the deterministic zatoshi split, the ZIP-321 request, the QR and the memos are all computed in your browser by [@bonbagi/core](https://github.com/BonBagi/core) (39 unit tests). | The **sample charter** on the pay page and the **demo collective** (Mentor A, Mentor B) on the charter page and in the video: fresh throwaway keys and made-up testnet addresses that fail the wallet checksum, so they cannot move funds. |
+| A real payment on **Zcash testnet** (Hans, 18 Oct): one ZIP-321 request built by `buildPaymentRequest`, one transaction ([`485623f7…f520`](https://blockexplorer.one/zcash/testnet/tx/485623f7eaf97802d5399faa3610212b39749618fd024d4ad9201f4f31a5f520), block 4514615; full ID `485623f7eaf97802d5399faa3610212b39749618fd024d4ad9201f4f31a5f520`), three shielded outputs of 0.0012 / 0.0009 / 0.0009 TAZ, each memo read by the receiving wallet, fee 0.0002 = our ZIP-317 estimate. | The numbers in the landing page animation (0.01 ZEC, 40/30/30) are illustration only. |
 
 ## How it maps to the judging criteria
 
@@ -37,7 +37,7 @@ Shortcut: **https://bonbagi.vercel.app/try** opens the pay page with the sample 
 |---|---|
 | **Privacy** | Every share is a shielded output; transparent addresses are rejected. The charter travels in the link's `#` fragment, which browsers never send to a server. The pay, charter and raw-request pages run under a Content-Security-Policy with `connect-src 'none'`. The claims are narrow and the limits are written down in [docs/THREAT-MODEL.md](docs/THREAT-MODEL.md). |
 | **Usefulness** | Anyone who sells together (mentors, bands, co-ops, freelancers) can stop trusting one person to pay the others back. The buyer's experience is a normal Zcash payment: one link or QR, one confirmation. |
-| **Execution** | Live static site, no backend. Signature checks, split math and the request are deterministic and unit-tested. Real testnet run done (tx `485623f7…f520`); the mainnet transaction ID is added here once it is made. |
+| **Execution** | Live static site, no backend. Signature checks, split math and the request are deterministic and unit-tested. Real testnet run done ([tx `485623f7…f520`](https://blockexplorer.one/zcash/testnet/tx/485623f7eaf97802d5399faa3610212b39749618fd024d4ad9201f4f31a5f520)). Mainnet: not run for this submission; the testnet run is our payment proof. |
 | **Originality** | A signed split agreement plus one multi-recipient shielded payment, with no contract and no custodian. The buyer can verify the split before paying, and the public sees no addresses or amounts. |
 
 ## How it works
