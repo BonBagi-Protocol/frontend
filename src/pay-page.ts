@@ -158,9 +158,36 @@ $("#sample").addEventListener("click", async () => {
   };
   const signed: SignedCharter = { charter, signatures: await Promise.all(keys.map((k) => signCharter(charter, k))) };
   paste.value = JSON.stringify(signed, null, 2);
-  $("#loadstate").textContent = "Sample charter with made-up testnet addresses. Edit any address or share above and press “Check charter” to see it rejected.";
+  $("#loadstate").textContent = "Sample charter with made-up testnet addresses. Edit any address or share above and press “Check charter” to see it rejected, or press “Cheat”.";
+  $("#cheat").hidden = false;
   await load(signed, "the sample", parseZec("0.01"));
 });
+
+// "Try to cheat the split": the host quietly moves 10% from Mentor B to himself.
+// The total stays 100%, so only the signatures can catch it.
+$("#cheat").addEventListener("click", () => {
+  try {
+    const signed = JSON.parse(paste.value) as SignedCharter;
+    const [a, b] = signed.charter.members;
+    if (!a || !b || b.bps < 1000) throw new Error("load the sample charter first");
+    a.bps += 1000;
+    b.bps -= 1000;
+    paste.value = JSON.stringify(signed, null, 2);
+    loadText(paste.value, "the edited charter");
+    $("#loadstate").textContent = `Changed after signing: Mentor A ${a.bps / 100}%, Mentor B ${b.bps / 100}%. Still 100% in total, yet every signature breaks.`;
+    check.scrollIntoView({ behavior: "smooth", block: "start" });
+  } catch (e) {
+    check.innerHTML = errCard("Could not edit the sample.", esc(msg(e)));
+  }
+});
+
+// /try (pay.html#try): load the sample straight away and point at the cheat button.
+if (location.hash === "#try") {
+  const hero = document.querySelector<HTMLElement>("#hero");
+  if (hero) hero.hidden = true;
+  $("#cheat").hidden = false;
+  $("#sample").click();
+}
 
 $("#orderid").addEventListener("keydown", (e) => {
   if (e.key === "Enter") $("#build").click();

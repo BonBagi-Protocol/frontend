@@ -9,6 +9,7 @@ BonBagi lets a small collective (two mentors running a class, a band, a co-op) g
 *Bon* is Indonesian for a receipt; *bagi* means to split.
 
 - **Live demo:** https://bonbagi.vercel.app (no install, no account, no wallet needed to try it)
+- **Try to cheat the split:** https://bonbagi.vercel.app/try
 - **Video (2 min):** _(link added at submission)_
 
 ![The pay page: one frosted card, the total, each member's share, and the QR kept under frost until the buyer taps it](docs/img/pay-card.webp)
@@ -17,7 +18,9 @@ BonBagi lets a small collective (two mentors running a class, a band, a co-op) g
 
 1. Open **https://bonbagi.vercel.app/pay.html** and press **Try a sample charter**. Three throw-away keys sign a testnet charter in your browser, and the page shows "Verified in your browser, signed by all 3 members".
 2. Press **Print the receipt**: one card with the total, each member's share and the ZIP-321 request (QR, copy, open in wallet), plus the itemised paper receipt.
-3. Now cheat. In the JSON box, change one share (`"bps": 4000` → `5000` and `3000` → `2000`, still 100%) and press **Check charter**. Every signature breaks and the page refuses to build a payment.
+3. Now cheat. Press **Cheat: give Mentor A 10% more** (or edit the JSON yourself: `"bps": 4000` → `5000` and `3000` → `2000`, still 100%). Every signature breaks and the page refuses to build a payment.
+
+Shortcut: **https://bonbagi.vercel.app/try** opens the pay page with the sample already loaded and the cheat button ready.
 
 ![Editing a share after signing: every signature is marked broken and the page refuses to pay](docs/img/tamper-refused.webp)
 
