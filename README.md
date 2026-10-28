@@ -10,9 +10,9 @@ BonBagi lets a small collective (two mentors running a class, a band, a co-op) g
 
 - **Live demo:** https://bonbagi.vercel.app (no install, no account, no wallet needed to try it)
 - **Try to cheat the split:** https://bonbagi.vercel.app/try
-- **Video (72 s, captions, no sound needed):** https://bonbagi.vercel.app/demo.mp4
+- **Video (1:44, with sound):** https://bonbagi.vercel.app/demo.mp4
 
-![The pay page: one frosted card, the total, each member's share, and the QR kept under frost until the buyer taps it](docs/img/pay-card.webp)
+![The pay page: a 3D cash register checks every signature and shows each step in a live trace, all in your browser](docs/img/pay-card.webp)
 
 ## Try it in 60 seconds
 
@@ -22,7 +22,7 @@ BonBagi lets a small collective (two mentors running a class, a band, a co-op) g
 
 Shortcut: **https://bonbagi.vercel.app/try** opens the pay page with the sample already loaded and the cheat button ready.
 
-![Editing a share after signing: every signature is marked broken and the page refuses to pay](docs/img/tamper-refused.webp)
+![Editing a share after signing: every signature breaks and the register stamps REFUSED](docs/img/tamper-refused.webp)
 
 ## What is real and what is a mock
 
