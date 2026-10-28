@@ -1,0 +1,193 @@
+/* Scene 3 · How it works: an isometric market in daylight that turns to night.
+   Track: 420vh (320vh of scroll). Top seam #f5efe4 (day sky), bottom seam --obsidian. */
+.sec-market { height: 420vh; background: var(--obsidian); }
+
+/* nav tone: sec-market.ts sets root data-tone to "dark" once the sky is night */
+
+.sec-market .mk-stage { background: #f5efe4; isolation: isolate; contain: layout paint; }
+
+/* ---------- sky ---------- */
+.sec-market .mk-sky { position: absolute; inset: 0; pointer-events: none; }
+.sec-market .mk-sky > div { position: absolute; }
+.sec-market .mk-sky-day, .sec-market .mk-sky-dusk, .sec-market .mk-sky-night { inset: 0; }
+.sec-market .mk-sky-day { background: linear-gradient(180deg, #f5efe4 0%, #f7ebd6 40%, #fae3c2 72%, #f4d9b6 100%); }
+.sec-market .mk-sun {
+  right: 12%; top: 24%; width: 380px; height: 380px; border-radius: 50%; transform: translate(50%, -50%);
+  background: radial-gradient(circle, #fff8e2 0%, #fff1c9 13%, rgba(255, 211, 107, 0.42) 24%, rgba(255, 211, 107, 0.12) 48%, rgba(255, 211, 107, 0) 70%);
+}
+.sec-market .mk-cloud {
+  width: 260px; height: 70px; border-radius: 999px; opacity: 0.85; will-change: transform;
+  background:
+    radial-gradient(closest-side, #fffdf7, rgba(255, 253, 247, 0)) 20% 60% / 46% 90% no-repeat,
+    radial-gradient(closest-side, #fffdf7, rgba(255, 253, 247, 0)) 52% 40% / 52% 120% no-repeat,
+    radial-gradient(closest-side, #fffdf7, rgba(255, 253, 247, 0)) 80% 64% / 42% 80% no-repeat;
+  animation: mk-drift 70s linear infinite alternate;
+}
+.sec-market .mk-cloud-1 { left: 40%; top: 14%; }
+.sec-market .mk-cloud-2 { left: 63%; top: 7%; transform: scale(0.7); animation-duration: 95s; animation-delay: -30s; }
+.sec-market .mk-cloud-3 { left: 6%; top: 20%; transform: scale(0.55); animation-duration: 82s; animation-delay: -50s; opacity: 0.7; }
+.sec-market .mk-sky-dusk { opacity: 0; background: linear-gradient(180deg, #2c2a3f 0%, #6e4a57 34%, #c46f55 64%, #eaa067 86%, #f2bd84 100%); will-change: opacity; }
+.sec-market .mk-sky-night { opacity: 0; background: linear-gradient(180deg, #090909 0%, #0d0e15 50%, #14131b 100%); will-change: opacity; }
+.sec-market .mk-sky-night > i {
+  position: absolute; inset: 0 0 45% 0; opacity: 0.8;
+  background:
+    radial-gradient(1.2px 1.2px at 12% 18%, #f2eee5, transparent), radial-gradient(1px 1px at 28% 32%, #f2eee5, transparent),
+    radial-gradient(1.4px 1.4px at 41% 12%, #f2eee5, transparent), radial-gradient(1px 1px at 57% 26%, #f2eee5, transparent),
+    radial-gradient(1.2px 1.2px at 69% 9%, #f2eee5, transparent), radial-gradient(1px 1px at 83% 30%, #f2eee5, transparent),
+    radial-gradient(1.3px 1.3px at 92% 14%, #f2eee5, transparent), radial-gradient(1px 1px at 6% 40%, #f2eee5, transparent),
+    radial-gradient(1px 1px at 35% 48%, #f2eee5, transparent), radial-gradient(1.2px 1.2px at 76% 44%, #f2eee5, transparent);
+}
+
+/* ---------- far layer (parallax 30%) ---------- */
+.sec-market .mk-far { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; pointer-events: none; }
+.sec-market .mk-far-svg { position: absolute; left: 0; top: 0; }
+.sec-market .mk-far-dark { opacity: 0; will-change: opacity; }
+.sec-market .mk-wheel { position: absolute; animation: mk-spin 90s linear infinite; will-change: transform; }
+.sec-market .mk-gond { position: absolute; width: 0; height: 0; animation: mk-spin 90s linear infinite; }
+.sec-market .mk-gond-car {
+  position: absolute; left: var(--mk-r); top: 0; width: var(--mk-gs); height: calc(var(--mk-gs) * 0.85);
+  margin-left: calc(var(--mk-gs) * -0.5); border-radius: 30% 30% 40% 40%; transform-origin: 50% 0;
+  animation: mk-spin-rev 90s linear infinite;
+}
+.sec-market .mk-gc-0 { background: #e98a6d; } .sec-market .mk-gc-1 { background: #7fc2b3; }
+.sec-market .mk-gc-2 { background: #f1c25a; } .sec-market .mk-gc-3 { background: #c69bd2; }
+.sec-market .mk-gond-0, .sec-market .mk-gond-0 > i { animation-delay: 0s; }
+.sec-market .mk-gond-1, .sec-market .mk-gond-1 > i { animation-delay: -11.25s; }
+.sec-market .mk-gond-2, .sec-market .mk-gond-2 > i { animation-delay: -22.5s; }
+.sec-market .mk-gond-3, .sec-market .mk-gond-3 > i { animation-delay: -33.75s; }
+.sec-market .mk-gond-4, .sec-market .mk-gond-4 > i { animation-delay: -45s; }
+.sec-market .mk-gond-5, .sec-market .mk-gond-5 > i { animation-delay: -56.25s; }
+.sec-market .mk-gond-6, .sec-market .mk-gond-6 > i { animation-delay: -67.5s; }
+.sec-market .mk-gond-7, .sec-market .mk-gond-7 > i { animation-delay: -78.75s; }
+
+/* ---------- the world (drawn once) + camera ---------- */
+.sec-market .mk-cam { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; pointer-events: none; }
+.sec-market .mk-world, .sec-market .mk-halos { position: absolute; left: 0; top: 0; overflow: visible; }
+.sec-market .mk-spr { position: absolute; left: 0; top: 0; overflow: visible; }
+.sec-market .mk-coin, .sec-market .mk-key, .sec-market .mk-dome { opacity: 0; will-change: transform, opacity; }
+.sec-market #mk-lunas, .sec-market #mk-refused { opacity: 0; will-change: transform, opacity; }
+.sec-market .mk-bob { will-change: transform; animation: mk-bob 2.6s ease-in-out infinite alternate; }
+.sec-market .mk-bob-2 { animation-duration: 3.2s; animation-delay: -1.1s; }
+.sec-market .mk-bob-3 { animation-duration: 2.1s; animation-delay: -0.4s; }
+.sec-market .mk-sway { transform-origin: 60% 92%; will-change: transform; animation: mk-sway 3.4s ease-in-out infinite alternate; }
+.sec-market .mk-steam { position: absolute; width: 0; height: 0; }
+.sec-market .mk-steam > i {
+  position: absolute; left: calc(var(--mk-u) * -0.25); top: calc(var(--mk-u) * -0.25); width: calc(var(--mk-u) * 0.5); height: calc(var(--mk-u) * 0.5);
+  border-radius: 50%; opacity: 0; will-change: transform, opacity;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0));
+  animation: mk-steam 3.2s linear infinite;
+}
+.sec-market .mk-steam > i:nth-child(2) { animation-delay: -1.07s; }
+.sec-market .mk-steam > i:nth-child(3) { animation-delay: -2.13s; }
+.sec-market .mk-glow {
+  position: absolute; left: 0; top: 0; border-radius: 50%; opacity: 0; will-change: transform, opacity;
+  background: radial-gradient(closest-side, rgba(255, 249, 214, 1) 0%, rgba(244, 183, 40, 0.85) 22%, rgba(244, 183, 40, 0.32) 48%, rgba(244, 183, 40, 0) 100%);
+}
+.sec-market .mk-ring { position: absolute; left: 0; top: 0; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.95); opacity: 0; will-change: transform, opacity; box-sizing: border-box; }
+.sec-market .mk-shade { position: absolute; inset: 0; background: #0c0d16; opacity: 0; will-change: opacity; pointer-events: none; }
+.sec-market .mk-halos { pointer-events: none; }
+
+/* svg text */
+.sec-market .mk-t-sign { font-family: var(--f-display); font-weight: 900; letter-spacing: 0.02px; }
+.sec-market .mk-t-name { font-family: var(--f-display); font-weight: 900; letter-spacing: 0.015px; }
+.sec-market .mk-t-row { font-family: var(--f-display); font-weight: 800; }
+.sec-market .mk-t-chalk { font-family: var(--f-display); font-weight: 800; fill: #f6f1e6; letter-spacing: 0.012px; }
+.sec-market .mk-t-mono { font-family: var(--f-mono); font-weight: 600; fill: #53534d; }
+.sec-market .mk-t-stamp { font-family: var(--f-display); font-weight: 900; letter-spacing: 0.012px; }
+
+/* ---------- screen-space receipts (step 03) ---------- */
+.sec-market .mk-ui { position: absolute; inset: 0; pointer-events: none; }
+.sec-market .mk-rcpt {
+  position: absolute; left: 0; top: 0; opacity: 0; will-change: transform, opacity;
+  display: grid; gap: 2px; padding: 9px 13px 10px; border-radius: 12px; background: #fffdf5; color: var(--ink);
+  box-shadow: 0 14px 30px -14px rgba(70, 45, 15, 0.45), 0 0 0 1px rgba(21, 21, 21, 0.08); white-space: nowrap;
+}
+.sec-market .mk-rcpt::after { content: ""; position: absolute; left: 50%; bottom: -6px; width: 12px; height: 12px; background: #fffdf5; transform: translateX(-50%) rotate(45deg); box-shadow: 1px 1px 0 rgba(21, 21, 21, 0.08); }
+.sec-market .mk-rcpt b { font: 900 20px/1 var(--f-display); letter-spacing: 0.01em; }
+.sec-market .mk-rcpt span { font: 600 13px/1.3 var(--f-mono); color: var(--gold-deep); }
+.sec-market .mk-rcpt em { font: 600 12px/1.3 var(--f-text); font-style: normal; color: #1f7a5c; }
+.sec-market .mk-rcpt em::before { content: "✓ "; }
+
+/* ---------- copy ---------- */
+.sec-market .mk-copy, .sec-market .mk-try {
+  position: absolute; z-index: 3; left: clamp(24px, 4.6vw, 76px); top: 50%; transform: translateY(-50%);
+  border-radius: 22px; will-change: opacity, transform;
+}
+.sec-market .mk-copy {
+  width: min(432px, 35vw); padding: 26px 30px 30px; background: rgba(255, 253, 245, 0.94);
+  box-shadow: 0 34px 70px -34px rgba(80, 50, 20, 0.42), 0 0 0 1px rgba(21, 21, 21, 0.06);
+}
+.sec-market .mk-kicker { margin: 0 0 16px; font: 600 12px/1 var(--f-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-deep); }
+.sec-market .mk-rail { display: flex; gap: 8px; margin: 0 0 22px; padding: 0; list-style: none; }
+.sec-market .mk-rail > li { flex: 1 1 auto; min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 6px; row-gap: 8px; color: var(--ink-3); font: 650 13px/1.2 var(--f-text); transition: color 0.3s; }
+.sec-market .mk-rail > li > span { font: 600 11px/1 var(--f-mono); }
+.sec-market .mk-rail > li > em { font-style: normal; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sec-market .mk-rail > li > i { display: block; flex: 1 0 100%; height: 3px; border-radius: 2px; background: var(--rule); overflow: hidden; }
+.sec-market .mk-rail > li > i > i { display: block; height: 100%; background: var(--gold); transform-origin: 0 50%; transform: scaleX(0); }
+.sec-market .mk-rail > li.is-on { color: var(--ink); }
+.sec-market .mk-panels { display: grid; }
+.sec-market .mk-panel { grid-area: 1 / 1; will-change: opacity, transform; }
+.sec-market .mk-panel + .mk-panel { opacity: 0; pointer-events: none; }
+.sec-market .mk-panel h3 { margin: 0 0 12px; font: 900 clamp(46px, 4.3vw, 66px)/0.9 var(--f-display); letter-spacing: -0.005em; color: var(--ink); }
+.sec-market .mk-panel h3 > span { display: inline-block; margin-right: 12px; font: 600 15px/1 var(--f-mono); color: var(--gold-deep); vertical-align: 0.9em; }
+.sec-market .mk-panel p { margin: 0 0 18px; font: 400 17px/1.55 var(--f-text); color: var(--ink-2); }
+.sec-market .mk-link { display: inline-flex; align-items: center; gap: 8px; font: 650 15px/1 var(--f-text); text-decoration: none; color: var(--ink); padding-bottom: 4px; border-bottom: 2px solid var(--gold); }
+.sec-market .mk-link::after { content: "→"; transition: transform 0.25s var(--ease-out); }
+.sec-market .mk-link:hover::after { transform: translateX(3px); }
+.sec-market .mk-copy a:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: 4px; }
+.sec-market .mk-try a:focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 4px; }
+
+.sec-market .mk-try {
+  width: min(470px, 37vw); padding: 30px 32px 32px; background: var(--ink); color: var(--cream); opacity: 0; pointer-events: none;
+  box-shadow: 0 40px 80px -36px rgba(40, 20, 5, 0.6);
+}
+.sec-market .mk-try-h { margin: 0 0 14px; font: 900 clamp(48px, 4.6vw, 72px)/0.9 var(--f-display); letter-spacing: -0.005em; }
+.sec-market .mk-try p { margin: 0 0 22px; font: 400 17px/1.55 var(--f-text); color: rgba(255, 253, 245, 0.78); }
+.sec-market .mk-btn {
+  display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 24px; border-radius: 999px;
+  background: var(--gold); color: #1b1505; font: 700 16px/1 var(--f-text); text-decoration: none;
+  box-shadow: 0 12px 30px -12px rgba(244, 183, 40, 0.8); transition: transform 0.25s var(--ease-out);
+}
+.sec-market .mk-btn:hover { transform: translateY(-2px); }
+.sec-market .mk-btn svg { width: 18px; height: 18px; }
+
+.sec-market .mk-end-fade { position: absolute; inset: 0; z-index: 4; background: var(--obsidian); opacity: 0; pointer-events: none; will-change: opacity; }
+.sec-market .mk-dark-fade { position: absolute; left: 0; right: 0; bottom: 0; height: 42%; pointer-events: none; opacity: 0; background: linear-gradient(180deg, rgba(9, 9, 9, 0) 0%, rgba(9, 9, 9, 0.85) 55%, #090909 100%); will-change: opacity; }
+
+/* idle loops run only on screen */
+.sec-market .mk-cloud, .sec-market .mk-wheel, .sec-market .mk-gond, .sec-market .mk-gond-car,
+.sec-market .mk-bob, .sec-market .mk-sway, .sec-market .mk-steam > i { animation-play-state: paused; }
+.sec-market.mk-run .mk-cloud, .sec-market.mk-run .mk-wheel, .sec-market.mk-run .mk-gond, .sec-market.mk-run .mk-gond-car,
+.sec-market.mk-run .mk-bob, .sec-market.mk-run .mk-sway, .sec-market.mk-run .mk-steam > i { animation-play-state: running; }
+
+@keyframes mk-spin { to { transform: rotate(360deg); } }
+@keyframes mk-spin-rev { to { transform: rotate(-360deg); } }
+@keyframes mk-drift { from { translate: -40px 0; } to { translate: 60px 0; } }
+@keyframes mk-bob { from { transform: translateY(0); } to { transform: translateY(-2.5%); } }
+@keyframes mk-sway { from { transform: rotate(-6deg); } to { transform: rotate(6deg); } }
+@keyframes mk-steam {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.5); }
+  20% { opacity: 0.7; }
+  100% { opacity: 0; transform: translate(calc(var(--mk-u) * 0.3), calc(var(--mk-u) * -1.6)) scale(1.6); }
+}
+
+@media (max-width: 759px) {
+  .sec-market .mk-copy, .sec-market .mk-try { left: 12px; right: 12px; top: auto; bottom: 12px; width: auto; transform: none; border-radius: 18px; }
+  .sec-market .mk-copy { padding: 16px 18px 18px; }
+  .sec-market .mk-kicker { margin-bottom: 12px; }
+  .sec-market .mk-rail { margin-bottom: 14px; }
+  .sec-market .mk-rail > li > em { display: none; }
+  .sec-market .mk-panel h3 { font-size: 40px; margin-bottom: 8px; }
+  .sec-market .mk-panel h3 > span { font-size: 13px; }
+  .sec-market .mk-panel p { font-size: 15px; line-height: 1.5; margin-bottom: 12px; }
+  .sec-market .mk-try { padding: 20px 20px 22px; }
+  .sec-market .mk-try-h { font-size: 44px; }
+  .sec-market .mk-try p { font-size: 15px; margin-bottom: 16px; }
+  .sec-market .mk-btn { width: 100%; justify-content: center; height: 50px; }
+  .sec-market .mk-rcpt { padding: 7px 9px 8px; max-width: calc((100vw - 36px) / 3); }
+  .sec-market .mk-rcpt::after { display: none; }
+  .sec-market .mk-rcpt b { font-size: 16px; }
+  .sec-market .mk-rcpt span, .sec-market .mk-rcpt em { font-size: 12px; }
+  .sec-market .mk-sun { width: 240px; height: 240px; }
+  .sec-market .mk-cloud { width: 170px; height: 46px; }
+}

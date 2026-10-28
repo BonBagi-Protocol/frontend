@@ -1,0 +1,210 @@
+/* Scene 4 · after dark, the view from outside.
+   Seam: top --obsidian (market night) → bottom --studio (charter studio). */
+.sec-proof {
+  height: 260vh;
+  background: var(--obsidian);
+  color: var(--ivory);
+}
+.sec-proof .pf-stage {
+  --pf-fg: #f2eee5;
+  --pf-fg2: #cfc9bc;
+  --pf-mute: #9c978c;
+  --pf-acc: #f4b728;
+  --pf-rule: rgba(242, 238, 229, 0.16);
+  --pf-chip: rgba(242, 238, 229, 0.06);
+  --pf-x: clamp(20px, 6vw, 96px);
+  --pf-cold: #eef4f8;
+  background: var(--obsidian);
+  isolation: isolate;
+}
+
+/* ---------- the plaza ---------- */
+.sec-proof .pf-plate { position: absolute; inset: 0; will-change: transform; }
+.sec-proof .pf-pic,
+.sec-proof .pf-img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
+.sec-proof .pf-img { object-fit: cover; object-position: 50% 50%; background: var(--obsidian); }
+.sec-proof .pf-glint {
+  position: absolute; width: 90px; height: 50px; margin: -25px 0 0 -45px; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(255, 211, 107, 0.55), rgba(244, 183, 40, 0.18) 55%, rgba(244, 183, 40, 0) 100%);
+  mix-blend-mode: screen; animation: proof-glint 3.2s ease-in-out infinite;
+}
+@keyframes proof-glint { 0%, 100% { opacity: 0.55; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.12); } }
+.sec-proof.is-idle .pf-glint { animation-play-state: paused; }
+.sec-proof.is-still .pf-glint { animation: none; }
+.sec-proof .pf-grad {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(0deg, rgba(9, 9, 9, 0.95) 0%, rgba(9, 9, 9, 0.7) 24%, rgba(9, 9, 9, 0) 50%),
+    linear-gradient(90deg, rgba(9, 9, 9, 0.5) 0%, rgba(9, 9, 9, 0) 34%);
+}
+.sec-proof .pf-veil {
+  position: absolute; inset: 0 0 auto 0; height: 30%; pointer-events: none;
+  background: linear-gradient(180deg, var(--obsidian) 0%, rgba(9, 9, 9, 0.62) 38%, rgba(9, 9, 9, 0) 100%);
+}
+
+/* ---------- the ledger wall (readable DOM rows over the glass) ---------- */
+.sec-proof .pf-ledger { position: absolute; left: 0; top: 0; width: 520px; font: 450 15px/1 var(--f-mono); color: var(--pf-cold); }
+.sec-proof .pf-ledger :where(.pf-lhead, .pf-lcap) { border-radius: 6px; background: rgba(8, 11, 15, 0.82); }
+.sec-proof .pf-lhead {
+  display: flex; justify-content: space-between; align-items: center; margin: 0 0 8px; padding: 8px 12px;
+  font: 500 11px/1 var(--f-mono); letter-spacing: 0.18em; text-transform: uppercase; color: rgba(238, 244, 248, 0.82);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+}
+.sec-proof .pf-live { display: inline-flex; align-items: center; gap: 7px; }
+.sec-proof .pf-live::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #9fd7ff; box-shadow: 0 0 8px #9fd7ff; }
+.sec-proof .pf-lrows { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.sec-proof .pf-lrow {
+  --pf-flash: 0;
+  display: flex; align-items: center; height: 38px; padding: 0 14px; white-space: nowrap; overflow: hidden;
+  border-radius: 6px; background: rgba(8, 11, 15, 0.7); border: 1px solid rgba(214, 232, 245, 0.14);
+  text-shadow: 0 0 10px rgba(190, 225, 255, 0.45); will-change: transform, opacity;
+}
+.sec-proof .pf-lrow.is-dim { color: rgba(238, 244, 248, 0.6); }
+.sec-proof .pf-lrow.is-ours {
+  gap: 0.5ch; color: var(--pf-cold); background: rgba(14, 13, 10, 0.78); border-color: rgba(244, 183, 40, 0.5);
+  box-shadow: 0 0 calc(var(--pf-flash) * 40px) rgba(244, 183, 40, calc(var(--pf-flash) * 0.7)), inset 3px 0 0 var(--gold);
+  opacity: 0;
+}
+.sec-proof .pf-lrow.is-ours b { font-weight: 500; color: var(--gold); text-shadow: 0 0 10px rgba(244, 183, 40, 0.5); }
+.sec-proof .pf-tid { color: var(--pf-cold); }
+.sec-proof .pf-slot { position: relative; display: inline-block; }
+.sec-proof .pf-noise { display: inline-block; color: var(--gold-hi); }
+.sec-proof .pf-bar {
+  position: absolute; inset: -5px -3px; border-radius: 4px; opacity: 0;
+  background: linear-gradient(100deg, rgba(238, 244, 248, 0.26), rgba(238, 244, 248, 0.5) 45%, rgba(238, 244, 248, 0.22));
+  box-shadow: 0 0 12px rgba(238, 244, 248, 0.25), inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+.sec-proof .pf-lcap {
+  position: absolute; left: 0; top: 0; max-width: 100%; margin: 0; padding: 8px 12px; opacity: 0;
+  border: 1px solid rgba(244, 183, 40, 0.3);
+  font: 500 11px/1.4 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-hi);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.95);
+}
+
+/* ---------- intro ---------- */
+.sec-proof .pf-intro {
+  position: absolute; left: var(--pf-x); right: var(--pf-x); bottom: clamp(32px, 8vh, 92px);
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 380px); gap: 24px 56px; align-items: end;
+  will-change: transform, opacity;
+}
+.sec-proof .pf-kick,
+.sec-proof .pf-pk {
+  margin: 0; font: 500 12px/1.4 var(--f-mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold);
+}
+.sec-proof .pf-h,
+.sec-proof .pf-ph {
+  margin: 16px 0 0; font: 400 clamp(54px, 6.8vw, 108px)/0.92 var(--f-serif); letter-spacing: -0.012em;
+}
+.sec-proof .pf-ln { display: block; overflow: hidden; padding: 0.02em 0 0.1em; margin-bottom: -0.1em; }
+.sec-proof .pf-ln > span { display: inline-block; will-change: transform; }
+.sec-proof .pf-h em,
+.sec-proof .pf-ph em { font-style: italic; color: var(--gold); }
+.sec-proof .pf-sub { margin: 0; font: 400 17px/1.55 var(--f-text); color: #d6d0c3; }
+
+/* ---------- frost rises ---------- */
+.sec-proof .pf-frost {
+  position: absolute; inset: 0; visibility: hidden; clip-path: inset(100% 0 0 0);
+  background: rgba(14, 16, 19, 0.38);
+  -webkit-backdrop-filter: blur(24px) saturate(0.6); backdrop-filter: blur(24px) saturate(0.6);
+}
+.sec-proof .pf-edge {
+  position: absolute; left: 0; right: 0; top: 0; height: 1px; opacity: 0; pointer-events: none;
+  background: linear-gradient(90deg, rgba(242, 238, 229, 0) 0%, rgba(238, 244, 248, 0.55) 30%, rgba(255, 211, 107, 0.65) 50%, rgba(238, 244, 248, 0.55) 70%, rgba(242, 238, 229, 0) 100%);
+  box-shadow: 0 0 18px rgba(255, 211, 107, 0.3);
+}
+
+/* ---------- proof ---------- */
+.sec-proof .pf-proof {
+  position: absolute; inset: 0; display: flex; align-items: center; opacity: 0; pointer-events: none;
+  padding: 92px var(--pf-x) 40px; color: var(--pf-fg);
+}
+.sec-proof .pf-proof.is-live { pointer-events: auto; }
+.sec-proof .pf-proof :focus-visible { outline: 2px solid var(--pf-acc); outline-offset: 4px; border-radius: 4px; }
+.sec-proof .pf-proof-in {
+  position: relative; width: 100%; max-width: 1320px; margin: 0 auto;
+  display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 104px); align-items: center;
+  will-change: transform;
+}
+.sec-proof .pf-pk { color: var(--pf-acc); }
+.sec-proof .pf-ph { font-size: clamp(46px, 5.3vw, 84px); color: var(--pf-fg); }
+.sec-proof .pf-ph em { color: var(--pf-acc); }
+.sec-proof .pf-pp { margin: 22px 0 0; max-width: 520px; font: 400 17px/1.55 var(--f-text); color: var(--pf-fg2); }
+.sec-proof .pf-tx { margin-top: 28px; }
+.sec-proof .pf-txl {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 10px;
+  font: 500 11px/1 var(--f-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--pf-mute);
+}
+.sec-proof .pf-copy {
+  font: 500 11px/1 var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--pf-fg);
+  background: var(--pf-chip); border: 1px solid var(--pf-rule); border-radius: 999px; padding: 7px 11px; cursor: pointer;
+}
+.sec-proof .pf-copy:hover { border-color: var(--pf-acc); }
+.sec-proof .pf-txc {
+  display: block; max-width: calc(32ch + 2px); font: 450 15px/1.65 var(--f-mono); letter-spacing: 0; word-break: break-all;
+  color: var(--pf-fg); user-select: all;
+}
+.sec-proof .pf-c.is-off { color: transparent; }
+.sec-proof .pf-c.is-scr { color: var(--pf-acc); opacity: 0.6; }
+.sec-proof .pf-c.is-cur { opacity: 1; background: var(--pf-acc); color: var(--obsidian); }
+.sec-proof .pf-meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 22px; margin: 18px 0 0; }
+.sec-proof .pf-block { font: 500 13px/1.3 var(--f-mono); color: var(--pf-fg2); }
+.sec-proof .pf-link {
+  font: 600 16px/1.3 var(--f-text); color: var(--pf-acc); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px;
+}
+.sec-proof .pf-link:hover { text-decoration-thickness: 2px; }
+.sec-proof .pf-xp { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 22px 0 0; }
+.sec-proof .pf-xp-l { font: 400 15px/1.4 var(--f-text); color: var(--pf-fg2); margin-right: 4px; }
+.sec-proof .pf-chip {
+  font: 500 12px/1 var(--f-mono); color: var(--pf-fg); padding: 8px 11px; border-radius: 999px;
+  background: var(--pf-chip); border: 1px solid var(--pf-rule);
+}
+.sec-proof .pf-wh { margin: 0 0 6px; font: 500 12px/1.4 var(--f-mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--pf-mute); }
+.sec-proof .pf-rows { margin: 0; padding: 0; list-style: none; }
+.sec-proof .pf-row {
+  position: relative; display: grid; grid-template-columns: minmax(120px, 0.36fr) minmax(0, 1fr); gap: 6px 22px;
+  padding: 17px 0 16px;
+}
+.sec-proof .pf-rule { position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--pf-rule); transform-origin: 0 50%; }
+.sec-proof .pf-row-who { grid-row: span 2; margin: 0; font: 400 clamp(22px, 1.9vw, 28px)/1.05 var(--f-serif); color: var(--pf-fg); }
+.sec-proof .pf-row-l { margin: 0; font: 400 15px/1.45 var(--f-text); color: var(--pf-fg2); }
+.sec-proof .pf-tag {
+  display: inline-block; min-width: 44px; margin-right: 8px; font: 500 11px/1 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--pf-acc); vertical-align: 1px;
+}
+.sec-proof .pf-row-l.is-not .pf-tag { color: var(--pf-mute); }
+.sec-proof .pf-tm { display: inline-block; margin-top: 18px; font-size: 15px; }
+
+/* ---------- phones ---------- */
+@media (max-width: 720px) {
+  .sec-proof { height: 280vh; }
+  .sec-proof .pf-img { object-position: 37% 50%; }
+  .sec-proof .pf-grad { background: linear-gradient(0deg, rgba(9, 9, 9, 0.97) 0%, rgba(9, 9, 9, 0.84) 34%, rgba(9, 9, 9, 0) 60%); }
+  .sec-proof .pf-ledger { font-size: 12px; letter-spacing: -0.02em; }
+  .sec-proof .pf-lhead { font-size: 12px; letter-spacing: 0.12em; margin-bottom: 8px; }
+  .sec-proof .pf-lrows { gap: 5px; }
+  .sec-proof .pf-lrow { height: 31px; padding: 0 10px; }
+  .sec-proof .pf-lrow.is-ours { gap: 0.2ch; padding: 0 8px; }
+  .sec-proof .pf-bar { inset: -4px -2px; }
+  .sec-proof .pf-lcap { font-size: 12px; letter-spacing: 0.06em; }
+  .sec-proof .pf-intro { grid-template-columns: 1fr; gap: 14px; bottom: max(26px, 5vh); }
+  .sec-proof .pf-h { font-size: clamp(42px, 11.6vw, 56px); }
+  .sec-proof .pf-sub { font-size: 15.5px; }
+  .sec-proof .pf-frost { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  /* the column travels up like a page; it fades out under the nav instead of sliding beneath it */
+  .sec-proof .pf-proof {
+    display: block; padding: 92px 20px 28px;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, transparent 60px, #000 86px);
+    mask-image: linear-gradient(180deg, transparent 0, transparent 60px, #000 86px);
+  }
+  .sec-proof .pf-proof-in { grid-template-columns: minmax(0, 1fr); gap: 34px; }
+  .sec-proof .pf-ph { font-size: clamp(40px, 11.4vw, 52px); }
+  .sec-proof .pf-pp { font-size: 16px; margin-top: 16px; }
+  .sec-proof .pf-tx { margin-top: 22px; }
+  .sec-proof .pf-txl { font-size: 12px; }
+  .sec-proof .pf-copy { font-size: 12px; padding: 8px 12px; }
+  .sec-proof .pf-txc { font-size: 13px; }
+  .sec-proof .pf-xp-l { flex-basis: 100%; }
+  .sec-proof .pf-row { grid-template-columns: 1fr; gap: 6px; padding: 15px 0 14px; }
+  .sec-proof .pf-row-who { grid-row: auto; font-size: 24px; }
+  .sec-proof .pf-tag { font-size: 12px; min-width: 40px; }
+}

@@ -19,9 +19,8 @@ export const CSP = [
   "object-src 'none'",
 ].join("; ");
 
-// The landing page holds no charter and no payment data. It may read its own
-// 3D model files (same origin only) and decode their embedded textures.
-export const LANDING_CSP = CSP.replace("img-src 'self' data:", "img-src 'self' data: blob:").replace("connect-src 'none'", "connect-src 'self' blob:");
+// The landing page uses the same policy: it holds no charter or payment data and makes no network calls.
+export const LANDING_CSP = CSP;
 
 const csp = (): Plugin => ({
   name: "bonbagi-csp",
@@ -36,6 +35,8 @@ export default defineConfig({
   plugins: [csp()],
   build: {
     modulePreload: { polyfill: false },
+    // never inline fonts or images as data: URIs: the CSP only allows fonts from 'self'
+    assetsInlineLimit: 0,
     rollupOptions: {
       input: {
         index: resolve(import.meta.dirname, "index.html"),

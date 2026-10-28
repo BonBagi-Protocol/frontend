@@ -1,0 +1,187 @@
+/* Scene 2 · the split (neo-brutal warung nota). Seams: top --cream, bottom #f5efe4. */
+.sec-split {
+  height: 320vh;
+  background: var(--cream);
+  --split-sky: #f5efe4;
+  --split-gold-d: #d3950c;
+  --split-mint-d: #4db893;
+  --split-ink-d: #3b3b3b;
+  --split-blue: #2a3ca8;
+  --split-pad: clamp(16px, 4.4vw, 72px);
+}
+.sec-split .sp-stage { background-color: var(--cream); color: var(--ink); }
+.sec-split .sp-dots {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: radial-gradient(rgba(21, 21, 21, 0.1) 1.1px, transparent 1.4px);
+  background-size: 24px 24px; background-position: 12px 12px;
+}
+
+/* ---------- copy ---------- */
+.sec-split .sp-copy {
+  position: absolute; left: 0; right: 0; top: 72px; bottom: 24px; z-index: 10;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.98fr);
+  grid-template-rows: 1fr auto auto 1fr;
+  grid-template-areas: ". slot" "h slot" "line slot" ". slot";
+  column-gap: clamp(24px, 3vw, 48px); padding: 0 var(--split-pad); pointer-events: none;
+}
+.sec-split .sp-slot { grid-area: slot; }
+.sec-split .sp-h {
+  grid-area: h; margin: 0 0 0.2em; transform-origin: 0 0; will-change: transform;
+  font: 900 clamp(76px, 10.6vw, 172px)/0.84 var(--f-display); letter-spacing: 0.002em; text-transform: uppercase;
+}
+.sec-split .sp-ln { display: block; white-space: nowrap; }
+.sec-split .sp-ln:first-child { margin-bottom: 0.08em; }
+.sec-split .sp-ln2 { padding-left: 0.32em; }
+.sec-split .sp-w { display: inline-block; transform-origin: 50% 90%; will-change: transform; opacity: 0; }
+.sec-split .sp-sw {
+  background: var(--gold); border: 0.04em solid var(--ink); border-radius: 0.1em;
+  padding: 0.04em 0.12em 0.02em; box-shadow: 0.06em 0.06em 0 var(--ink);
+}
+.sec-split .sp-line {
+  grid-area: line; margin: 0; max-width: 26em; opacity: 0;
+  font: 500 clamp(16px, 1.42vw, 21px)/1.45 var(--f-text); color: var(--ink);
+}
+
+/* ---------- scene ---------- */
+.sec-split .sp-scene { position: absolute; inset: 0; z-index: 12; pointer-events: none; -webkit-user-select: none; user-select: none; }
+.sec-split .sp-sc { position: absolute; left: 0; top: 0; will-change: transform; }
+.sec-split .sp-trails { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; z-index: 1; overflow: visible; }
+.sec-split .sp-trails path { fill: none; stroke: var(--ink); stroke-width: 3.5; stroke-linecap: round; stroke-dasharray: 0.1 11; opacity: 0; }
+.sec-split .sp-plate { z-index: 2; border-radius: 50%; background: var(--gold); border: 4px solid var(--ink); }
+.sec-split .sp-pie { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; border-radius: 50%; transform: scale(0); }
+.sec-split .sp-pie path { stroke: var(--ink); stroke-width: 3; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.sec-split .pf-gold { fill: var(--gold); }
+.sec-split .pf-mint { fill: var(--mint); }
+.sec-split .pf-ink { fill: var(--ink); }
+.sec-split .sp-ring { position: absolute; inset: 6.5%; border-radius: 50%; border: 2px dashed rgba(21, 21, 21, 0.38); animation: split-spin 60s linear infinite; }
+.sec-split.sp-off .sp-ring { animation-play-state: paused; }
+@keyframes split-spin { to { transform: rotate(360deg); } }
+.sec-split .sp-badge {
+  position: absolute; right: -34%; top: -6%; padding: 7px 11px 8px; border: 2.5px solid var(--ink); border-radius: 10px;
+  background: var(--cream); box-shadow: 4px 4px 0 var(--ink); white-space: nowrap; opacity: 0; transform-origin: 0 100%;
+  font: 700 13px/1 var(--f-mono);
+}
+.sec-split .sp-wz { position: absolute; inset: 0; }
+.sec-split .sp-wsh, .sec-split .sp-wedge {
+  position: absolute; left: 0; top: 0; width: 340px; height: 460px; transform-origin: 170px 230px; will-change: transform;
+}
+.sec-split .sp-wsh { background: var(--ink); }
+.sec-split .sp-wc { position: absolute; inset: 0; }
+.sec-split .sp-wedge.live .sp-wc, .sec-split .sp-wedge.live .sp-stk { pointer-events: auto; cursor: grab; touch-action: pan-y; }
+.sec-split .sp-wedge.grab .sp-wc, .sec-split .sp-wedge.grab .sp-stk { cursor: grabbing; }
+.sec-split .sp-cutline { position: absolute; left: 0; top: 0; max-width: none; overflow: visible; pointer-events: none; }
+.sec-split .sp-cutline path { fill: none; stroke: var(--ink); stroke-width: 6; stroke-linejoin: round; }
+.sec-split .sp-stk {
+  position: absolute; left: 0; top: 0; display: flex; align-items: baseline; gap: 8px; padding: 6px 14px 7px;
+  border: 3px solid var(--ink); border-radius: 14px; white-space: nowrap; transform-origin: 50% 50%; will-change: transform;
+  box-shadow: 0 0 0 5px var(--cream), 0 0 0 7.5px var(--ink), 7px 7px 0 7.5px var(--ink);
+}
+.sec-split .sp-stk b { font: 900 38px/1 var(--f-display); letter-spacing: 0.01em; text-transform: uppercase; }
+.sec-split .sp-stk em { font: 700 15px/1 var(--f-mono); font-style: normal; }
+.sec-split .stk-gold { background: var(--gold); color: var(--ink); }
+.sec-split .stk-mint { background: var(--mint); color: var(--ink); }
+.sec-split .stk-ink { background: var(--ink); color: var(--cream); }
+
+/* ---------- the nota (design px, scaled by the scene) ---------- */
+.sec-split .nota { position: absolute; left: 0; top: 0; width: 340px; height: 460px; color: var(--stamp); font-family: var(--f-text); }
+.sec-split .nota .nb { position: absolute; left: 0; top: 0; max-width: none; overflow: visible; }
+.sec-split .nota .paper { fill: #fffefa; stroke: var(--ink); stroke-width: 3; stroke-linejoin: round; }
+.sec-split .nota .sig { fill: none; stroke: var(--split-blue); stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; opacity: 0.9; }
+.sec-split .nota .ringp { fill: none; stroke: var(--ink); stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; }
+.sec-split .n-title { position: absolute; left: 21px; top: 17px; font: 900 52px/1 var(--f-display); letter-spacing: 0.05em; }
+.sec-split .n-no { position: absolute; right: 22px; top: 27px; display: flex; align-items: baseline; gap: 6px; font: 600 10px/1 var(--f-text); }
+.sec-split .n-no b { font: 700 18px/1 var(--f-mono); letter-spacing: 0.02em; }
+.sec-split .n-l { position: absolute; font: 800 10px/1 var(--f-text); letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; }
+.sec-split .n-tgl { left: 22px; top: 80px; }
+.sec-split .n-tuan { left: 174px; top: 80px; }
+.sec-split .n-qty { left: 22px; top: 114px; }
+.sec-split .n-name { left: 72px; top: 114px; }
+.sec-split .n-amt { left: 252px; top: 114px; }
+.sec-split .n-tot { left: 118px; top: 327px; }
+.sec-split .n-tt { left: 24px; top: 368px; }
+.sec-split .n-hk { left: 210px; top: 368px; }
+.sec-split .n-fine { position: absolute; left: 0; right: 0; top: 446px; text-align: center; font: 500 8px/1 var(--f-text); letter-spacing: 0.02em; opacity: 0.85; }
+.sec-split .hw {
+  position: absolute; font: 600 25px/34px var(--f-hand); color: var(--split-blue); white-space: nowrap;
+  text-shadow: 0 0 0.7px rgba(42, 60, 168, 0.55);
+}
+.sec-split .hw-tgl { left: 58px; top: 61px; }
+.sec-split .hw-tuan { left: 214px; top: 61px; }
+.sec-split .hw.row { left: 0; width: 340px; height: 34px; }
+.sec-split .hw.r1 { top: 131px; }
+.sec-split .hw.r2 { top: 165px; }
+.sec-split .hw.r3 { top: 199px; }
+.sec-split .hw.row span { position: absolute; top: 0; }
+.sec-split .hw.row .q { left: 31px; }
+.sec-split .hw.row .nm { left: 74px; }
+.sec-split .hw.row .am { right: 24px; font-size: 24px; }
+.sec-split .hw.tot { left: 186px; top: 307px; font-weight: 700; font-size: 40px; line-height: 1; letter-spacing: -0.01em; }
+.sec-split .hw.tot small { font-size: 23px; margin-left: 5px; }
+.sec-split .stamp {
+  position: absolute; left: 55px; top: 190px; width: 230px; height: 96px;
+  background: var(--split-stamp, none) center / 100% 100% no-repeat;
+  mix-blend-mode: multiply; transform: rotate(-12deg); opacity: 0.93;
+}
+.sec-split .nov { position: absolute; left: 0; top: 0; max-width: none; overflow: visible; pointer-events: none; }
+.sec-split .nov .cut { fill: none; stroke: var(--ink); stroke-width: 2.6; stroke-dasharray: 7 6; stroke-linecap: round; }
+.sec-split .nov .burst { opacity: 0; }
+.sec-split .nov .burst path { stroke: var(--ink); stroke-width: 3.4; stroke-linecap: round; fill: none; }
+
+/* ---------- pockets ---------- */
+.sec-split .sp-pk { position: absolute; left: 0; top: 0; will-change: transform; }
+.sec-split .sp-pk-back { z-index: 4; border: 3px solid var(--ink); border-radius: 20px 20px 8px 8px; }
+.sec-split .pb-gold { background: var(--split-gold-d); }
+.sec-split .pb-mint { background: var(--split-mint-d); }
+.sec-split .pb-ink { background: var(--split-ink-d); }
+.sec-split .sp-pk-front { z-index: 6; transform-origin: 50% 100%; filter: drop-shadow(7px 7px 0 var(--ink)); }
+.sec-split .sp-pk-front svg { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; overflow: visible; }
+.sec-split .sp-pk-front .pfr { stroke: var(--ink); stroke-width: 3.5; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.sec-split .sp-pk-front .st { fill: none; stroke-width: 2; stroke-dasharray: 7 6; vector-effect: non-scaling-stroke; }
+.sec-split .st-gold, .sec-split .st-mint { stroke: rgba(21, 21, 21, 0.5); }
+.sec-split .st-ink { stroke: rgba(255, 253, 245, 0.6); }
+.sec-split .sp-tag { position: absolute; left: 0; right: 0; top: 19%; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.sec-split .tag-gold, .sec-split .tag-mint { color: var(--ink); }
+.sec-split .tag-ink { color: var(--cream); }
+.sec-split .sp-tag b { font: 900 clamp(30px, 3.5vw, 56px)/0.9 var(--f-display); letter-spacing: 0.01em; text-transform: uppercase; }
+.sec-split .sp-tag span { font: 700 clamp(12px, 1vw, 15px)/1 var(--f-mono); }
+.sec-split .sp-tape {
+  z-index: 7; display: flex; align-items: center; justify-content: center; overflow: hidden; opacity: 0; transform-origin: 50% 50%;
+  background: repeating-linear-gradient(-55deg, rgba(255, 255, 255, 0.3) 0 9px, rgba(255, 255, 255, 0.06) 9px 18px), rgba(255, 253, 245, 0.34);
+  -webkit-backdrop-filter: blur(7px) saturate(1.15); backdrop-filter: blur(7px) saturate(1.15);
+  border-top: 2px solid rgba(21, 21, 21, 0.55); border-bottom: 2px solid rgba(21, 21, 21, 0.55);
+  font: 700 10px/1 var(--f-mono); letter-spacing: 0.3em; color: rgba(21, 21, 21, 0.62); white-space: nowrap;
+}
+
+/* ---------- closing line ---------- */
+.sec-split .sp-cap {
+  position: absolute; left: 0; right: 0; top: 0; z-index: 11; margin: 0; padding: 0 16px; text-align: center; pointer-events: none;
+  font: 900 clamp(44px, 5.2vw, 84px)/0.92 var(--f-display); letter-spacing: 0.005em; text-transform: uppercase;
+}
+.sec-split .sp-cw { display: inline-block; opacity: 0; }
+.sec-split .sp-they { position: relative; }
+.sec-split .sp-they svg { position: absolute; left: -6%; width: 112%; max-width: none; bottom: -0.14em; height: 0.26em; overflow: visible; }
+.sec-split .sp-they path { fill: none; stroke: var(--stamp); stroke-width: 5; stroke-linecap: round; }
+.sec-split .sp-mbr { display: none; }
+
+/* ---------- phones ---------- */
+@media (max-width: 819px) {
+  .sec-split .sp-copy {
+    top: 76px; bottom: 26px; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-areas: "h" "slot" "line"; padding: 0 16px; row-gap: 8px;
+  }
+  .sec-split .sp-h { font-size: clamp(44px, 14vw, 66px); line-height: 1.04; margin: 0; }
+  .sec-split .sp-ln { display: inline; white-space: normal; padding-left: 0; margin: 0; }
+  .sec-split .sp-sw { white-space: nowrap; }
+  .sec-split .sp-line { font-size: 15.5px; max-width: none; }
+  .sec-split .sp-stk b { font-size: 34px; }
+  .sec-split .sp-tape { font-size: 12px; letter-spacing: 0.12em; }
+  .sec-split .sp-badge { font-size: 12px; padding: 5px 8px 6px; right: -50%; }
+  .sec-split .sp-tag b { font-size: 30px; }
+  .sec-split .sp-tag span { font-size: 12px; }
+  .sec-split .sp-cap { font-size: clamp(40px, 12vw, 56px); }
+  .sec-split .sp-mbr { display: block; }
+  .sec-split .sp-tape { -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sec-split .sp-ring { animation: none; }
+}

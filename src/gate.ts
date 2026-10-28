@@ -28,6 +28,7 @@ const sum = $<HTMLParagraphElement>("#sum");
 const qrBox = $<HTMLDivElement>("#qr");
 const copyBtn = $<HTMLButtonElement>("#copy");
 const openA = $<HTMLAnchorElement>("#open");
+const printer = document.querySelector<HTMLElement>("#gprinter");
 const prefill = new URLSearchParams(location.hash.slice(1)).get("to")?.split(",").map((a) => a.trim()).filter(Boolean).slice(0, MAX) ?? [];
 /** Fields the person has left at least once: their errors show from then on, not while typing the first time. */
 const touched = new Set<string>();
@@ -122,6 +123,7 @@ function update() {
     payments.push({ address: a, amountZat: zat, memo: `${note.value.trim() || "bonbagi gate test"} ${i + 1}/${n}` });
   }
 
+  const before = current;
   current = "";
   if (!problems.length) {
     try {
@@ -129,6 +131,13 @@ function update() {
     } catch (e) {
       problems.push({ text: sentence(e), red: true });
     }
+  }
+  // the printer's LED is lit while the bon holds a complete request; a new request inks in fresh
+  printer?.classList.toggle("ok", Boolean(current));
+  if (current && current !== before) {
+    uriBox.classList.remove("fresh");
+    void uriBox.offsetWidth;
+    uriBox.classList.add("fresh");
   }
   if (!current) {
     uriBox.classList.add("waiting");

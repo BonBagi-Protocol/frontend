@@ -5,118 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="referrer" content="no-referrer" />
   <meta name="description" content="One Zcash shielded payment, split to every member of a collective in one transaction. No treasurer, no custodian, no server." />
-  <meta name="theme-color" content="#0d0c0b" />
-  <title>BonBagi · Pay once. Split for all.</title>
+  <meta name="theme-color" content="#fbfbf8" />
+  <title>BonBagi · One payment. Every share. Nobody's business.</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/src/landing.css" />
 </head>
 <body>
-  <div id="loader" aria-hidden="true"><span id="loader-num">000</span><span class="ld-bar"><i></i></span></div>
-  <canvas id="gl" aria-hidden="true"></canvas>
-  <div class="grain" aria-hidden="true"></div>
-
-  <header class="hud hud-top">
-    <a class="logo" href="./" aria-label="BonBagi home">BONBAGI</a>
-    <p class="hud-sub"><span data-scramble>// shielded split payments</span><br /><span data-scramble>Zcash · ZECATHON 2026</span></p>
-    <nav aria-label="Pages"><a href="./pay.html">Pay</a><a href="./charter.html">Charter</a><a href="./gate.html">Raw request</a></nav>
+  <header class="nav" id="nav">
+    <a class="nav-brand" href="./" aria-label="BonBagi home">Bon<b>Bagi</b></a>
+    <nav class="nav-links" aria-label="Pages">
+      <a href="./pay.html">Pay</a>
+      <a href="./charter.html">Charter</a>
+      <a href="./gate.html">Raw request</a>
+      <a class="nav-cta" href="/try">Try to cheat the split</a>
+    </nav>
   </header>
-  <p class="hud hud-left" aria-hidden="true"><span class="hud-arrow">↓</span> <span data-scramble>Scroll · it loops</span></p>
-  <p class="hud hud-right" id="chapter" aria-hidden="true">01 / 04 · The vault</p>
 
-  <main id="track">
-    <section class="ch ch-hero" id="hero" aria-labelledby="hero-title">
-      <div class="pin">
-        <p class="manifesto"><span class="mono-k">////// Manifesto</span><span data-scramble>The buyer reads every share.</span> <span data-scramble>The internet sees only ice.</span> <span data-scramble>Each member signs a slab of it.</span></p>
-        <div class="hero-copy">
-          <h1 id="hero-title" data-split>Pay once.<br />Split for all.</h1>
-          <p class="lede"><strong>Bon</strong> is Indonesian for a receipt, <strong>bagi</strong> means to split. BonBagi turns one shielded Zcash payment into every member's share inside a single transaction. No treasurer. No custodian. No server.</p>
-          <div class="cta"><a class="btn btn-gold" href="./pay.html">Pay a collective</a><a class="btn btn-ghost" href="./charter.html">Make a charter</a></div>
-        </div>
-        <p class="hero-cap" id="hero-cap" aria-hidden="true">// what the buyer sees: every share</p>
-      </div>
-    </section>
+  <noscript>
+    <div class="noscript">
+      <h1>One payment. Every share. Nobody's business.</h1>
+      <p>BonBagi pays every member of a collective with one Zcash shielded transaction. No treasurer, no custodian, and nobody outside learns who got what. This page animates with JavaScript; the tools work without the story:</p>
+      <p><a href="/try">Try to cheat the split</a> · <a href="./pay.html">Pay a collective</a> · <a href="./charter.html">Make a charter</a> · <a href="https://github.com/BonBagi">GitHub</a></p>
+    </div>
+  </noscript>
 
-    <section class="ch ch-table" id="table" aria-labelledby="letter-title">
-      <article class="tb-letter">
-        <div class="tb-part" data-v="0">
-          <h2 id="letter-title">the split</h2>
-          <p class="tb-date" data-scramble>October 2026</p>
-          <p>A collective sells one thing. A class, a ticket, a commission. Three mentors made it together, so three people should be paid.</p>
-          <p>Usually one of them collects the money and pays the others later. That person becomes a treasurer nobody elected, holding money that is not theirs, while everyone else waits and trusts.</p>
-          <p>BonBagi removes that person.</p>
-          <p>First, the members write a charter: every member's shielded address and their share, signed by each member with their own key. Change one digit and every signature breaks.</p>
-        </div>
-        <div class="tb-part" data-v="1">
-          <p>Then the buyer pays once. The page checks every signature right there in the browser and builds a single Zcash payment request. One QR code. One transaction.</p>
-          <p>The buyer sees exactly where the money goes before paying. There is no account to create and nothing to install besides a Zcash wallet.</p>
-        </div>
-        <div class="tb-part" data-v="2">
-          <p>That one transaction already carries the split: one shielded output per member, each with its own encrypted memo. Nobody holds the money in between.</p>
-          <p>And nobody outside the deal sees who was paid, or how much. Not the internet. Not us. BonBagi has no server to see it with.</p>
-          <p class="tb-sign">Pay once. Split for all.</p>
-        </div>
-      </article>
-    </section>
-
-    <section class="ch ch-glance" id="glance" aria-labelledby="glance-title">
-      <canvas id="glcards" aria-hidden="true"></canvas>
-      <div class="gl-head">
-        <p class="mono-k" data-scramble>BonBagi at a glance</p>
-        <h2 id="glance-title">What one payment<br />actually does.</h2>
-      </div>
-      <div class="gl-bento">
-        <article class="gl-card k-a" data-obj="coin">
-          <p class="gl-k">The buyer pays</p>
-          <b class="gl-n">1&nbsp;TX</b>
-          <div class="gl-obj"></div>
-          <p class="gl-d">One shielded transaction, whether the collective has three members or thirty.</p>
-        </article>
-        <article class="gl-card k-b" data-obj="shares">
-          <p class="gl-k">Every member is paid</p>
-          <b class="gl-n">40/30/30</b>
-          <div class="gl-obj"></div>
-          <p class="gl-d">Each share lands in its owner's own shielded wallet, with a private memo.</p>
-        </article>
-        <article class="gl-card k-c" data-obj="vault">
-          <p class="gl-k">Custodians</p>
-          <b class="gl-n">0</b>
-          <div class="gl-obj"></div>
-          <p class="gl-d">No treasurer, no escrow, no BonBagi wallet. Nobody holds the money in between.</p>
-        </article>
-        <article class="gl-card k-d" data-obj="stamp">
-          <p class="gl-k">Signatures checked</p>
-          <b class="gl-n">3/3</b>
-          <div class="gl-obj"></div>
-          <p class="gl-d">Every member signs the charter. Your browser checks every signature before you pay.</p>
-        </article>
-        <article class="gl-card k-e" data-obj="lock">
-          <p class="gl-k">Servers that see your payment</p>
-          <b class="gl-n">0</b>
-          <div class="gl-obj"></div>
-          <p class="gl-d">BonBagi has no backend. The pay page cannot make a single network call.</p>
-        </article>
-        <article class="gl-card k-f" data-obj="phone">
-          <p class="gl-k">Scan to pay</p>
-          <b class="gl-n">1&nbsp;QR</b>
-          <div class="gl-obj"></div>
-          <p class="gl-d">A standard Zcash payment request (ZIP-321) for wallets that support several recipients.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="ch ch-end" id="end" aria-labelledby="end-title">
-      <div class="pin">
-        <div class="end-copy">
-          <p class="mono-k" data-scramble>// your turn</p>
-          <h2 id="end-title">Your collective,<br />paid in one go.</h2>
-          <div class="cta"><a class="btn btn-gold" href="./pay.html">Pay a collective</a><a class="btn btn-ghost" href="./charter.html">Make a charter</a></div>
-          <p class="end-foot">Runs entirely in your browser. No server code, no analytics, no cookies. This page loads only its own files, and the pay page's security policy blocks every network call. The charter travels in the link's <code>#</code> part, which browsers never send to a server. BonBagi never touches funds.</p>
-          <p class="end-meta">BonBagi v4 · ZECATHON 2026 · Shielded Payments</p>
-        </div>
-        <p class="dots" aria-hidden="true">bonbagi</p>
-      </div>
-    </section>
+  <main>
+    <!-- A · the receipt prints, then the promise (centered) -->
+    <section class="sec sec-print" id="s-print" aria-labelledby="hero-title"></section>
+    <!-- D · the split: nota → LUNAS → 40/30/30 → sealed pockets -->
+    <section class="sec sec-split" id="s-split" aria-label="The split"></section>
+    <!-- B · how it works: a market in daylight -->
+    <section class="sec sec-market" id="s-market" data-tone="light" aria-label="How a split happens"></section>
+    <!-- C · what the world sees: after dark, the real testnet run -->
+    <section class="sec sec-proof" id="s-proof" data-tone="dark" aria-label="What the world sees"></section>
+    <!-- E · the signed charter folds shut, footer -->
+    <section class="sec sec-close" id="s-close" aria-label="Closing"></section>
   </main>
-  <script type="module" src="/src/landing/page.ts"></script>
+
+  <script type="module" src="/src/landing2/main.ts"></script>
 </body>
 </html>

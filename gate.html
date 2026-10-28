@@ -2,28 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="referrer" content="no-referrer" />
   <meta name="description" content="Build one ZIP-321 request that pays two or three shielded addresses in a single Zcash transaction, and check that your wallet shows every recipient." />
-  <meta name="theme-color" content="#0d0c0b" />
+  <meta name="theme-color" content="#e7e7e2" />
   <title>BonBagi · Raw request</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/src/style.css" />
 </head>
 <body>
-  <header class="top">
-    <a class="brand" href="./"><svg viewBox="0 0 32 32" aria-hidden="true"><path class="b-paper" d="M7 3h18v24l-3 2-3-2-3 2-3-2-3 2-3-2z" /><path class="b-cut" d="M13 12v14M19 12v14" /><circle class="b-dot" cx="21" cy="7.5" r="2.4" /></svg>BonBagi</a>
-    <nav aria-label="Pages"><a href="./pay.html">Pay</a><a href="./charter.html">Charter</a><a href="./gate.html" aria-current="page">Raw request</a></nav>
+  <header class="nav" id="nav">
+    <a class="nav-brand" href="./" aria-label="BonBagi home">Bon<b>Bagi</b></a>
+    <nav class="nav-links" aria-label="Pages">
+      <a href="./pay.html">Pay</a>
+      <a href="./charter.html">Charter</a>
+      <a href="./gate.html" aria-current="page">Raw request</a>
+      <a class="nav-cta" href="/try">Try to cheat the split</a>
+    </nav>
   </header>
-  <main class="wide">
+
+  <main>
     <section class="hero tool">
       <p class="kicker">Developer tool · wallet test</p>
-      <h1>One request, several recipients</h1>
-      <p class="lede">Enter two or three shielded addresses. The ZIP-321 request builds as you type; open it in a wallet and check that it lists every recipient before you send one transaction. Nothing leaves this tab.</p>
+      <h1>One request,<br /><span class="u">several recipients</span></h1>
+      <p class="lede">Enter two or three shielded addresses. The ZIP-321 request prints line by line as you type; open it in a wallet and check that it lists every recipient before you send one transaction. Nothing leaves this tab.</p>
     </section>
 
     <div class="explorer">
-      <form id="f" class="card" autocomplete="off" novalidate aria-labelledby="f-title">
+      <form id="f" class="sheet" autocomplete="off" novalidate aria-labelledby="f-title">
         <h2 id="f-title" class="h-sm">Recipients</h2>
         <div id="rows"></div>
         <p class="actions"><button type="button" class="ghost" id="addrow">+ Recipient</button></p>
@@ -31,25 +37,34 @@
         <input id="note" value="bonbagi gate test" maxlength="60" />
       </form>
 
-      <section class="card code-panel" aria-labelledby="out-title">
-        <h2 id="out-title" class="h-sm">Payment request <small>ZIP-321 · updates as you type</small></h2>
-        <pre class="uri" id="uri" tabindex="0" aria-label="ZIP-321 payment request"></pre>
-        <p class="sum" id="sum" aria-live="polite"></p>
-        <div class="out-row">
-          <div class="qr" id="qr" hidden></div>
-          <p class="actions" id="outbtns"><button type="button" id="copy" disabled>Copy request</button> <a class="button ghost" id="open" aria-disabled="true">Open in wallet</a></p>
+      <div class="till">
+        <div class="printer" id="gprinter" aria-hidden="true"><i class="led"></i><span class="slot"></span></div>
+        <div class="feed">
+          <section class="receipt" aria-labelledby="out-title">
+            <p class="r-brand">BONBAGI</p>
+            <h2 class="r-sub" id="out-title">Payment request · ZIP-321</h2>
+            <p class="r-meta">updates as you type</p>
+            <div class="r-rule"></div>
+            <pre class="uri" id="uri" tabindex="0" aria-label="ZIP-321 payment request"></pre>
+            <div class="r-rule2"></div>
+            <p class="r-sum" id="sum" aria-live="polite"></p>
+            <div class="qr" id="qr" hidden></div>
+            <div class="r-perf" aria-hidden="true"></div>
+            <p class="r-thanks" aria-hidden="true">one tx, every share</p>
+          </section>
         </div>
-      </section>
+        <p class="actions till-actions" id="outbtns"><button type="button" id="copy" disabled>Copy request</button> <a class="button ghost" id="open" aria-disabled="true">Open in wallet</a></p>
+      </div>
     </div>
 
-    <section class="card" aria-labelledby="w-title">
+    <section class="sheet" aria-labelledby="w-title">
       <h2 id="w-title" class="h-sm">Wallets we know about</h2>
       <div class="scroll-x">
         <table class="wallets">
           <tr><th>Wallet</th><th>Multi-recipient request</th><th>Status</th></tr>
           <tr><td>zcash-devtool</td><td><span class="tag ok">works</span></td><td>Testnet, 18 Oct: one transaction, three shielded outputs, each memo read by the receiver (tx 485623f7…f520).</td></tr>
           <tr><td>Zingo PC 2.0.26</td><td><span class="tag wt">pending</span></td><td>Our target wallet for the mainnet test. Not confirmed yet.</td></tr>
-          <tr><td>Zkool</td><td><span class="tag wt">not tested</span></td><td>Backup wallet.</td></tr>
+          <tr><td>Zkool</td><td><span class="tag">not tested</span></td><td>Backup wallet.</td></tr>
           <tr><td>Zodl</td><td><span class="tag err">breaks</span></td><td>Reported: iOS rejects the request; Android shows only the first recipient (issue #2217).</td></tr>
         </table>
       </div>
@@ -62,10 +77,28 @@
       <p class="sub tight">The ticks are for you only; this page saves nothing.</p>
     </section>
   </main>
+
   <footer class="foot">
-    <div class="shield">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5l8-3z" /><path d="M8.5 12l2.5 2.5 4.5-5" /></svg>
-      <div><p><strong>Runs entirely in this tab.</strong> Addresses and requests are never sent anywhere or saved. The page loads only its own files from this site, and its security policy stops its code from calling any server.</p></div>
+    <div class="f-bon">
+      <div class="f-main">
+        <div>
+          <p class="f-line"><b>BonBagi.</b>One payment.<br />Every share.<br />Nobody's business.</p>
+          <p class="f-thanks" aria-hidden="true">terima kasih, thank you!</p>
+        </div>
+        <nav class="f-chips" aria-label="More BonBagi">
+          <a class="f-chip mint" href="./pay.html">Pay</a>
+          <a class="f-chip paper" href="./charter.html">Charter</a>
+          <a class="f-chip gold" href="./gate.html">Raw request</a>
+          <a class="f-chip stamp" href="/try">Try to cheat</a>
+          <a class="f-chip ink" href="https://github.com/BonBagi" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </nav>
+      </div>
+    </div>
+    <div class="f-sealed">
+      <div class="f-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5l8-3z" /><path d="M8.5 12l2.5 2.5 4.5-5" /></svg>
+        <div><p><strong>Runs entirely in this tab.</strong> Addresses and requests are never sent anywhere or saved. The page loads only its own files from this site, and its security policy stops its code from calling any server.</p></div>
+      </div>
     </div>
   </footer>
   <script type="module" src="/src/gate.ts"></script>

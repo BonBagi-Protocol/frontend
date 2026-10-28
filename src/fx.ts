@@ -16,6 +16,27 @@ document.documentElement.classList.add("js");
   if (q === "0" || (q !== "2" && weak)) document.documentElement.classList.add("lite");
 }
 
+// The global nav (same as the landing's): hides while scrolling down past the first screen,
+// comes back on a real scroll up or when a link in it gets keyboard focus.
+{
+  const nav = document.getElementById("nav");
+  if (nav) {
+    let lastY = scrollY;
+    addEventListener(
+      "scroll",
+      () => {
+        const y = scrollY;
+        if (y < innerHeight * 0.6) nav.classList.remove("is-hidden");
+        else if (y > lastY + 4) nav.classList.add("is-hidden");
+        else if (y < lastY - 12) nav.classList.remove("is-hidden");
+        if (Math.abs(y - lastY) > 4) lastY = y;
+      },
+      { passive: true },
+    );
+    nav.addEventListener("focusin", () => nav.classList.remove("is-hidden"));
+  }
+}
+
 // Reveal blocks once as they scroll into view (content is visible without JS).
 const io = new IntersectionObserver(
   (entries) => {

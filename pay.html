@@ -2,70 +2,132 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="referrer" content="no-referrer" />
   <meta name="description" content="One Zcash shielded payment, split to every member of a collective in one transaction. No treasurer, no custodian, no server." />
-  <meta name="theme-color" content="#0d0c0b" />
+  <meta name="theme-color" content="#e7e7e2" />
   <title>BonBagi · Pay a collective</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/src/style.css" />
 </head>
 <body>
-  <header class="top">
-    <a class="brand" href="./"><svg viewBox="0 0 32 32" aria-hidden="true"><path class="b-paper" d="M7 3h18v24l-3 2-3-2-3 2-3-2-3 2-3-2z" /><path class="b-cut" d="M13 12v14M19 12v14" /><circle class="b-dot" cx="21" cy="7.5" r="2.4" /></svg>BonBagi</a>
-    <nav aria-label="Pages"><a href="./pay.html" aria-current="page">Pay</a><a href="./charter.html">Charter</a><a href="./gate.html">Raw request</a></nav>
+  <header class="nav" id="nav">
+    <a class="nav-brand" href="./" aria-label="BonBagi home">Bon<b>Bagi</b></a>
+    <nav class="nav-links" aria-label="Pages">
+      <a href="./pay.html" aria-current="page">Pay</a>
+      <a href="./charter.html">Charter</a>
+      <a href="./gate.html">Raw request</a>
+      <a class="nav-cta" href="/try">Try to cheat the split</a>
+    </nav>
   </header>
 
   <main>
-    <section class="hero solo" id="hero">
-      <p class="kicker">// Pay a collective</p>
-      <h1>Check the charter.<br /><em>Pay once.</em></h1>
+    <section class="hero" id="hero">
+      <p class="kicker">Pay a collective</p>
+      <h1>Check the charter.<br /><span class="u">Pay once.</span></h1>
       <p class="lede">Load the signed charter from the seller. Your browser checks every member's signature, prints the receipt and builds one Zcash payment that pays everyone at once.</p>
     </section>
 
-    <section class="card reveal" id="load">
-      <h2><span class="step">1</span>Load the charter</h2>
-      <p class="sub tight" id="loadstate">Opened a pay link from the seller? It loads by itself. Otherwise paste or upload their signed charter.</p>
-      <label for="paste">Signed charter (JSON)</label>
-      <textarea id="paste" spellcheck="false" placeholder='{"charter":{…},"signatures":[…]}'></textarea>
-      <label for="file">or upload the charter file</label>
-      <input id="file" type="file" accept="application/json,.json" />
-      <p class="actions"><button type="button" id="loadbtn">Check charter</button> <button type="button" class="ghost" id="sample">Try a sample charter</button> <button type="button" class="ghost" id="cheat" hidden>Cheat: give Mentor A 10% more</button></p>
-    </section>
-
-    <div id="check"></div>
-
-    <section class="card" id="order" hidden>
-      <h2><span class="step">2</span>Your order</h2>
-      <div class="row">
-        <div><label for="price">Price (ZEC)</label><input id="price" class="big" inputmode="decimal" placeholder="0.01" autocomplete="off" /></div>
-        <div><label for="orderid">Order ID</label><input id="orderid" spellcheck="false" maxlength="32" autocomplete="off" /></div>
+    <section class="kasir" id="kasir" aria-labelledby="kasir-title">
+      <h2 class="sr-only" id="kasir-title">The register: the check, the receipt and the split, as they happen in your browser</h2>
+      <div class="k-main">
+        <div class="k-stage" id="kstage" aria-hidden="true"></div>
+        <div class="k-bar">
+          <p class="k-state"><span>Register</span><b id="kstate" aria-live="polite">Ready</b></p>
+          <ol class="k-steps" aria-label="Steps">
+            <li><button type="button" class="k-step" id="ks-load"><i aria-hidden="true">1</i><span>Try a sample charter</span></button></li>
+            <li><span class="k-step" id="ks-check"><i aria-hidden="true">2</i><span>Check signatures</span></span></li>
+            <li><span class="k-step" id="ks-ring"><i aria-hidden="true">3</i><span>Ring up the price</span></span></li>
+            <li><button type="button" class="k-step" id="ks-print" disabled><i aria-hidden="true">4</i><span>Print the receipt</span></button></li>
+            <li><a class="k-step" id="ks-pay" aria-disabled="true" role="link"><i aria-hidden="true">5</i><span>Pay in your wallet</span></a></li>
+            <li><button type="button" class="k-step" id="ks-split" disabled><i aria-hidden="true">6</i><span>How it splits</span></button></li>
+          </ol>
+          <button type="button" class="k-cheat" id="ks-cheat" hidden>Pull the cheat lever: give Mentor A 10% more</button>
+        </div>
       </div>
-      <p class="sub tight">The order ID goes into each member's encrypted memo so the collective can match your payment. Never put a name or email here.</p>
-      <p class="actions"><button type="button" id="build">Print the receipt</button></p>
+      <div class="k-side">
+        <section class="k-trace" aria-labelledby="ktrace-title">
+          <header class="k-th" id="kth"><span class="k-dot" aria-hidden="true"></span><h3 id="ktrace-title">Live trace</h3><span class="k-tsub">runs in your browser · no server</span><span class="k-tcount" id="ktcount">0 steps</span></header>
+          <ol class="k-tlist" id="ktlist" role="log" aria-live="off" tabindex="0" aria-label="Steps this page ran in your browser, with their real times"></ol>
+          <button type="button" class="k-jump" id="kjump" hidden>Latest ↓</button>
+          <p class="k-tfoot">Each line is a step this tab just ran, with its measured time. Nothing goes to a server; only your wallet can send the payment.</p>
+        </section>
+        <section class="k-res" id="kres" aria-labelledby="kres-title">
+          <header class="k-rh"><h3 id="kres-title">Who gets what</h3><span class="k-badge" data-badge>waiting</span></header>
+          <div class="k-rows" data-rows></div>
+          <dl class="k-tot">
+            <div><dt>Total</dt><dd data-total>—</dd></div>
+            <div><dt>Fee estimate (ZIP-317)</dt><dd data-fee>—</dd></div>
+            <div><dt>Transaction</dt><dd data-tx>—</dd></div>
+          </dl>
+          <p class="k-rstamp" data-stamp hidden>REFUSED<small>the charter changed after signing</small></p>
+        </section>
+      </div>
     </section>
+
+    <section class="sheet reveal" id="load" aria-labelledby="load-title">
+      <h2 id="load-title"><span class="step">1</span><span class="t-load">Load the charter</span><span class="t-try">Try to cheat the split</span></h2>
+      <p class="sub tight" id="loadstate">Opened a pay link from the seller? It loads by itself. Otherwise paste or upload their signed charter.</p>
+      <p class="actions"><button type="button" class="sticker red" id="cheat" hidden>Cheat: give Mentor A 10% more</button> <button type="button" id="loadbtn">Check charter</button> <button type="button" class="ghost" id="sample">Try a sample charter</button></p>
+      <details class="rawbox" id="rawbox" open>
+        <summary>Paste or upload the charter text</summary>
+        <label for="paste">Signed charter (JSON)</label>
+        <textarea id="paste" spellcheck="false" placeholder='{"charter":{…},"signatures":[…]}'></textarea>
+        <label for="file">or upload the charter file</label>
+        <input id="file" type="file" accept="application/json,.json" />
+      </details>
+    </section>
+
+    <div class="checkgrid">
+      <div id="check"></div>
+
+      <section class="sheet" id="order" aria-labelledby="order-title" hidden>
+        <h2 id="order-title"><span class="step">2</span>Your order</h2>
+        <div class="row">
+          <div><label for="price">Price (ZEC)</label><input id="price" class="big" inputmode="decimal" placeholder="0.01" autocomplete="off" /></div>
+          <div><label for="orderid">Order ID</label><input id="orderid" spellcheck="false" maxlength="32" autocomplete="off" /></div>
+        </div>
+        <p class="sub tight">The order ID goes into each member's encrypted memo so the collective can match your payment. Never put a name or email here.</p>
+        <p class="actions"><button type="button" id="build">Print the receipt</button></p>
+      </section>
+    </div>
 
     <div id="pay"></div>
 
     <section class="how-pay" id="how" aria-labelledby="how-title">
       <h2 id="how-title" class="h-sm">How this payment works</h2>
-      <ul class="how">
+      <ol class="how">
         <li><strong>The members signed one charter</strong>Each member signed the same split with their own key, before this link existed.</li>
         <li><strong>Your browser checks it</strong>This page verifies every signature here and refuses a charter that was edited after signing.</li>
-        <li><strong>One payment pays everyone</strong>Your wallet sends one shielded transaction with one output per member. Anyone else sees only that a shielded transaction happened, not who paid, who was paid or how much.</li>
-      </ul>
+        <li class="sealed"><strong>One payment pays everyone</strong>Your wallet sends one shielded transaction with one output per member. Anyone else sees only that a shielded transaction happened, not who paid, who was paid or how much.</li>
+      </ol>
       <p class="verify">Members: verify your own share on your own machine with <a href="https://github.com/BonBagi/watcher#readme" rel="noopener noreferrer">BonBagi watcher</a> (viewing key only, no server).</p>
     </section>
   </main>
 
   <footer class="foot">
-    <div class="shield">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5l8-3z" /><path d="M8.5 12l2.5 2.5 4.5-5" /></svg>
-      <div>
-        <p><strong>Runs entirely in this tab.</strong> The page loads only its own files from this site. It has no server code, no analytics and no cookies, it saves nothing, and its security policy stops its code from calling any server or loading anything from another site. The charter travels in the link's <code>#</code> part, which browsers never send to the server.</p>
-        <p>BonBagi never touches funds and never sees your wallet. <a href="./charter.html">Make a charter for your own collective →</a></p>
-        <p class="pen thanks" aria-hidden="true">terima kasih — thank you!</p>
-        <p class="metaline">BonBagi v7 · ZECATHON 2026 · Shielded Payments · CSP connect-src 'none'</p>
+    <div class="f-bon">
+      <div class="f-main">
+        <div>
+          <p class="f-line"><b>BonBagi.</b>One payment.<br />Every share.<br />Nobody's business.</p>
+          <p class="f-thanks" aria-hidden="true">terima kasih, thank you!</p>
+        </div>
+        <nav class="f-chips" aria-label="More BonBagi">
+          <a class="f-chip mint" href="./pay.html">Pay</a>
+          <a class="f-chip paper" href="./charter.html">Charter</a>
+          <a class="f-chip gold" href="./gate.html">Raw request</a>
+          <a class="f-chip stamp" href="/try">Try to cheat</a>
+          <a class="f-chip ink" href="https://github.com/BonBagi" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </nav>
+      </div>
+    </div>
+    <div class="f-sealed">
+      <div class="f-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5l8-3z" /><path d="M8.5 12l2.5 2.5 4.5-5" /></svg>
+        <div>
+          <p><strong>Runs entirely in this tab.</strong> The page loads only its own files from this site. It has no server code, no analytics and no cookies, it saves nothing, and its security policy stops its code from calling any server or loading anything from another site. The charter travels in the link's <code>#</code> part, which browsers never send to the server.</p>
+          <p>BonBagi never touches funds and never sees your wallet. <a href="./charter.html">Make a charter for your own collective</a>.</p>
+        </div>
       </div>
     </div>
   </footer>

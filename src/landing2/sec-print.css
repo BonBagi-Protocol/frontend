@@ -1,0 +1,171 @@
+/* Scene 1 · a thermal printer prints the bill, then the promise.
+   On scroll the receipt tears along its perforations and the three shares fall
+   away into the next scene. Top seam: --counter. Bottom seam: --cream. */
+.sec-print {
+  height: 240vh;
+  background: var(--counter);
+  --print-rs: 1;
+  --print-rw: 350px;
+  --print-slotb: 16px;
+  --print-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.sec-print .stage { background: var(--counter); isolation: isolate; }
+
+/* ---------- room ---------- */
+.sec-print .pr-light {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(62% 58% at 50% 10%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 72%);
+}
+.sec-print .pr-light::after { content: ""; position: absolute; inset: 0; background-image: var(--print-noise); opacity: 0.08; }
+.sec-print .pr-grid {
+  position: absolute; left: 0; right: 0; top: -10vh; height: 130vh; z-index: 0; pointer-events: none; opacity: 0.7;
+  background-image: radial-gradient(circle, rgba(21, 21, 21, 0.15) 1px, transparent 1.3px);
+  background-size: 28px 28px;
+  -webkit-mask-image: radial-gradient(64% 56% at 50% 46%, #000 16%, transparent 80%);
+  mask-image: radial-gradient(64% 56% at 50% 46%, #000 16%, transparent 80%);
+}
+.sec-print .pr-world { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+
+/* ---------- printer ---------- */
+.sec-print .pr-printer { position: absolute; left: 0; top: 0; width: 460px; height: 64px; }
+.sec-print .pr-pbody {
+  position: absolute; inset: 0; border-radius: 16px 16px 20px 20px;
+  background: linear-gradient(180deg, #e2e2dd 0%, #d4d4cf 55%, #c5c5bf 100%);
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.85), inset 0 -1.5px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -12px 16px -12px rgba(0, 0, 0, 0.22),
+    0 30px 36px -22px rgba(0, 0, 0, 0.5), 0 4px 7px -3px rgba(0, 0, 0, 0.22);
+}
+.sec-print .pr-pbody::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background-image: var(--print-noise); opacity: 0.12; }
+.sec-print .pr-pgrill {
+  position: absolute; left: 22px; top: 14px; width: 70px; height: 21px; opacity: 0.85;
+  background-image: radial-gradient(circle, #77776f 1.35px, transparent 1.75px); background-size: 7px 7px;
+}
+.sec-print .pr-pled {
+  position: absolute; right: 64px; top: 20px; width: 7px; height: 7px; border-radius: 50%;
+  background: #a5a59e; box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.3); transition: background-color 0.12s, box-shadow 0.12s;
+}
+.sec-print .pr-printer.is-on .pr-pled,
+.sec-print .pr-printer.is-ready .pr-pled { background: var(--gold); box-shadow: 0 0 0 2px rgba(244, 183, 40, 0.22), 0 0 10px 2px rgba(244, 183, 40, 0.75); }
+.sec-print .pr-pbtn {
+  position: absolute; right: 22px; top: 11px; width: 28px; height: 28px; border-radius: 50%;
+  background: radial-gradient(circle at 38% 30%, var(--gold-hi) 0, var(--gold) 46%, #cf930d 100%);
+  box-shadow: 0 2px 0 #a7760a, 0 6px 9px -3px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.65);
+}
+.sec-print .pr-pslot {
+  position: absolute; left: 50%; bottom: var(--print-slotb); width: calc(var(--print-rw) + 22px); height: 10px;
+  margin-bottom: -5px; transform: translateX(-50%); border-radius: 6px; background: #0c0c0c;
+  box-shadow: inset 0 3px 3px rgba(0, 0, 0, 0.9), 0 1.5px 0 rgba(255, 255, 255, 0.7), 0 -1px 0 rgba(0, 0, 0, 0.14);
+}
+
+/* ---------- receipt ---------- */
+.sec-print .pr-feed {
+  position: absolute; left: 0; top: 0; z-index: 2; width: var(--print-rw);
+  font-size: calc(var(--print-rs) * 10px);
+  -webkit-clip-path: inset(0 -300vw -400vh -300vw); clip-path: inset(0 -300vw -400vh -300vw);
+}
+.sec-print .pr-receipt { position: relative; width: 35em; transform-origin: 50% 0; transform: translate3d(0, -110%, 0); }
+.sec-print .pr-slotshade {
+  position: absolute; left: 0; top: 0; width: 35em; height: 2.2em; z-index: 6; pointer-events: none;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.26), rgba(0, 0, 0, 0.07) 45%, rgba(0, 0, 0, 0));
+}
+.sec-print .pr-piece {
+  position: relative;
+  filter: drop-shadow(0 0.08em 0.07em rgba(20, 20, 14, 0.16)) drop-shadow(0.9em 1.6em 1.4em rgba(20, 20, 14, 0.13));
+}
+.sec-print .pr-strip { margin-top: -0.34em; will-change: transform, opacity; }
+.sec-print .pr-paper {
+  position: relative; background: var(--paper); color: #1a1a1a;
+  font-family: var(--f-mono); font-stretch: 87.5%; font-weight: 450;
+  padding: 1.5em 2.2em calc(1.15em + 0.34em);
+}
+.sec-print .pr-paper::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, 0) 90%, rgba(0, 0, 0, 0.05));
+}
+.sec-print .pr-paper::after { content: ""; position: absolute; inset: 0; pointer-events: none; background-image: var(--print-noise); background-size: 140px 140px; opacity: 0.13; }
+.sec-print .pr-row { display: flex; justify-content: space-between; gap: 1em; font-size: max(11px, 1.13em); line-height: 1.78; letter-spacing: 0.02em; white-space: nowrap; }
+.sec-print .pr-k { color: var(--ink-3); letter-spacing: 0.1em; }
+.sec-print .pr-stub .pr-paper { padding-top: 2em; }
+.sec-print .pr-brand { font-size: 2.2em; font-weight: 800; letter-spacing: 0.34em; text-align: center; padding-left: 0.34em; line-height: 1; font-stretch: 100%; }
+.sec-print .pr-rule { height: 0.12em; margin: 1.1em 0; opacity: 0.6; background: repeating-linear-gradient(90deg, #222 0 0.55em, transparent 0.55em 1em); }
+.sec-print .pr-rule2 { height: 0.55em; margin: 0.95em 0 0.85em; border-top: 0.15em solid #222; border-bottom: 0.15em solid #222; opacity: 0.8; }
+.sec-print .pr-total { display: flex; justify-content: space-between; align-items: flex-end; white-space: nowrap; }
+.sec-print .pr-total .pr-lab { font-size: max(11px, 1.3em); font-weight: 700; letter-spacing: 0.14em; padding-bottom: 0.42em; }
+.sec-print .pr-total .pr-big { font-size: 3.6em; font-weight: 800; font-stretch: 75%; letter-spacing: -0.03em; line-height: 1; }
+.sec-print .pr-big small,
+.sec-print .pr-amt small { font-size: max(11px, 0.36em); font-weight: 600; letter-spacing: 0.08em; margin-left: 0.4em; font-stretch: 87.5%; }
+.sec-print .pr-cap { font-size: max(11px, 1.02em); text-align: center; color: #5a5a54; letter-spacing: 0.16em; white-space: nowrap; }
+.sec-print .pr-strip .pr-paper { padding-top: 1.45em; }
+.sec-print .pr-hd { font-weight: 700; }
+.sec-print .pr-no { color: var(--ink-3); margin-right: 0.8em; font-weight: 500; }
+.sec-print .pr-amt { font-size: 2.6em; font-weight: 800; font-stretch: 75%; letter-spacing: -0.02em; line-height: 1.08; margin: 0.12em 0 0.3em; }
+.sec-print .pr-amt small { font-size: max(11px, 0.44em); }
+.sec-print .pr-sm { font-size: max(11px, 1.02em); line-height: 1.7; color: #4a4a44; }
+.sec-print .pr-perf {
+  position: absolute; left: 1em; right: 1em; top: 0.55em; height: 0.2em;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 0.07em, transparent 0.1em) 0 50% / 0.62em 0.2em repeat-x;
+}
+.sec-print .pr-curl {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 2.6em; pointer-events: none;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.05) 50%, rgba(255, 255, 255, 0.65) 80%, rgba(0, 0, 0, 0.07));
+}
+.sec-print .pr-fsh {
+  position: absolute; left: 0; top: 0; border-radius: 0.5em; opacity: 0;
+  background: rgba(30, 30, 22, 0.3); filter: blur(1.2em); will-change: transform, opacity;
+}
+.sec-print .pr-bit {
+  position: absolute; left: 0; top: 0; width: 0.55em; height: 0.32em; opacity: 0;
+  background: #fff; box-shadow: 0 0 0 0.06em rgba(0, 0, 0, 0.1);
+}
+
+/* ---------- the promise ---------- */
+.sec-print .pr-copy {
+  position: absolute; left: 0; right: 0; top: 0; z-index: 3;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  padding: 0 16px; pointer-events: none;
+}
+.sec-print .pr-hl {
+  margin: 0; font-family: var(--f-display); font-weight: 900; font-size: 112px; line-height: 0.86;
+  letter-spacing: -0.004em; color: var(--ink);
+}
+.sec-print .pr-ln { display: block; white-space: nowrap; transform-origin: 50% 100%; }
+.sec-print .pr-w { position: relative; display: inline-block; isolation: isolate; }
+.sec-print .pr-u {
+  position: absolute; left: -0.03em; right: -0.02em; bottom: 0.075em; height: 0.15em; z-index: -1;
+  background: var(--gold); transform: scaleX(0); transform-origin: 0 50%;
+}
+.sec-print .pr-sub {
+  margin: 26px 0 0; max-width: 35em; font: 400 clamp(16px, 1.3vw, 19px) / 1.46 var(--f-text);
+  color: var(--ink-2); text-wrap: balance;
+}
+.sec-print .pr-cta { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 28px; pointer-events: auto; }
+.sec-print .pr-btn {
+  display: inline-flex; align-items: center; gap: 10px; height: 54px; padding: 0 24px; border-radius: 14px;
+  font: 600 16.5px/1 var(--f-text); text-decoration: none; white-space: nowrap;
+  transition: transform 0.25s var(--ease-out), background-color 0.25s, color 0.25s, box-shadow 0.25s;
+}
+.sec-print .pr-arw { width: 18px; height: 18px; flex: none; transition: transform 0.25s var(--ease-out); }
+.sec-print .pr-btn--pri { background: var(--ink); color: var(--paper); box-shadow: 0 12px 26px -14px rgba(0, 0, 0, 0.7); }
+.sec-print .pr-btn--pri:hover { background: var(--gold); color: var(--ink); }
+.sec-print .pr-btn--pri:hover .pr-arw { transform: translateX(3px); }
+.sec-print .pr-btn--sec { color: var(--ink); background: rgba(255, 255, 255, 0.45); box-shadow: inset 0 0 0 1.5px rgba(21, 21, 21, 0.85); }
+.sec-print .pr-btn--sec:hover { background: var(--paper); }
+.sec-print .pr-btn:active { transform: translateY(1px) scale(0.985); }
+.sec-print .pr-btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+
+/* ---------- small screens ---------- */
+@media (max-width: 759.98px) {
+  .sec-print .pr-pgrill { left: 14px; top: 11px; width: 42px; height: 14px; }
+  .sec-print .pr-pled { right: 44px; top: 15px; }
+  .sec-print .pr-pbtn { right: 14px; top: 9px; width: 20px; height: 20px; }
+  .sec-print .pr-pbody { border-radius: 12px 12px 15px 15px; }
+  .sec-print .pr-hl { line-height: 0.88; }
+  .sec-print .pr-sub { margin-top: 14px; font-size: 15px; line-height: 1.45; }
+  .sec-print .pr-cta { margin-top: 18px; gap: 8px; }
+  .sec-print .pr-btn { height: 46px; padding: 0 15px; font-size: 14.5px; border-radius: 12px; gap: 7px; }
+  .sec-print .pr-arw { width: 15px; height: 15px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sec-print .pr-btn, .sec-print .pr-arw, .sec-print .pr-pled { transition: none; }
+}

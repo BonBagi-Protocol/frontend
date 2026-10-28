@@ -1,0 +1,83 @@
+/* BonBagi landing v8: one story in six scenes.
+   A receipt prints (A) → the promise (A) → the split (D) → how it works, a market in daylight (B)
+   → what the world sees, after dark (C) → the signed charter folds shut (E). */
+:root {
+  /* paper & ink (A, D, E) */
+  --paper: #fbfbf8;
+  --paper-2: #f1f0eb;
+  --counter: #e7e7e2;
+  --cream: #fffdf5;
+  --studio: #efede9;
+  --ink: #151515;
+  --ink-2: #53534d;
+  --ink-3: #67625a;
+  --rule: #d7d6cf;
+  /* accents shared by every scene */
+  --gold: #f4b728;
+  --gold-hi: #ffd36b;
+  --gold-deep: #9c6607;
+  --stamp: #c0341d;
+  --mint: #8ee3c8;
+  /* night (C) */
+  --obsidian: #090909;
+  --ivory: #f2eee5;
+  --ash: #9c978c;
+
+  --f-display: "Sofia Sans Extra Condensed", "Arial Narrow", sans-serif;
+  --f-text: "Sofia Sans Variable", "Sofia Sans", system-ui, sans-serif;
+  --f-mono: "Martian Mono Variable", "Martian Mono", ui-monospace, Consolas, monospace;
+  --f-serif: "Instrument Serif", Georgia, serif;
+  --f-hand: "Caveat Variable", "Caveat", cursive;
+
+  --ease-out: cubic-bezier(0.16, 0.84, 0.2, 1);
+  --nav-h: 64px;
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+html, body { margin: 0; background: var(--paper); color: var(--ink); }
+body { font: 400 16px/1.5 var(--f-text); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+img, svg, video, canvas { display: block; max-width: 100%; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+/* global nav: light by default, flips on dark scenes */
+.nav {
+  position: fixed; inset: 0 0 auto 0; z-index: 50; height: var(--nav-h);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: env(safe-area-inset-top, 0px) max(20px, env(safe-area-inset-right, 0px)) 0 max(20px, env(safe-area-inset-left, 0px));
+  color: var(--ink); transition: color 0.4s, background-color 0.4s, transform 0.5s var(--ease-out);
+  background: color-mix(in srgb, var(--paper) 86%, transparent);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+.nav.is-dark { color: var(--ivory); background: rgba(9, 9, 9, 0.7); }
+.nav.is-hidden { transform: translateY(-110%); }
+.nav-brand { font: 900 26px/1 var(--f-display); letter-spacing: 0.01em; text-decoration: none; }
+.nav-brand b { color: var(--gold-deep); font-weight: 900; }
+.nav.is-dark .nav-brand b { color: var(--gold); }
+.nav-links { display: flex; align-items: center; gap: 22px; font: 600 14px var(--f-text); }
+.nav-links a { text-decoration: none; opacity: 0.78; }
+.nav-links a:hover { opacity: 1; }
+.nav-cta {
+  opacity: 1 !important; padding: 9px 16px; border-radius: 999px; background: var(--ink); color: var(--paper);
+}
+.nav.is-dark .nav-cta { background: var(--gold); color: #191103; }
+@media (max-width: 720px) { .nav-links a:not(.nav-cta) { display: none; } }
+
+/* every scene: a tall track with a sticky stage */
+.sec { position: relative; }
+.sec .stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+
+.noscript { max-width: 640px; margin: 0 auto; padding: calc(var(--nav-h) + 48px) 20px 48px; }
+.noscript h1 { font: 900 clamp(44px, 9vw, 88px)/0.95 var(--f-display); margin: 0 0 20px; }
+.noscript a { font-weight: 600; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}

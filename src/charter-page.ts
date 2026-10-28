@@ -49,7 +49,25 @@ async function copy(btn: HTMLButtonElement, text: string, fallback?: HTMLInputEl
   setTimeout(() => (btn.textContent = label), 1800);
 }
 
-const LOCK = `<svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>`;
+/** One letter per member for the wax seal: "Mentor B" -> "B", "Hans" -> "H". */
+const initial = (label: string) => label.match(/\b([A-Z0-9])\b/)?.[1] ?? (label.trim().charAt(0).toUpperCase() || "?");
+/** A gold wax seal (the landing's closing scene); gradients and the wax filter live in charter.html. */
+const sealSvg = (label: string, cracked = false) => {
+  const ini = esc(initial(label));
+  return (
+    `<svg class="seal${cracked ? " cracked" : ""}" viewBox="0 0 100 100" aria-hidden="true">` +
+    `<circle class="spill" cx="50" cy="51" r="44" fill="url(#ws-wax)" filter="url(#ws-wx)"/>` +
+    `<circle cx="50" cy="50" r="34.5" fill="url(#ws-face)"/>` +
+    `<circle cx="50" cy="50" r="34.5" fill="none" stroke="url(#ws-rim-out)" stroke-width="2.6"/>` +
+    `<circle cx="50" cy="50" r="31" fill="none" stroke="url(#ws-rim-in)" stroke-width="1.4" opacity=".9"/>` +
+    `<circle cx="50" cy="50" r="27.2" fill="none" stroke="#a86c08" stroke-opacity=".6" stroke-width="1.3" stroke-dasharray=".1 3.05" stroke-linecap="round"/>` +
+    `<text class="ini-hi" x="50.9" y="64.2" text-anchor="middle">${ini}</text>` +
+    `<text class="ini" x="50" y="63" text-anchor="middle">${ini}</text>` +
+    `<ellipse cx="37" cy="29" rx="17" ry="9" fill="url(#ws-gloss)" opacity=".75"/>` +
+    (cracked ? `<path class="crack" d="M30 16l12 20-9 11 19 15-5 22"/>` : "") +
+    `</svg>`
+  );
+};
 const ICON_BAD = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5v.5"/></svg>`;
 
 /** Share bar as SVG rects: widths are attributes, so the strict CSP (no inline styles) allows it. */
@@ -81,7 +99,7 @@ function setFile(next: SignedCharter | null, note = "") {
 async function render() {
   if (!file) {
     board.innerHTML = `
-      <h2 id="board-title" class="b-title">No charter open</h2>
+      <div><span class="b-kick">Charter · signature board</span><h2 id="board-title" class="b-title">No charter open</h2></div>
       <p class="b-lede">Got a charter file from your group? Open it here to see who has signed and to add your signature. Starting a new collective? Create your key and draft the charter below.</p>
       <p class="actions">
         <button type="button" id="openbtn">Open charter file</button>
@@ -120,7 +138,7 @@ async function render() {
 
   board.innerHTML = `
     <div class="b-head">
-      <h2 id="board-title" class="b-title">${esc(c.title)}</h2>
+      <div><span class="b-kick">Charter · signature board</span><h2 id="board-title" class="b-title">${esc(c.title)}</h2></div>
       <span class="b-meta">${c.network === "main" ? "Mainnet" : "Testnet"} · fingerprint <code>${res.hash.slice(0, 8)}</code></span>
     </div>
     <p class="b-count${ready ? " ready" : ""}"><span class="n">${done}/${n}</span><span class="l">${ready ? "signed · ready to sell" : "signed"}</span></p>
@@ -133,7 +151,12 @@ async function render() {
             st === "y" ? `<small class="st ok">Signed · key ${m.pubkey.slice(0, 8)}</small>`
             : st === "x" ? `<small class="st bad">Signature broken: the file changed after signing</small>`
             : `<small class="st wt">Waiting for ${esc(m.label)}</small>`;
-          return `<li class="blk ${st}${justSigned === m.pubkey ? " just" : ""}">${st === "y" ? LOCK : ""}<b><i class="dot ${colour(i)}"></i>${esc(m.label)}</b><small>${pct(m.bps)} · ${esc(shortAddress(m.address))}</small>${line}</li>`;
+          // signed = gold wax seal pressed on the sheet; waiting = an empty "sign here" ring; broken = a cracked seal
+          const slot =
+            st === "y" ? `<span class="seal-slot">${sealSvg(m.label)}</span>`
+            : st === "x" ? `<span class="seal-slot broken">${sealSvg(m.label, true)}</span>`
+            : `<span class="seal-slot empty" aria-hidden="true"><em>sign here</em></span>`;
+          return `<li class="blk ${st}${justSigned === m.pubkey ? " just" : ""}">${slot}<b><i class="dot ${colour(i)}"></i>${esc(m.label)}</b><small>${esc(shortAddress(m.address))}</small>${line}<span class="share"><span class="sr-only">share </span>${pct(m.bps).replace("%", "")}<small>%</small></span></li>`;
         })
         .join("")}
     </ul>
@@ -219,10 +242,16 @@ function wireLoaded(f: SignedCharter, ready: boolean) {
       }
       const link = payLink(new URL("./pay.html", location.href).href, f, zat);
       const out = $("#linkout", board);
+      // the pay link prints as a ticket: a gold stub, the link on paper
       out.innerHTML = `
-        <label for="link">Pay link</label>
-        <input id="link" readonly spellcheck="false" value="${esc(link)}" />
-        <p class="actions"><button type="button" id="copylink">Copy link</button> <a class="button ghost" href="${esc(link)}" target="_blank" rel="noopener noreferrer">Open the pay page</a></p>`;
+        <div class="ticket">
+          <div class="t-stub" aria-hidden="true"><b>Pay</b><small>link</small><small>${zat === undefined ? "any price" : `${esc(price.value.trim())} ZEC`}</small></div>
+          <div class="t-body">
+            <label for="link">Pay link · give it only to buyers</label>
+            <input id="link" readonly spellcheck="false" value="${esc(link)}" />
+            <p class="actions"><button type="button" id="copylink">Copy link</button> <a class="button ghost" href="${esc(link)}" target="_blank" rel="noopener noreferrer">Open the pay page</a></p>
+          </div>
+        </div>`;
       const linkIn = $<HTMLInputElement>("#link", out);
       $<HTMLButtonElement>("#copylink", out).addEventListener("click", (e) => void copy(e.currentTarget as HTMLButtonElement, link, linkIn));
       // one gold button at a time: once a link exists, copying it is the next step
@@ -332,7 +361,7 @@ $("#genkey").addEventListener("click", async () => {
     <label for="pubout">Public key · send this to whoever drafts the charter</label>
     <div class="inline"><input id="pubout" readonly spellcheck="false" value="${pub}" /><button type="button" class="ghost" id="copypub">Copy</button></div>
     <label for="secret">Private key · only for signing</label>
-    <div class="inline"><input id="secret" readonly spellcheck="false" value="${"•".repeat(24)}" aria-describedby="secret-note" /><button type="button" class="ghost" id="reveal" aria-pressed="false">Show</button></div>
+    <div class="inline"><input id="secret" class="sealed-in" readonly spellcheck="false" value="${"•".repeat(24)}" aria-describedby="secret-note" /><button type="button" class="ghost" id="reveal" aria-pressed="false">Show</button></div>
     <p class="actions"><button type="button" id="dlkey">Download key file</button></p>
     <p class="sub tight" id="secret-note">Keep the file. Anyone who has it can sign as you, and without it you cannot sign this charter again. This page does not store it. "Replace my key" makes a new key; a charter drafted with this public key will not accept the new one.</p>`;
   const gen = $<HTMLButtonElement>("#genkey");

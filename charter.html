@@ -2,39 +2,55 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="referrer" content="no-referrer" />
   <meta name="description" content="Every member of a collective signs the same split with their own key. Change one address or share and every signature breaks." />
-  <meta name="theme-color" content="#0d0c0b" />
+  <meta name="theme-color" content="#e7e7e2" />
   <title>BonBagi · Charter</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/src/style.css" />
 </head>
 <body>
-  <header class="top">
-    <a class="brand" href="./"><svg viewBox="0 0 32 32" aria-hidden="true"><path class="b-paper" d="M7 3h18v24l-3 2-3-2-3 2-3-2-3 2-3-2z" /><path class="b-cut" d="M13 12v14M19 12v14" /><circle class="b-dot" cx="21" cy="7.5" r="2.4" /></svg>BonBagi</a>
-    <nav aria-label="Pages"><a href="./pay.html">Pay</a><a href="./charter.html" aria-current="page">Charter</a><a href="./gate.html">Raw request</a></nav>
+  <!-- gold wax for the signature seals (shared by every seal on the board) -->
+  <svg class="svg-defs" width="0" height="0" aria-hidden="true" focusable="false"><defs>
+    <radialGradient id="ws-wax" cx="38%" cy="32%" r="74%"><stop offset="0" stop-color="#ffe7a0" /><stop offset=".3" stop-color="#f7c23e" /><stop offset=".66" stop-color="#e09e17" /><stop offset="1" stop-color="#9a6207" /></radialGradient>
+    <radialGradient id="ws-face" cx="42%" cy="38%" r="70%"><stop offset="0" stop-color="#fbcf55" /><stop offset=".7" stop-color="#ebaa20" /><stop offset="1" stop-color="#d3910f" /></radialGradient>
+    <linearGradient id="ws-rim-in" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9a6006" /><stop offset=".5" stop-color="#e7a51e" /><stop offset="1" stop-color="#fff0c4" /></linearGradient>
+    <linearGradient id="ws-rim-out" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3cc" /><stop offset=".45" stop-color="#f0b330" /><stop offset="1" stop-color="#8e5905" /></linearGradient>
+    <radialGradient id="ws-gloss" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff" stop-opacity=".85" /><stop offset="1" stop-color="#fff" stop-opacity="0" /></radialGradient>
+    <filter id="ws-wx" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".045" numOctaves="2" seed="3" /><feDisplacementMap in="SourceGraphic" scale="10" xChannelSelector="R" yChannelSelector="G" /></filter>
+  </defs></svg>
+
+  <header class="nav" id="nav">
+    <a class="nav-brand" href="./" aria-label="BonBagi home">Bon<b>Bagi</b></a>
+    <nav class="nav-links" aria-label="Pages">
+      <a href="./pay.html">Pay</a>
+      <a href="./charter.html" aria-current="page">Charter</a>
+      <a href="./gate.html">Raw request</a>
+      <a class="nav-cta" href="/try">Try to cheat the split</a>
+    </nav>
   </header>
+
   <main>
-    <section class="hero solo compact">
+    <section class="hero">
       <p class="kicker">For the collective</p>
-      <h1>Agree once.<br /><span class="hl">Every sale splits itself.</span></h1>
+      <h1>Agree once.<br /><span class="u">Every sale splits itself.</span></h1>
       <p class="lede">The charter says who gets paid, to which shielded address, and what share. Every member signs it with their own key. Change one address or share and every signature breaks.</p>
     </section>
 
-    <!-- The charter that is open in this tab: one ice block per member, frozen once they sign. -->
+    <!-- The charter that is open in this tab: one row per member, sealed in gold wax once they sign. -->
     <section class="sigwrap" aria-labelledby="board-title">
-      <div class="board glass" id="board" tabindex="-1"></div>
+      <div class="board" id="board" tabindex="-1"></div>
     </section>
 
-    <section class="card" id="keycard" aria-labelledby="key-title">
+    <section class="sheet" id="keycard" aria-labelledby="key-title">
       <h2 id="key-title"><span class="step">1</span>Your signing key</h2>
       <p class="sub">Every member makes one key on their own device. Send the public key to whoever drafts the charter; keep the key file to yourself.</p>
       <p class="actions"><button type="button" id="genkey">Create my key</button></p>
       <div id="keyout"></div>
     </section>
 
-    <section class="card" id="draftcard" aria-labelledby="draft-title">
+    <section class="sheet" id="draftcard" aria-labelledby="draft-title">
       <h2 id="draft-title"><span class="step">2</span>Draft the charter</h2>
       <p class="sub">One person enters every member. When it is created, the charter opens above and everyone signs the same file.</p>
       <form id="draft" novalidate autocomplete="off">
@@ -62,10 +78,28 @@
       </form>
     </section>
   </main>
+
   <footer class="foot">
-    <div class="shield">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5l8-3z" /><path d="M8.5 12l2.5 2.5 4.5-5" /></svg>
-      <div><p><strong>Runs entirely in this tab.</strong> Keys, addresses and charters are never sent anywhere or saved. The page loads only its own files from this site, and its security policy stops its code from calling any server.</p></div>
+    <div class="f-bon">
+      <div class="f-main">
+        <div>
+          <p class="f-line"><b>BonBagi.</b>One payment.<br />Every share.<br />Nobody's business.</p>
+          <p class="f-thanks" aria-hidden="true">terima kasih, thank you!</p>
+        </div>
+        <nav class="f-chips" aria-label="More BonBagi">
+          <a class="f-chip mint" href="./pay.html">Pay</a>
+          <a class="f-chip paper" href="./charter.html">Charter</a>
+          <a class="f-chip gold" href="./gate.html">Raw request</a>
+          <a class="f-chip stamp" href="/try">Try to cheat</a>
+          <a class="f-chip ink" href="https://github.com/BonBagi" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </nav>
+      </div>
+    </div>
+    <div class="f-sealed">
+      <div class="f-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5l8-3z" /><path d="M8.5 12l2.5 2.5 4.5-5" /></svg>
+        <div><p><strong>Runs entirely in this tab.</strong> Keys, addresses and charters are never sent anywhere or saved. The page loads only its own files from this site, and its security policy stops its code from calling any server.</p></div>
+      </div>
     </div>
   </footer>
   <script type="module" src="/src/charter-page.ts"></script>
