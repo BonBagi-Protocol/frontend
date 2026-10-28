@@ -49,5 +49,7 @@ describe("register plan", () => {
   it("reads initials like the pay page", () => {
     expect(initialOf("Mentor A (host)")).toBe("A");
     expect(initialOf("hans")).toBe("H");
+    // a label that starts with an emoji keeps the whole character (no lone surrogate)
+    expect(initialOf("🎸 band")).toBe("🎸");
   });
 });

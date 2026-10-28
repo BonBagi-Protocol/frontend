@@ -18,7 +18,7 @@ export interface Compartment {
 
 /** One letter per member: "Mentor A (host)" -> "A", "Hans" -> "H" (same rule as the pay page's chips). */
 export function initialOf(label: string): string {
-  return label.match(/\b([A-Z0-9])\b/)?.[1] ?? (label.trim().charAt(0).toUpperCase() || "?");
+  return label.match(/\b([A-Z0-9])\b/)?.[1] ?? (Array.from(label.trim())[0]?.toUpperCase() || "?");
 }
 
 /**

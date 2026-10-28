@@ -306,7 +306,7 @@ export function mount(root: HTMLElement): void {
   const quantize = (p: number) => (p < 0.28 ? 0 : p < 0.66 ? 0.53 : 1);
   let lastVW = 0, lastVH = 0;
 
-  scene(track, (praw, { time, dt, vw, vh }) => {
+  scene(track, (praw, { time, dt, vw, vh, top }) => {
     if (dirty || vw !== lastVW || vh !== lastVH || !L) { L = layout(stage.clientWidth || vw, stage.clientHeight || vh); lastVW = vw; lastVH = vh; dirty = false; }
     const lay = L;
     const p = reduced ? quantize(praw) : praw;
@@ -315,7 +315,6 @@ export function mount(root: HTMLElement): void {
 
     // entrance: the sheet swings up into view while the section scrolls in
     if (!reduced) {
-      const top = track.getBoundingClientRect().top;
       const target = clamp(1 - top / vh);
       enter += (target - enter) * (1 - Math.pow(1 - 0.12, dt / 16.7));
       const a = 1 - Math.pow(1 - 0.06, dt / 16.7);

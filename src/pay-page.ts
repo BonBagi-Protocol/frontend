@@ -25,13 +25,19 @@ const price = $<HTMLInputElement>("#price");
 const orderId = $<HTMLInputElement>("#orderid");
 
 let current: SignedCharter | null = null;
+/** Bumped on every load: an older load's async result is ignored. */
+let loadGen = 0;
+/** The register's current story (check, then print, then split): the next one waits for it. */
+let deskBusy: Promise<void> = Promise.resolve();
+/** The signed sample as loaded: "Cheat" always edits this original, so it can be pressed again. */
+let sampleText: string | null = null;
 
 const ICON_BAD = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5v.5"/></svg>`;
 const ICON_LOCK = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>`;
 const errCard = (title: string, detail = "") => `<section class="slip"><div class="banner err">${ICON_BAD}<div>${title}${detail ? `<span>${detail}</span>` : ""}</div></div></section>`;
 const colour = (i: number) => `c${i % 6}`;
 /** One letter per member: "Mentor A (host)" -> "A", "Hans" -> "H". */
-const initial = (label: string) => label.match(/\b([A-Z0-9])\b/)?.[1] ?? (label.trim().charAt(0).toUpperCase() || "?");
+const initial = (label: string) => label.match(/\b([A-Z0-9])\b/)?.[1] ?? (Array.from(label.trim())[0]?.toUpperCase() || "?");
 /** A member as a sticker chip (the landing's Ayu / Bima / Citra), colour by position. */
 const chip = (i: number, label: string) => `<span class="mchip ${colour(i)}"><i aria-hidden="true">${esc(initial(label))}</i><span>${esc(label)}</span></span>`;
 /** The thermal printer the receipts come out of; the LED shows the verdict. */
@@ -251,7 +257,7 @@ async function showPrint(signed: SignedCharter, req: PaymentRequest, priceZat: b
   l1.done("ok", `${priceZat} → ${shares.join(" / ")} · remainder ${priceZat - floor} zat · every share ≥ ${c.minShareZat} zat`, splitMs);
   result.amounts(shares);
   const params = new URLSearchParams(req.uri.slice(req.uri.indexOf("?") + 1));
-  const cut = (s: string, k = 22) => (s.length > k ? `${s.slice(0, k)}…` : s);
+  const cut = (s: string, k = 22) => { const cp = Array.from(s); return cp.length > k ? `${cp.slice(0, k).join("")}…` : s; };
   const rq = req.lines
     .slice(0, 3)
     .map((l, i) => {
@@ -335,21 +341,25 @@ ks.split.addEventListener("click", () => {
   if (!lastReq || !lastShares.length) return;
   const g = ++showGen;
   deskState("printing", lastReq.uri);
-  void playSplit(g, lastReq);
+  deskBusy = playSplit(g, lastReq).catch(() => undefined);
 });
 ks.cheat.addEventListener("click", () => $("#cheat").click());
 
 function reset() {
+  ++loadGen;
   current = null;
+  lastReq = null;
   order.hidden = true;
   pay.innerHTML = "";
 }
 
 async function load(signed: SignedCharter, source: string, priceZat?: bigint, edits?: ShareEdit[]) {
   reset();
+  const g = loadGen;
   try {
     const t0 = performance.now();
     const { hash, unsigned } = await verifyCharter(signed);
+    if (g !== loadGen) return; // a newer charter was loaded meanwhile
     const verifyMs = performance.now() - t0;
     const c = signed.charter;
     const ready = unsigned.length === 0;
@@ -388,7 +398,7 @@ async function load(signed: SignedCharter, source: string, priceZat?: bigint, ed
           </section>
         </div>
       </div>`;
-    void showLoad(signed, hash, unsigned, tampered, source, verifyMs, edits);
+    deskBusy = showLoad(signed, hash, unsigned, tampered, source, verifyMs, edits).catch(() => undefined);
     if (!ready) return;
     current = signed;
     order.hidden = false;
@@ -397,6 +407,7 @@ async function load(signed: SignedCharter, source: string, priceZat?: bigint, ed
     // focus the next step without scrolling past the verdict: the buyer should see the receipt first
     (priceZat === undefined ? price : $("#build")).focus({ preventScroll: true });
   } catch (e) {
+    if (g !== loadGen) return;
     check.innerHTML = errCard("This charter cannot be used.", esc(msg(e)));
     deskError("charter.validate", msg(e));
   }
@@ -431,7 +442,10 @@ function loadFromFragment() {
   }
 }
 
-$("#loadbtn").addEventListener("click", () => loadText(paste.value, "pasted text"));
+$("#loadbtn").addEventListener("click", () => {
+  sampleText = null;
+  loadText(paste.value, "pasted text");
+});
 $<HTMLInputElement>("#file").addEventListener("change", async (e) => {
   const f = (e.target as HTMLInputElement).files?.[0];
   if (!f) return;
@@ -440,6 +454,7 @@ $<HTMLInputElement>("#file").addEventListener("change", async (e) => {
     return;
   }
   paste.value = await f.text();
+  sampleText = null;
   loadText(paste.value, "an uploaded file");
 });
 
@@ -481,6 +496,7 @@ $("#sample").addEventListener("click", async () => {
   };
   const signed: SignedCharter = { charter, signatures: await Promise.all(keys.map((k) => signCharter(charter, k))) };
   paste.value = JSON.stringify(signed, null, 2);
+  sampleText = paste.value;
   $("#loadstate").textContent = "Sample charter with made-up testnet addresses, signed by all three mentors. Press “Cheat” to move 10% from Mentor B to Mentor A after signing, or edit any address or share in the charter text and press “Check charter”.";
   $("#cheat").hidden = false;
   showDesk();
@@ -491,9 +507,10 @@ $("#sample").addEventListener("click", async () => {
 // The total stays 100%, so only the signatures can catch it.
 $("#cheat").addEventListener("click", () => {
   try {
-    const signed = JSON.parse(paste.value) as SignedCharter;
+    // always from the signed original: pressing it again shows the same refusal, never an invalid charter
+    const signed = JSON.parse(sampleText ?? paste.value) as SignedCharter;
     const [a, b] = signed.charter.members;
-    if (!a || !b || b.bps < 1000) throw new Error("load the sample charter first");
+    if (!a || !b || b.bps <= 1000) throw new Error("load the sample charter first");
     const edits: ShareEdit[] = [
       { index: 0, fromBps: a.bps, toBps: a.bps + 1000 },
       { index: 1, fromBps: b.bps, toBps: b.bps - 1000 },
@@ -532,10 +549,16 @@ $("#build").addEventListener("click", async () => {
   if (!current) return;
   const fromDesk = buildFromDesk;
   buildFromDesk = false;
+  const g = loadGen;
+  // one story at a time on the register: let the signature check (or the last print) finish first
+  await deskBusy;
+  if (g !== loadGen || !current) return;
+  const signed = current;
   try {
     const priceZat = parseZec(price.value);
     const tb = performance.now();
-    const req = await buildPaymentRequest(current, priceZat, orderId.value.trim());
+    const req = await buildPaymentRequest(signed, priceZat, orderId.value.trim());
+    if (g !== loadGen) return;
     const buildMs = performance.now() - tb;
     const n = req.lines.length;
     // a big collective's request can be longer than one QR code holds: then the receipt says so
@@ -547,7 +570,7 @@ $("#build").addEventListener("click", async () => {
     } catch {
       qr = null;
     }
-    const c = current.charter;
+    const c = signed.charter;
     const svgSmall = qr ? qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true }) : "";
     const tf = performance.now();
     const feeZat = estimateFeeZat(n);
@@ -593,8 +616,17 @@ $("#build").addEventListener("click", async () => {
         </section>
       </div>`;
     $("#copy").addEventListener("click", async (ev) => {
-      await navigator.clipboard.writeText(req.uri);
-      (ev.target as HTMLButtonElement).textContent = "Copied";
+      const btn = ev.currentTarget as HTMLButtonElement;
+      try {
+        await navigator.clipboard.writeText(req.uri);
+        btn.textContent = "Copied";
+      } catch {
+        // no clipboard access (old browser, http, denied): select the request so the buyer can copy it
+        const box = $<HTMLTextAreaElement>("#uri");
+        box.focus();
+        box.select();
+        btn.textContent = "Selected: copy it";
+      }
     });
     $("#uri").addEventListener("focus", (ev) => (ev.target as HTMLTextAreaElement).select());
     // A 3-member request is ~1,000 characters (≈109×109 modules); at thumbnail size a phone
@@ -625,7 +657,7 @@ $("#build").addEventListener("click", async () => {
         reveal.querySelector("em")!.textContent = "Tap again for full screen";
       });
     }
-    void showPrint(current, req, priceZat, buildMs, feeZat, feeMs, qr);
+    deskBusy = showPrint(signed, req, priceZat, buildMs, feeZat, feeMs, qr).catch(() => undefined);
     // pressed on the register: stay with the register; pressed in the order form: go to the receipt
     if (!fromDesk) pay.scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "start" });
   } catch (e) {

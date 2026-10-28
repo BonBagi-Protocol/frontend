@@ -672,7 +672,8 @@ export function mount(root: HTMLElement): void {
     if (root.dataset.tone !== tone) root.dataset.tone = tone;
   }
 
-  scene(root, (p, info) => frame(p, info), 0.12);
+  // scroll-driven only: nothing to animate on its own once the progress settles
+  scene(root, (p, info) => { frame(p, info); return false; }, 0.12);
 
   // Keyboard: hidden steps stay focusable; tabbing into one scrolls to where it is readable.
   const READ = [0.15, 0.47, 0.66, 0.81];

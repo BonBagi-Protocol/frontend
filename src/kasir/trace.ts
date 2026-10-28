@@ -46,12 +46,14 @@ export function createTrace(list: HTMLElement, head: HTMLElement, count: HTMLEle
   const setLive = (d: number) => { live = Math.max(0, live + d); head.classList.toggle("is-live", live > 0); };
   const typeText = (node: HTMLElement, text: string) => {
     if (reduced) { node.textContent = text; return; }
+    // by code points, so a label that starts with an emoji never shows half a character
+    const cps = Array.from(text);
     let i = 0;
-    const step = Math.max(2, Math.ceil(text.length / 24));
+    const step = Math.max(2, Math.ceil(cps.length / 24));
     const tick = () => {
-      i = Math.min(text.length, i + step);
-      node.textContent = text.slice(0, i);
-      if (i < text.length) requestAnimationFrame(tick);
+      i = Math.min(cps.length, i + step);
+      node.textContent = cps.slice(0, i).join("");
+      if (i < cps.length) requestAnimationFrame(tick);
       else follow();
     };
     requestAnimationFrame(tick);

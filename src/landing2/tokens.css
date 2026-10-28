@@ -56,6 +56,7 @@ a { color: inherit; }
 }
 .nav.is-dark { color: var(--ivory); background: rgba(9, 9, 9, 0.7); }
 .nav.is-hidden { transform: translateY(-110%); }
+.nav.is-hidden:focus-within { transform: none; }
 .nav-brand { font: 900 26px/1 var(--f-display); letter-spacing: 0.01em; text-decoration: none; }
 .nav-brand b { color: var(--gold-deep); font-weight: 900; }
 .nav.is-dark .nav-brand b { color: var(--gold); }

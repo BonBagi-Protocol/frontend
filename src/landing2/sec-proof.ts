@@ -255,7 +255,7 @@ export function mount(root: HTMLElement): void {
   const rise = (el: HTMLElement, v: number) => { el.style.transform = v >= 1 ? "" : `translate3d(0,${((1 - v) * 108).toFixed(1)}%,0)`; };
   const step = (on: boolean) => (on ? 1 : 0);
 
-  scene(root, (pRaw, { time, dt }) => {
+  scene(root, (pRaw, { time, dt, top }) => {
     if (dirty) { lay = layout(); dirty = false; }
     const Ly = lay!;
     const { H, mob } = Ly;
@@ -263,7 +263,6 @@ export function mount(root: HTMLElement): void {
     lastP = p;
 
     // entry: how far the section has risen into view (before it pins)
-    const top = root.getBoundingClientRect().top;
     const entry = clamp(1 - top / H);
     const k = reduced ? 1 : 1 - Math.pow(1 - 0.16, dt / 16.7);
     entrySm += (entry - entrySm) * k;

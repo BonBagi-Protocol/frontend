@@ -556,8 +556,7 @@ export function mount(root: HTMLElement): void {
   scene(root, (p, info) => {
     if (!L.ready || L.vw !== stage.clientWidth || L.vh !== stage.clientHeight) layout();
     if (!L.ready) return;
-    const r = root.getBoundingClientRect();
-    const e = clamp(1 - r.top / info.vh);
+    const e = clamp(1 - info.top / info.vh);
     simulate(p, e, Math.min(0.05, info.dt / 1000));
     render();
   }, 0.2);

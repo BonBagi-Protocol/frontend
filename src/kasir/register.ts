@@ -5,6 +5,7 @@
 // CSP-safe: no inline style attributes in markup (CSSOM only), images only as data: URLs.
 
 import "./register.css";
+import { formatZec } from "@bonbagi/core";
 import { coinCounts, compartments, drawerWidths, initialOf, type Compartment } from "./plan.ts";
 
 export interface KasirMember {
@@ -80,11 +81,8 @@ const dot = (a: V3, b: V3) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 const nrm = (v: V3): V3 => { const l = Math.hypot(v[0], v[1], v[2]); return [v[0] / l, v[1] / l, v[2] / l]; };
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-const zec4 = (z: bigint) => (Number(z) / 1e8).toFixed(4);
-function fmtZec(z: bigint): string {
-  const N = 100000000n, f = (z % N).toString().padStart(8, "0").replace(/0+$/, "");
-  return f ? `${z / N}.${f}` : `${z / N}`;
-}
+/** Same exact formatting as the receipt and the request (no rounding). */
+const fmtZec = formatZec;
 const escH = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
 /* studio light for a camera looking down: key from the upper left front, soft fill from the right */
@@ -439,7 +437,7 @@ export function createRegister(root: HTMLElement, opts: RegisterOptions = {}): R
   function lcd(l: string, v: string, tone?: "gold" | "red") {
     lcdL.textContent = l;
     lcdV.textContent = v;
-    lcdU.hidden = !/^\d+\.\d+$/.test(v);
+    lcdU.hidden = !/^\d+(\.\d+)?$/.test(v);
     lcdEl.className = "k-lcd" + (tone ? ` k-${tone}` : "");
   }
   function lampSet(tone: "" | "mint" | "gold" | "red", flash = false) {
@@ -694,7 +692,7 @@ export function createRegister(root: HTMLElement, opts: RegisterOptions = {}): R
     }),
     error: (message) => {
       reset();
-      lcd(message.toUpperCase().slice(0, 34), "ERR", "red");
+      lcd(Array.from(message.toUpperCase()).slice(0, 34).join(""), "ERR", "red");
       lampSet("red");
     },
     ringUp: (priceZat, sharesZat) => guard(async (g) => {
@@ -707,7 +705,7 @@ export function createRegister(root: HTMLElement, opts: RegisterOptions = {}): R
         await sleep(120); live(g);
       }
       press("TOTAL");
-      lcd(`TOTAL · ${sharesZat.length} SHARES · PRINT`, zec4(priceZat));
+      lcd(`TOTAL · ${sharesZat.length} SHARES · PRINT`, fmtZec(priceZat));
       compShares(sharesZat).forEach((z, i) => {
         const cp = COMP[i];
         if (cp) cp.amt.textContent = cp.tapeAmt.textContent = `${(cp.c.bps / 100).toFixed(cp.c.bps % 100 ? 2 : 0)}% · ${fmtZec(z)}`;
@@ -730,7 +728,7 @@ export function createRegister(root: HTMLElement, opts: RegisterOptions = {}): R
       }, E.lin); live(g);
       RC.F = RC.IH; RC.dirty = true;
       void tween("sway", 1700, (_e, p) => { RC.sway = 9 + p * 8; RC.swayAmp = 0.5 * (1 - p); RC.dirty = true; }, E.lin);
-      lcd("RECEIPT PRINTED · SCAN TO PAY", zec4(d.totalZat));
+      lcd("RECEIPT PRINTED · SCAN TO PAY", fmtZec(d.totalZat));
       void camTo(null, 1300);
     }),
     split: (sharesZat, onSeal) => guard(async (g) => {
@@ -776,7 +774,7 @@ export function createRegister(root: HTMLElement, opts: RegisterOptions = {}): R
       void camTo(null, 1400);
     }),
     awaitingWallet: (totalZat) => {
-      lcd("WAITING FOR YOUR WALLET", zec4(totalZat));
+      lcd("WAITING FOR YOUR WALLET", fmtZec(totalZat));
       lampSet("mint");
       capt("Waiting for your wallet · nothing has been paid yet");
     },

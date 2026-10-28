@@ -50,7 +50,7 @@ async function copy(btn: HTMLButtonElement, text: string, fallback?: HTMLInputEl
 }
 
 /** One letter per member for the wax seal: "Mentor B" -> "B", "Hans" -> "H". */
-const initial = (label: string) => label.match(/\b([A-Z0-9])\b/)?.[1] ?? (label.trim().charAt(0).toUpperCase() || "?");
+const initial = (label: string) => label.match(/\b([A-Z0-9])\b/)?.[1] ?? (Array.from(label.trim())[0]?.toUpperCase() || "?");
 /** A gold wax seal (the landing's closing scene); gradients and the wax filter live in charter.html. */
 const sealSvg = (label: string, cracked = false) => {
   const ini = esc(initial(label));
@@ -278,8 +278,17 @@ function wireLoaded(f: SignedCharter, ready: boolean) {
       const pub = await publicKeyOf(priv);
       const who = f.charter.members.find((m) => m.pubkey === pub)!;
       justSigned = pub;
-      const left = f.charter.members.length - signed.signatures.length;
-      setFile(signed, left > 0 ? `Signed as ${who.label}. Send this file to the next member: copy or download it below.` : `Signed as ${who.label}. Every member has signed.`);
+      // count what verifies, not how many signatures the file holds: a broken one is not a signature
+      const { unsigned } = await verifyCharter(signed);
+      const have = new Set(signed.signatures.map((s) => s.pubkey));
+      const broken = unsigned.filter((i) => have.has(f.charter.members[i]!.pubkey)).length;
+      const left = unsigned.length - broken;
+      setFile(
+        signed,
+        unsigned.length === 0 ? `Signed as ${who.label}. Every member has signed.`
+        : broken > 0 ? `Signed as ${who.label}. ${broken} of ${f.charter.members.length} signatures are broken: the file changed after they signed. Do not use this file; ask the group for the original.`
+        : `Signed as ${who.label}. ${left} still to sign. Send this file to the next member: copy or download it below.`,
+      );
     } catch (e) {
       fail(human(e));
     }

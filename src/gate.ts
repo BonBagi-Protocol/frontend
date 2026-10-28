@@ -85,6 +85,22 @@ function colourUri(uri: string): string {
   return `<span class="kq">${esc(head!)}?</span>${lines.join("\n")}`;
 }
 
+/** A QR of exactly `text`, or null when it cannot hold it (medium error correction first, then low). */
+function qrFor(text: string): ReturnType<typeof qrcode> | null {
+  if (/[^\x20-\x7e]/.test(text)) return null;
+  for (const level of ["M", "L"] as const) {
+    try {
+      const qr = qrcode(0, level);
+      qr.addData(text, "Byte");
+      qr.make();
+      return qr;
+    } catch {
+      /* too long at this level */
+    }
+  }
+  return null;
+}
+
 function update() {
   const n = count();
   /** Problems in fields the person has left are red; the rest just say what is still missing. */
@@ -153,11 +169,17 @@ function update() {
   uriBox.classList.remove("waiting");
   uriBox.innerHTML = colourUri(current);
   sum.textContent = `Total ${formatZec(total)} ZEC · ${n} shielded outputs in one transaction · + network fee ≈ ${formatZec(estimateFeeZat(n))} ZEC, added by your wallet.`;
-  const qr = qrcode(0, "M");
-  qr.addData(current, "Byte");
-  qr.make();
-  qrBox.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
-  qrBox.hidden = false;
+  // The QR must hold exactly the request shown above. Too long for one code (very long addresses),
+  // or not plain ASCII (the QR library would mangle it): no QR, and the summary says so.
+  const qr = qrFor(current);
+  if (qr) {
+    qrBox.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
+    qrBox.hidden = false;
+  } else {
+    qrBox.replaceChildren();
+    qrBox.hidden = true;
+    sum.textContent += ` This request (${current.length} characters) is too long for one QR code: use Copy request or Open in wallet.`;
+  }
   copyBtn.disabled = false;
   openA.href = current;
   openA.removeAttribute("aria-disabled");

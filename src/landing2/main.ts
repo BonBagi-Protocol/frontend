@@ -7,7 +7,7 @@ import "@fontsource/instrument-serif/400-italic.css";
 import "@fontsource-variable/caveat";
 import "./tokens.css";
 
-import { start } from "./scroll";
+import { onFrame, start } from "./scroll";
 import { mount as mountPrint } from "./sec-print";
 import { mount as mountSplit } from "./sec-split";
 import { mount as mountMarket } from "./sec-market";
@@ -34,21 +34,26 @@ for (const [id, mount] of scenes) {
 
 // The nav flips to light text over dark scenes (sections marked data-tone="dark").
 const nav = $("nav");
-// Scenes can flip their own tone while scrolling (scene 4 brightens at its end), so read it every frame.
+// Scenes can flip their own tone while scrolling (scene 4 brightens at its end), so check it on
+// every frame of the shared loop: rects in its read phase, the tone after the scenes wrote theirs.
 const toned = [...document.querySelectorAll<HTMLElement>("[data-tone]")];
 let lastY = scrollY;
-function navTick() {
-  const probe = 32;
-  const dark = toned.some((el) => { if (el.dataset.tone !== "dark") return false; const r = el.getBoundingClientRect(); return r.top <= probe && r.bottom > probe; });
-  nav.classList.toggle("is-dark", dark);
-  // Latch: hide while scrolling down past the first screen, show again only on a real scroll up.
-  const y = scrollY;
-  if (y < innerHeight * 0.6) nav.classList.remove("is-hidden");
-  else if (y > lastY + 4) nav.classList.add("is-hidden");
-  else if (y < lastY - 12) nav.classList.remove("is-hidden");
-  if (Math.abs(y - lastY) > 4) lastY = y;
-  requestAnimationFrame(navTick);
-}
-requestAnimationFrame(navTick);
+let rects: DOMRect[] = [];
+onFrame(
+  () => { rects = toned.map((el) => el.getBoundingClientRect()); },
+  () => {
+    const probe = 32;
+    const dark = toned.some((el, i) => { const r = rects[i]; return el.dataset.tone === "dark" && !!r && r.top <= probe && r.bottom > probe; });
+    nav.classList.toggle("is-dark", dark);
+    // Latch: hide while scrolling down past the first screen, show again only on a real scroll up.
+    const y = scrollY;
+    if (y < innerHeight * 0.6) nav.classList.remove("is-hidden");
+    else if (y > lastY + 4) nav.classList.add("is-hidden");
+    else if (y < lastY - 12) nav.classList.remove("is-hidden");
+    if (Math.abs(y - lastY) > 4) lastY = y;
+  },
+);
+// Keyboard users never land on invisible links: a focused link brings the nav back.
+nav.addEventListener("focusin", () => nav.classList.remove("is-hidden"));
 
 start();
