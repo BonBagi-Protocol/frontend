@@ -25,7 +25,7 @@ Narration is in English, calm, about 140 words per minute (the script below is a
 | 0:48–1:06 | Open the real pay link → green "Verified … signed by both members" → *Print the receipt* → glass card: 0.003 ZEC, Dex 60% 0.0018, Hans 40% 0.0012, fee ≈ 0.00015 → tap the frosted QR to show it | "The buyer opens the link. Every signature is checked in the browser. The receipt shows exactly who gets what, before the QR appears." |
 | 1:06–1:28 | *Copy request* → Zingo PC send / pay URI → confirmation screen listing **both recipients** (hold 3 s) → confirm → sent, tx ID shown | "One request, one wallet, one confirmation. Zingo lists both members. We send." (Cut the waiting time.) |
 | 1:28–1:43 | Dex's demo address: +0.0018 with memo `bonbagi:v1 o=… c=… m=1/2`; Hans's wallet: +0.0012, `m=2/2` | "Each member receives their share directly, with an encrypted memo to match the order. Nobody held the money in between." |
-| 1:43–1:54 | Explorer: the transaction shows only shielded actions, no addresses, no amounts | "This is what the world sees: a shielded transaction. No sender, no recipients, no amounts." |
+| 1:43–1:54 | Explorer: the transaction shows only shielded actions, no addresses, no amounts | "This is what the world sees: a shielded transaction. No addresses, no amounts." |
 | 1:54–2:00 | `bonbagi.vercel.app`, repo URL | "BonBagi. One payment. Every share. Nobody's business." |
 
 ## After recording

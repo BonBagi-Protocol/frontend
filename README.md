@@ -38,7 +38,7 @@ Shortcut: **https://bonbagi.vercel.app/try** opens the pay page with the sample 
 | **Privacy** | Every share is a shielded output; transparent addresses are rejected. The charter travels in the link's `#` fragment, which browsers never send to a server. The pay, charter and raw-request pages run under a Content-Security-Policy with `connect-src 'none'`. The claims are narrow and the limits are written down in [docs/THREAT-MODEL.md](docs/THREAT-MODEL.md). |
 | **Usefulness** | Anyone who sells together (mentors, bands, co-ops, freelancers) can stop trusting one person to pay the others back. The buyer's experience is a normal Zcash payment: one link or QR, one confirmation. |
 | **Execution** | Live static site, no backend. Signature checks, split math and the request are deterministic and unit-tested. Real testnet run done (tx `485623f7…f520`); the mainnet transaction ID is added here once it is made. |
-| **Originality** | A signed split agreement plus one multi-recipient shielded payment, with no contract and no custodian. The buyer can verify the split before paying, and the public sees nothing. |
+| **Originality** | A signed split agreement plus one multi-recipient shielded payment, with no contract and no custodian. The buyer can verify the split before paying, and the public sees no addresses or amounts. |
 
 ## How it works
 
@@ -63,7 +63,7 @@ The site is fully static and client-side. There is no backend, database or accou
 
 | Party | Sees | Does not see |
 |---|---|---|
-| Public chain observer | A shielded transaction happened; its fee and number of shielded actions (≈ members + change) | Who paid, who was paid, amounts, memos |
+| Public chain observer | A shielded transaction happened; its fee and number of shielded actions (≈ members + change) | Who paid (when paid from a shielded balance), who was paid, amounts, memos |
 | Buyer | Every member's label, address, share and amount (by design, so they can check before paying) | Members' balances or other payments |
 | Each member | Their own amount and memo; the charter they signed | The buyer's identity, other buyers' payments |
 | Page host | Requests for static files (IP, time) | The charter, addresses, prices or payment requests |
