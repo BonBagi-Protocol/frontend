@@ -8,13 +8,13 @@ Deadline: **28 Oct 2026 23:59 UTC** (Thu 29 Oct 06:59 WIB). Submit early; editin
 | Track | Shielded Payments |
 | Tagline | One payment. Every share. Nobody's business. |
 | Demo URL | https://bonbagi.vercel.app (try to cheat the split: https://bonbagi.vercel.app/try) |
-| Video | https://github.com/BonBagi/frontend/releases/download/v6.2/BonBagi-demo.mp4 |
+| Video | https://bonbagi.vercel.app/demo.mp4 (copy: https://github.com/BonBagi/frontend/releases/download/v6.2/BonBagi-demo.mp4) |
 | Repository | https://github.com/BonBagi/frontend (with https://github.com/BonBagi/core and https://github.com/BonBagi/watcher) |
 | Team | Dex Bennett (owner), Hans, Dave |
 
-## Description (1930 / 2,000 characters)
+## Description (1980 / 2,000 characters)
 
-This text claims only what has happened (testnet run). After the real two-recipient mainnet payment succeeds, change the end of the "What is real" sentence to "…each memo read by its member) and on mainnet from Zingo PC to two members." and recount.
+This text claims only what has happened: the team's testnet run (18 Oct). This submission does not include a mainnet payment.
 
 ```text
 BonBagi lets a small collective (two mentors running a class, a band, a co-op) get paid with one Zcash shielded payment that is split directly to every member in a single transaction. No treasurer collects the money, no custodian holds it, and no server learns who was paid how much.
@@ -25,15 +25,15 @@ Try to cheat it: bonbagi.vercel.app/try moves 10% to the host after signing. The
 
 Privacy, stated narrowly: public observers see that a shielded transaction happened and its action count, not who paid (from a shielded balance), who was paid, or how much. The buyer sees the member list by design, so they can check before paying. The pay and charter pages run under a Content-Security-Policy that forbids any network call; no cookies, storage, analytics or logs. Transparent addresses are rejected. Our threat model lists the limits (visible action count, signatures prove agreement not identity).
 
-What is real: every check runs in the browser (TypeScript, @noble/ed25519, deterministic zatoshi split, 96 tests in CI); the same request was paid on Zcash testnet (one transaction, three shielded outputs, each memo read by its member). What is a mock: only the sample charter, whose made-up addresses no wallet accepts.
+What is real: every check runs in the browser (TypeScript, @noble/ed25519, deterministic zatoshi split, 96 tests in CI); the same request was paid on Zcash testnet (one transaction, three shielded outputs, each memo read by its member). What is a mock: only the sample charter and the demo collective (Mentor A/B) in the video, whose made-up addresses no wallet accepts.
 ```
 
-Character count checked with `len()` on the exact text above: **1930**.
+Character count checked with `len()` on the exact text above: **1980**.
 
 ## Before pressing submit
 
-- [ ] Real mainnet payment done (one transaction, two correct shares (60/40), each member sees their memo).
-- [ ] Video uploaded, under 2:00, shows the wallet listing all recipients.
+- [x] Testnet payment proof: tx `485623f7eaf97802d5399faa3610212b39749618fd024d4ad9201f4f31a5f520` (block 4514615), three shielded outputs, each memo read by its member.
+- [x] Video uploaded, under 2:00 (72 s): demo collective, the cheat refused, the testnet run on an explorer.
 - [ ] Demo URL opens (HTTP 200) on desktop and phone; sample charter flow works.
 - [ ] Repository public, README and `docs/THREAT-MODEL.md` up to date, internal planning notes removed from history.
 - [ ] Description pasted exactly as above.

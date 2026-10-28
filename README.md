@@ -10,7 +10,7 @@ BonBagi lets a small collective (two mentors running a class, a band, a co-op) g
 
 - **Live demo:** https://bonbagi.vercel.app (no install, no account, no wallet needed to try it)
 - **Try to cheat the split:** https://bonbagi.vercel.app/try
-- **Video (81 s, captions, no sound needed):** https://github.com/BonBagi/frontend/releases/download/v6.2/BonBagi-demo.mp4
+- **Video (72 s, captions, no sound needed):** https://bonbagi.vercel.app/demo.mp4
 
 ![The pay page: one frosted card, the total, each member's share, and the QR kept under frost until the buyer taps it](docs/img/pay-card.webp)
 
