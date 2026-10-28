@@ -13,7 +13,7 @@
     "deploy": "npm run build && node scripts/prepare-deploy.mjs && vercel deploy dist --prod --yes"
   },
   "dependencies": {
-    "@bonbagi/core": "github:BonBagi/core#v0.1.0",
+    "@bonbagi/core": "github:BonBagi-Protocol/core#v0.1.0",
     "@fontsource-variable/archivo": "^5.2.5",
     "@fontsource-variable/caveat": "^5.3.0",
     "@fontsource-variable/martian-mono": "^5.3.0",
