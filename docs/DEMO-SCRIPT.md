@@ -1,5 +1,7 @@
 # Demo video script (2:00)
 
+> **Superseded.** This was plan A (a live mainnet payment). The submitted film (1:44, https://bonbagi.vercel.app/demo.mp4) follows plan B: the demo collective in the real UI, the cheat refused, and the team's testnet dry run (tx `485623f7…f520`) as the payment proof. Kept for the record.
+
 Goal: show one **real mainnet** payment from Zingo PC that lands in two members' wallets as two shielded outputs, and show that the public sees none of it. The demo collective has two members (Dex and Hans) split **60/40**: an uneven split shows the split math at work (50/50 would look like simple halving), and at a price of 0.003 ZEC it gives round shares of 0.0018 and 0.0012. The same flow works for any number of members; the sample charter on the pay page shows three.
 
 Narration is in English, calm, about 140 words per minute (the script below is about 184 words, so there is room for pauses). Record at 1920×1080, browser zoom 125% so text is readable.

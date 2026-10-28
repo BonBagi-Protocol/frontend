@@ -1,6 +1,6 @@
 # BonBagi
 
-[![CI](https://github.com/BonBagi/frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/BonBagi/frontend/actions/workflows/ci.yml) ![tests](https://img.shields.io/badge/tests-39%20passing-2ea44f) ![license](https://img.shields.io/badge/license-MIT-blue)
+[![CI](https://github.com/BonBagi/frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/BonBagi/frontend/actions/workflows/ci.yml) ![tests](https://img.shields.io/badge/tests-46%20passing-2ea44f) ![license](https://img.shields.io/badge/license-MIT-blue)
 
 **One payment. Every share. Nobody's business.**
 
@@ -71,7 +71,7 @@ The site is fully static and client-side. There is no backend, database or accou
 The claim is deliberately narrow: BonBagi adds no privacy of its own; it avoids removing the privacy Zcash already provides.
 
 Enforced in code, not just promised:
-- Strict Content-Security-Policy on the pay, charter and raw-request pages with `connect-src 'none'`: they cannot make network requests or load third-party scripts, fonts or images. The landing page may only fetch its own 3D model files from this site.
+- Strict Content-Security-Policy on every page (landing, pay, charter, raw request) with `connect-src 'none'`: no page can make network requests or load third-party scripts, fonts or images.
 - No cookies, no `localStorage`, no logging of addresses or payment requests.
 - Transparent addresses are rejected; every share is shielded.
 - Deterministic zatoshi split (largest-remainder, ties to the first member) and a minimum per member to avoid dust.
@@ -106,9 +106,9 @@ npm run dev      # http://localhost:5173
 npm run build    # static site in dist/
 ```
 
-Payment logic lives in **[@bonbagi/core](https://github.com/BonBagi/core)** (signed charter, split, ZIP-321, memos, pay links; pure and tested). This app installs it from the `v0.1.0` tag and runs the same 39 tests against the installed package (`test/`).
+Payment logic lives in **[@bonbagi/core](https://github.com/BonBagi/core)** (signed charter, split, ZIP-321, memos, pay links; pure and tested). This app installs it from the `v0.1.0` tag and runs the same 39 tests against the installed package, plus 7 tests for the cash register's split plan (`test/`, 46 in total).
 
-Pages: `index.html` + `src/landing/` (landing), `pay.html` + `src/pay-page.ts`, `charter.html` + `src/charter-page.ts`, `gate.html` + `src/gate.ts`. Dependencies: `@noble/ed25519` (Ed25519), `qrcode-generator` and `three` (landing only), all bundled; nothing is loaded from a CDN. Fonts are bundled too (SIL Open Font License, see `src/fonts/LICENSE.txt`).
+Pages: `index.html` + `src/landing2/` (landing), the cash register in `src/kasir/`, `pay.html` + `src/pay-page.ts`, `charter.html` + `src/charter-page.ts`, `gate.html` + `src/gate.ts`. Dependencies: `@noble/ed25519` (Ed25519), `qrcode-generator` and self-hosted fonts (@fontsource), all bundled; nothing is loaded from a CDN. Fonts are bundled too (SIL Open Font License, see `src/fonts/LICENSE.txt`).
 
 ## Repositories
 

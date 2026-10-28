@@ -41,4 +41,4 @@
 ## Split (owner 40%, others 30% each)
 - Dex: owner, charter + pay page, demo video
 - Hans: split math (#4), memo (#5), privacy hygiene (#6), testnet dry run; next: mainnet gate receiving wallet (#1), sign the real charter (#2), receiving wallet in the demo (#8), phone review (#3), threat model review (#7)
-- Dave: ? (backlog to be split)
+- Dave: device testing and UI feedback (light mode on low-end devices; the cash-register idea for the pay page)

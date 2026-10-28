@@ -9,11 +9,11 @@
 | BB-05 | One memo per output: order ID + charter fingerprint, no personal data | core | done |
 | BB-06 | Privacy hygiene: CSP without network on the inner pages, no storage, no logs, no referrer | frontend | done |
 | BB-07 | Threat model and privacy table | frontend | done |
-| BB-08 | Two-minute demo video with the real payment | frontend | open |
+| BB-08 | Two-minute demo video (testnet dry run as the payment proof; demo collective) | frontend | done (v8.0) |
 | BB-09 | Public repositories and ZECATHON submission | all | open |
 | BB-10 | `@bonbagi/core` package, tests, CI, v0.1.0 | core | done |
 | BB-11 | Watcher: each member verifies their own share with a viewing key, signed receipt, no server | watcher | done (v0.1.0) |
-| BB-12 | Charter and raw-request pages in the pay page's visual language | frontend | in progress |
+| BB-12 | Charter and raw-request pages in the pay page's visual language | frontend | done |
 | BB-13 | Scan the full-screen QR from a real phone into a second wallet | frontend | open |
 | BB-14 | Pad transactions with dummy outputs so the action count hides the member count | core | later |
 | BB-15 | Referrer share paid from a referrer-hosted pay page | core | later |

@@ -113,7 +113,7 @@ function markup(): string {
       <div class="pf-col pf-col-a">
         <p class="pf-pk">Zcash testnet · 18 October</p>
         <h2 class="pf-ph"><span class="pf-ln"><span>On testnet, it</span></span> <span class="pf-ln"><span><em>already happened.</em></span></span></h2>
-        <p class="pf-pp">Our team ran it on Zcash testnet on 18 October: one transaction, three shielded outputs (0.0012 / 0.0009 / 0.0009 TAZ), each memo read by its member.</p>
+        <p class="pf-pp">Our team ran a dry run on Zcash testnet on 18 October: one transaction, three shielded outputs (0.0012 / 0.0009 / 0.0009 TAZ) to our own test wallets, each memo read by the receiving wallet.</p>
         <div class="pf-tx">
           <div class="pf-txl"><span>Transaction id</span><button class="pf-copy" type="button">Copy</button></div>
           <code class="pf-txc" aria-hidden="true">${chars}</code>
