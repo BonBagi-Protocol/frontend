@@ -9,7 +9,7 @@ import { scene, seg, easeInOut, easeOut, clamp, reduced } from "./scroll";
 
 const TXID = "485623f7eaf97802d5399faa3610212b39749618fd024d4ad9201f4f31a5f520";
 const EXPLORER = `https://blockexplorer.one/zcash/testnet/tx/${TXID}`;
-const THREAT = "https://github.com/BonBagi/frontend/blob/main/docs/THREAT-MODEL.md";
+const THREAT = "https://github.com/BonBagi-Protocol/frontend/blob/main/docs/THREAT-MODEL.md";
 
 // What a transparent ledger shows anyone walking past (the old way, with a treasurer).
 const LEDGER = [

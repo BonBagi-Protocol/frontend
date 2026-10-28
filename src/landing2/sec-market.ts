@@ -411,7 +411,7 @@ export function mount(root: HTMLElement): void {
       <div class="mk-panels">
         <article class="mk-panel"><h3><span>01</span>Sign</h3><p>Every member signs the same charter: each shielded address and share, signed with their own key. Change one number and every signature breaks.</p><a class="mk-link" href="./charter.html">Make a charter</a></article>
         <article class="mk-panel"><h3><span>02</span>Pay once</h3><p>The buyer's browser checks every signature and builds one ZIP-321 request. Their wallet sends one transaction with one shielded output per member, each with an encrypted memo.</p><a class="mk-link" href="./pay.html">Pay a collective</a></article>
-        <article class="mk-panel"><h3><span>03</span>Check your share</h3><p>Each member runs the watcher with their own viewing key and gets a signed receipt that their share arrived. No server in the middle.</p><a class="mk-link" href="https://github.com/BonBagi/watcher" rel="noopener">BonBagi/watcher</a></article>
+        <article class="mk-panel"><h3><span>03</span>Check your share</h3><p>Each member runs the watcher with their own viewing key and gets a signed receipt that their share arrived. No server in the middle.</p><a class="mk-link" href="https://github.com/BonBagi-Protocol/watcher" rel="noopener">BonBagi-Protocol/watcher</a></article>
       </div>
     </div>
     <div class="mk-try">

@@ -133,7 +133,7 @@ const TEMPLATE =
         "</p>" +
         '<div class="cf-side">' + LUNAS +
           '<nav class="cf-chips" aria-label="More BonBagi">' +
-            chip("/demo.mp4", "Demo video", "gold") + chip("https://github.com/BonBagi", "GitHub", "ink", true) + chip("./pay.html", "Pay", "mint") +
+            chip("/demo.mp4", "Demo video", "gold") + chip("https://github.com/BonBagi-Protocol", "GitHub", "ink", true) + chip("./pay.html", "Pay", "mint") +
             chip("./charter.html", "Charter", "paper") + chip("./gate.html", "Raw request", "gold") + chip("/try", "Try to cheat", "stamp") +
           "</nav>" +
         "</div>" +

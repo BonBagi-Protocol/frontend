@@ -1,6 +1,6 @@
 # BonBagi
 
-[![CI](https://github.com/BonBagi/frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/BonBagi/frontend/actions/workflows/ci.yml) ![tests](https://img.shields.io/badge/tests-46%20passing-2ea44f) ![license](https://img.shields.io/badge/license-MIT-blue)
+[![CI](https://github.com/BonBagi-Protocol/frontend/actions/workflows/ci.yml/badge.svg)](https://github.com/BonBagi-Protocol/frontend/actions/workflows/ci.yml) ![tests](https://img.shields.io/badge/tests-46%20passing-2ea44f) ![license](https://img.shields.io/badge/license-MIT-blue)
 
 **One payment. Every share. Nobody's business.**
 
@@ -28,7 +28,7 @@ Shortcut: **https://bonbagi.vercel.app/try** opens the pay page with the sample 
 
 | Real | Mock |
 |---|---|
-| Ed25519 charter signing and verification, the deterministic zatoshi split, the ZIP-321 request, the QR and the memos are all computed in your browser by [@bonbagi/core](https://github.com/BonBagi/core) (39 unit tests). | The **sample charter** on the pay page and the **demo collective** (Mentor A, Mentor B) on the charter page and in the video: fresh throwaway keys and made-up testnet addresses that fail the wallet checksum, so they cannot move funds. |
+| Ed25519 charter signing and verification, the deterministic zatoshi split, the ZIP-321 request, the QR and the memos are all computed in your browser by [@bonbagi/core](https://github.com/BonBagi-Protocol/core) (39 unit tests). | The **sample charter** on the pay page and the **demo collective** (Mentor A, Mentor B) on the charter page and in the video: fresh throwaway keys and made-up testnet addresses that fail the wallet checksum, so they cannot move funds. |
 | A real payment on **Zcash testnet** (Hans, 18 Oct): one ZIP-321 request built by `buildPaymentRequest`, one transaction ([`485623f7…f520`](https://blockexplorer.one/zcash/testnet/tx/485623f7eaf97802d5399faa3610212b39749618fd024d4ad9201f4f31a5f520), block 4514615; full ID `485623f7eaf97802d5399faa3610212b39749618fd024d4ad9201f4f31a5f520`), three shielded outputs of 0.0012 / 0.0009 / 0.0009 TAZ, each memo read by the receiving wallet, fee 0.0002 = our ZIP-317 estimate. | The numbers in the landing page animation (0.01 ZEC, 40/30/30) are illustration only. |
 
 ## How it maps to the judging criteria
@@ -106,7 +106,7 @@ npm run dev      # http://localhost:5173
 npm run build    # static site in dist/
 ```
 
-Payment logic lives in **[@bonbagi/core](https://github.com/BonBagi/core)** (signed charter, split, ZIP-321, memos, pay links; pure and tested). This app installs it from the `v0.1.0` tag and runs the same 39 tests against the installed package, plus 7 tests for the cash register's split plan (`test/`, 46 in total).
+Payment logic lives in **[@bonbagi/core](https://github.com/BonBagi-Protocol/core)** (signed charter, split, ZIP-321, memos, pay links; pure and tested). This app installs it from the `v0.1.0` tag and runs the same 39 tests against the installed package, plus 7 tests for the cash register's split plan (`test/`, 46 in total).
 
 Pages: `index.html` + `src/landing2/` (landing), the cash register in `src/kasir/`, `pay.html` + `src/pay-page.ts`, `charter.html` + `src/charter-page.ts`, `gate.html` + `src/gate.ts`. Dependencies: `@noble/ed25519` (Ed25519), `qrcode-generator` and self-hosted fonts (@fontsource), all bundled; nothing is loaded from a CDN. Fonts are bundled too (SIL Open Font License, see `src/fonts/LICENSE.txt`).
 
@@ -115,8 +115,8 @@ Pages: `index.html` + `src/landing2/` (landing), the cash register in `src/kasir
 | Repo | What |
 |---|---|
 | **frontend** (this) | The live site: landing, pay, charter and raw-request pages |
-| [core](https://github.com/BonBagi/core) | `@bonbagi/core`: charter, split, ZIP-321, memos, pay links (v0.1.0) |
-| [watcher](https://github.com/BonBagi/watcher) | Member-run verifier (Rust CLI, v0.1.0): confirms your own share with a viewing key and signs a receipt; byte-for-byte the same rules as core; no server |
+| [core](https://github.com/BonBagi-Protocol/core) | `@bonbagi/core`: charter, split, ZIP-321, memos, pay links (v0.1.0) |
+| [watcher](https://github.com/BonBagi-Protocol/watcher) | Member-run verifier (Rust CLI, v0.1.0): confirms your own share with a viewing key and signs a receipt; byte-for-byte the same rules as core; no server |
 
 Backlog with shared IDs: [docs/BACKLOG.md](docs/BACKLOG.md). Security: [SECURITY.md](SECURITY.md). Contributing: [CONTRIBUTING.md](CONTRIBUTING.md).
 
