@@ -168,7 +168,7 @@ function update() {
   const total = payments.reduce((t, p) => t + p.amountZat, 0n);
   uriBox.classList.remove("waiting");
   uriBox.innerHTML = colourUri(current);
-  sum.textContent = `Total ${formatZec(total)} ZEC · ${n} shielded outputs in one transaction · + network fee ≈ ${formatZec(estimateFeeZat(n))} ZEC, added by your wallet.`;
+  sum.textContent = `Total ${formatZec(total)} ZEC · ${n} shielded outputs in one transaction · + network fee ≈ ${formatZec(estimateFeeZat(n))} ZEC (estimate; your wallet sets the final fee).`;
   // The QR must hold exactly the request shown above. Too long for one code (very long addresses),
   // or not plain ASCII (the QR library would mangle it): no QR, and the summary says so.
   const qr = qrFor(current);

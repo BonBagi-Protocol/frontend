@@ -595,7 +595,7 @@ $("#build").addEventListener("click", async () => {
               </ul>
               <div class="r-rule2"></div>
               <div class="r-total"><span class="lab">Total · ${n} members</span><span class="big">${formatZec(req.totalZat)}<small>ZEC</small></span></div>
-              <p class="r-fine"><span>+ network fee, added by your wallet (ZIP-317)</span><span>≈ ${fee} ZEC</span></p>
+              <p class="r-fine"><span>+ network fee, estimate; your wallet sets the final fee (ZIP-317)</span><span>≈ ${fee} ZEC</span></p>
               <p class="r-fine"><span>One transaction · ${n} shielded outputs</span></p>
               <div class="r-rule"></div>
               ${qr ? `<button type="button" class="qrveil" id="qrveil" aria-expanded="false"><span class="qrimg" role="img" aria-label="QR code of the payment request">${svgSmall}</span><em>Tap to show QR</em></button>` : `<p class="r-fine c">This request (${n} payments, ${req.uri.length} characters) is too long for one QR code. Use “Open in wallet” or “Copy request”.</p>`}
