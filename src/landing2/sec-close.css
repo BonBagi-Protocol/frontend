@@ -162,7 +162,7 @@
   position: absolute; right: 2%; top: -64px; z-index: 2; width: clamp(170px, 16vw, 240px); height: auto; max-width: none;
   transform: rotate(-12deg); mix-blend-mode: multiply; opacity: 0.94; pointer-events: none;
 }
-.sec-close .cf-stamp-t { font: 900 72px/1 var(--f-display); letter-spacing: 0.08em; }
+.sec-close .cf-stamp-t { font: 900 72px/1 var(--f-display); letter-spacing: 0.16em; }
 .sec-close .cf-chips { position: relative; display: flex; flex-wrap: wrap; gap: 18px 14px; }
 .sec-close .cf-chip {
   --cf-r: 0deg;

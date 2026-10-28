@@ -560,7 +560,7 @@ export function createRegister(root: HTMLElement, opts: RegisterOptions = {}): R
       txt("scan the large QR on the page", W / 2, y, `400 4.8px ${MONO}`, "#53534d", "center");
     }
     y += 13;
-    txt("terima kasih!", W / 2, y, `italic 400 11px "Instrument Serif", serif`, "#151515", "center");
+    txt("thank you!", W / 2, y, `italic 400 11px "Instrument Serif", serif`, "#151515", "center");
     return c.toDataURL("image/png");
   }
 

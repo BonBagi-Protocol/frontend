@@ -102,18 +102,18 @@ function notaHTML(extra = ""): string {
     <path class="sig" d="${SIG}"/>
     <path class="ringp" d="${RING}"/>
   </svg>
-  <div class="n-title">NOTA</div>
+  <div class="n-title">BILL</div>
   <div class="n-no">No.<b>0721</b></div>
-  <div class="n-l n-tgl">Tgl.</div><div class="n-l n-tuan">Tuan</div>
-  <div class="hw hwa hw-tgl">28/10/26</div><div class="hw hwa hw-tuan">Pak Raka</div>
-  <div class="n-l n-qty">Banyak</div><div class="n-l n-name">Nama barang</div><div class="n-l n-amt">Jumlah</div>
-  <div class="hw hwa row r1"><span class="q">2</span><span class="nm">Kelas desain</span><span class="am">0,0060</span></div>
-  <div class="hw hwa row r2"><span class="q">1</span><span class="nm">Modul + rekaman</span><span class="am">0,0025</span></div>
-  <div class="hw hwa row r3"><span class="q">1</span><span class="nm">Sewa studio</span><span class="am">0,0015</span></div>
-  <div class="n-l n-tot">Jumlah</div>
-  <div class="hw hwa tot">0,0100<small>ZEC</small></div>
-  <div class="n-l n-tt">Tanda terima,</div><div class="n-l n-hk">Hormat kami,</div>
-  <div class="n-fine">Barang yang sudah dibeli tidak dapat ditukar / dikembalikan</div>
+  <div class="n-l n-tgl">Date</div><div class="n-l n-tuan">To</div>
+  <div class="hw hwa hw-tgl">28/10/26</div><div class="hw hwa hw-tuan">Mr. Raka</div>
+  <div class="n-l n-qty">Qty</div><div class="n-l n-name">Item</div><div class="n-l n-amt">Amount</div>
+  <div class="hw hwa row r1"><span class="q">2</span><span class="nm">Design class</span><span class="am">0.0060</span></div>
+  <div class="hw hwa row r2"><span class="q">1</span><span class="nm">Notes + replay</span><span class="am">0.0025</span></div>
+  <div class="hw hwa row r3"><span class="q">1</span><span class="nm">Studio rent</span><span class="am">0.0015</span></div>
+  <div class="n-l n-tot">Total</div>
+  <div class="hw hwa tot">0.0100<small>ZEC</small></div>
+  <div class="n-l n-tt">Received by,</div><div class="n-l n-hk">Sincerely,</div>
+  <div class="n-fine">Goods sold cannot be exchanged or returned</div>
   <div class="stamp"></div>${extra}
 </div>`;
 }
@@ -154,8 +154,8 @@ function makeStamp(): string {
   g.lineWidth = 1.8; rr(12, 12, w - 24, h - 24, 7); g.stroke();
   g.font = "900 72px 'Sofia Sans Extra Condensed', 'Arial Narrow', sans-serif";
   g.textAlign = "center"; g.textBaseline = "middle";
-  (g as CanvasRenderingContext2D & { letterSpacing?: string }).letterSpacing = "7px";
-  g.fillText("LUNAS", w / 2 + 3.5, h / 2 + 4);
+  (g as CanvasRenderingContext2D & { letterSpacing?: string }).letterSpacing = "14px";
+  g.fillText("PAID", w / 2 + 7, h / 2 + 4);
   const img = g.getImageData(0, 0, c.width, c.height), d = img.data, cw = c.width;
   for (let y = 0; y < c.height; y++) for (let x = 0; x < cw; x++) {
     const k = (y * cw + x) * 4 + 3;

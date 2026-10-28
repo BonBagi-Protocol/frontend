@@ -40,7 +40,7 @@ function addRow(i: number) {
   row.innerHTML = `
     <legend><i class="dot c${i}"></i>Recipient ${i + 1}</legend>
     <div class="rcp-grid">
-      <div><label for="a${i}">Shielded address</label><input id="a${i}" spellcheck="false" placeholder="u1… or zs1…" aria-describedby="a${i}-err" /><p class="field-err" id="a${i}-err" hidden></p></div>
+      <div><label for="a${i}">Shielded address</label><input id="a${i}" spellcheck="false" placeholder="u1…, utest1… or zs1…" aria-describedby="a${i}-err" /><p class="field-err" id="a${i}-err" hidden></p></div>
       <div><label for="z${i}">ZEC</label><input id="z${i}" inputmode="decimal" value="${DEFAULTS[i]}" aria-describedby="z${i}-err" /><p class="field-err" id="z${i}-err" hidden></p></div>
     </div>
     ${i === MAX - 1 ? `<p class="m-remove"><button type="button" class="ghost small" id="rm">Remove recipient 3</button></p>` : ""}`;
@@ -111,7 +111,7 @@ function update() {
   for (let i = 0; i < n; i++) {
     const a = $<HTMLInputElement>(`#a${i}`).value.trim();
     let aErr: string | null = null;
-    if (!a) aErr = "Paste a shielded address (u1… or zs1…).";
+    if (!a) aErr = "Paste a shielded address (u1… or zs1…; on testnet utest1… or ztestsapling1…).";
     else {
       try {
         const info = assertShielded(a);

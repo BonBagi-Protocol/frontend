@@ -217,7 +217,7 @@ function stall(): string {
   s += `<g transform="${MT(4.36, 6.96, 1.005)}" stroke="#b3a993" stroke-width=".018"><path d="M.06,.07 h.5 M.06,.13 h.32 M.06,.42 h.45"/></g>`;
   // near wall + chalk board
   s += box(1.0, 7.75, 0.14, 4.25, 7.95, 2.95, { t: "#d8bd98", r: "#c59f74", l: "#b48d63" });
-  s += `<g transform="${ML(1.45, 7.953, 2.42)}"><rect x="0" y="0" width="2.35" height="1.0" rx=".04" fill="#2c3d36" stroke="#8a6440" stroke-width=".05"/><text x="1.175" y=".42" class="mk-t-chalk" font-size=".27" text-anchor="middle">BAYAR SEKALI</text><text x="1.175" y=".79" class="mk-t-chalk" font-size=".27" text-anchor="middle">BAGI SEMUA</text></g>`;
+  s += `<g transform="${ML(1.45, 7.953, 2.42)}"><rect x="0" y="0" width="2.35" height="1.0" rx=".04" fill="#2c3d36" stroke="#8a6440" stroke-width=".05"/><text x="1.175" y=".42" class="mk-t-chalk" font-size=".27" text-anchor="middle">PAY ONCE</text><text x="1.175" y=".79" class="mk-t-chalk" font-size=".27" text-anchor="middle">SPLIT TO ALL</text></g>`;
   // striped awning
   const rx0 = 0.85, rx1 = 4.42, rz0 = 3.42, rz1 = 2.94, ry0 = 3.45, ry1 = 8.12, N = 9;
   for (let i = 0; i < N; i++) { const ya = ry0 + ((ry1 - ry0) * i) / N, yb = ry0 + ((ry1 - ry0) * (i + 1)) / N; s += poly([[rx0, ya, rz0], [rx1, ya, rz1], [rx1, yb, rz1], [rx0, yb, rz0]], i % 2 ? "#fff6e6" : "#d4452b"); }
@@ -229,7 +229,7 @@ function stall(): string {
   }
   s += ln([2.93, 4.6, 3.14], [2.93, 4.6, 3.3], "#4a3a2c", 0.06) + ln([2.93, 7.0, 3.14], [2.93, 7.0, 3.3], "#4a3a2c", 0.06);
   s += box(2.86, 3.95, 3.28, 2.97, 7.65, 4.14, { t: "#4a3a32", r: "#231c1a", l: "#352a26" });
-  s += `<text transform="${MR(2.972, 5.8, 3.48)}" class="mk-t-sign" font-size=".6" text-anchor="middle" fill="#ffe7b0">KELAS ZCASH</text>`;
+  s += `<text transform="${MR(2.972, 5.8, 3.48)}" class="mk-t-sign" font-size=".6" text-anchor="middle" fill="#ffe7b0">ZCASH CLASS</text>`;
   for (let i = 0; i < 12; i++) { const y = 4.08 + i * 0.315; for (const z of [4.04, 3.37]) { const p = P(2.975, y, z); s += `<circle cx="${R(p[0])}" cy="${R(p[1])}" r=".042" fill="#fff1cc"/>`; } }
   s += ln([4.42, 7.72, 2.94], [4.42, 7.72, 2.5], "#4a3a2c", 0.02) + cyl(4.42, 7.72, 2.3, 2.5, 0.1, "#6b5038", "#87674a");
   return s;
@@ -239,7 +239,7 @@ function cart(): string {
   let s = ln([x0, y0 + 0.12, 0.95], [1.35, y0 + 0.12, 0.7], "#8a6440", 0.06) + ln([x0, y1 - 0.12, 0.95], [1.35, y1 - 0.12, 0.7], "#8a6440", 0.06);
   s += box(x0, y0, 0.45, x1, y1, 1.18, { t: "#f1e4c6", r: "#4ba596", l: "#3a8478" });
   s += poly([[x0, y1 + 0.001, 0.95], [x1, y1 + 0.001, 0.95], [x1, y1 + 0.001, 1.0], [x0, y1 + 0.001, 1.0]], "#fffaf0");
-  s += `<text transform="${ML(2.85, y1 + 0.002, 0.8)}" class="mk-t-chalk" font-size=".24" text-anchor="middle" fill="#fffaf0">WEDANG JAHE</text>`;
+  s += `<text transform="${ML(2.85, y1 + 0.002, 0.8)}" class="mk-t-chalk" font-size=".24" text-anchor="middle" fill="#fffaf0">GINGER TEA</text>`;
   s += box(3.05, 8.75, 1.18, 3.6, 9.25, 1.6, { t: "#eaf3f7", r: "#d4e4ec", l: "#bcd0db" }) + cyl(3.33, 9.0, 1.18, 1.36, 0.1, "#e0a253", "#f3c98a");
   s += cyl(2.45, 9.0, 1.18, 1.5, 0.27, "#a9b1bf", "#d3d8e0") + ell(2.45, 9.0, 1.501, 0.21, "#6b4a32");
   for (const xw of [2.45, 3.3]) s += `<g transform="${ML(xw, y1 + 0.03, 0.38)}"><circle r=".36" fill="#3a3330" stroke="#a88a66" stroke-width=".06"/><path d="M-.3,0 H.3 M0,-.3 V.3 M-.21,-.21 L.21,.21 M-.21,.21 L.21,-.21" stroke="#a88a66" stroke-width=".03"/><circle r=".06" fill="#c9a77d"/></g>`;
@@ -327,7 +327,7 @@ const SIG = ["M0,.06 c.08,-.2 .12,.12 .2,-.04 c.06,-.12 .1,.1 .18,0 c.05,-.06 .1
 function boardSvg(): string {
   // drawn on the board face (y = 3.402); local u → +x, v → down
   let s = `<g transform="${ML(4.9, 3.403, 2.24)}">`;
-  s += `<text x="0" y=".24" class="mk-t-row" font-size=".26" fill="#151515">Charter</text><text x="1.86" y=".23" class="mk-t-mono" font-size=".1" text-anchor="end">KELAS ZCASH</text><line x1="0" y1=".33" x2="1.86" y2=".33" stroke="#d7d6cf" stroke-width=".015"/>`;
+  s += `<text x="0" y=".24" class="mk-t-row" font-size=".26" fill="#151515">Charter</text><text x="1.86" y=".23" class="mk-t-mono" font-size=".1" text-anchor="end">ZCASH CLASS</text><line x1="0" y1=".33" x2="1.86" y2=".33" stroke="#d7d6cf" stroke-width=".015"/>`;
   for (let i = 0; i < 3; i++) {
     const v = 0.62 + i * 0.34;
     s += `<text x="0" y="${v}" class="mk-t-row" font-size=".27" fill="#151515">${NAMES[i]}</text>`;
@@ -383,7 +383,7 @@ export function mount(root: HTMLElement): void {
         </defs>
       </svg>
       ${svgSpr("mk-board", boardBB, boardSvg())}
-      ${svgSpr("mk-lunas", bonBB, `<g transform="${MT(4.6, 6.64, 1.006)}"><g class="mk-pop" id="mk-lunas-g">${stampSvg("LUNAS", "#c0341d")}</g></g>`)}
+      ${svgSpr("mk-lunas", bonBB, `<g transform="${MT(4.6, 6.64, 1.006)}"><g class="mk-pop" id="mk-lunas-g">${stampSvg("PAID", "#c0341d")}</g></g>`)}
       ${svgSpr("mk-refused", qrBB, `<g transform="${MR(4.6, 4.74, 1.24)}"><g transform="scale(1.25)">${stampSvg("REFUSED", "#c0341d")}</g></g>`)}
       ${sprites.map((s) => svgSpr(s.id, s.bb, s.html, s.cls)).join("")}
       ${svgSpr("mk-balloon", [balloonP[0] - 0.2, balloonP[1] - 2.35, 0.8, 1.4], `<g transform="translate(${R(balloonP[0])},${R(balloonP[1])})"><path d="M.28,-1.06 Q.4,-1.5 .3,-1.78" stroke="#8a7a66" stroke-width=".02" fill="none"/><ellipse cx=".3" cy="-2.0" rx=".2" ry=".24" fill="#e2472c"/><ellipse cx=".24" cy="-2.08" rx=".05" ry=".08" fill="#ffc2b2" opacity=".85"/></g>`, "mk-sway")}

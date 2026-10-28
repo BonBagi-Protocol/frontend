@@ -406,7 +406,7 @@ function addMemberRow() {
       <div><label for="${id}-pct">Share %</label><input id="${id}-pct" data-f="pct" inputmode="decimal" placeholder="50" aria-describedby="${id}-pct-err" /><p class="field-err" id="${id}-pct-err" hidden></p></div>
     </div>
     <label for="${id}-address">Shielded address</label>
-    <input id="${id}-address" data-f="address" placeholder="u1… or zs1…" spellcheck="false" aria-describedby="${id}-address-err" />
+    <input id="${id}-address" data-f="address" placeholder="u1…, utest1… or zs1…" spellcheck="false" aria-describedby="${id}-address-err" />
     <p class="field-err" id="${id}-address-err" hidden></p>
     <label for="${id}-pubkey">Public key</label>
     <div class="inline"><input id="${id}-pubkey" data-f="pubkey" placeholder="64 characters, from their key" spellcheck="false" aria-describedby="${id}-pubkey-err" /><button type="button" class="ghost mine" hidden>Use my key</button></div>

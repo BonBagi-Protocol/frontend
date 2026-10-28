@@ -584,7 +584,7 @@ $("#build").addEventListener("click", async () => {
           ${printer("ok")}
           <div class="feed">
             <section class="receipt" aria-labelledby="bon-title">
-              <div class="bagi" aria-hidden="true"><b>Bagi ×${n}</b><small>split · signed</small></div>
+              <div class="bagi" aria-hidden="true"><b>Split ×${n}</b><small>signed · checked</small></div>
               <p class="r-brand">BONBAGI</p>
               <p class="r-sub">Receipt · bagi = split</p>
               <h2 class="r-title" id="bon-title">${esc(c.title)}</h2>
@@ -601,7 +601,7 @@ $("#build").addEventListener("click", async () => {
               ${qr ? `<button type="button" class="qrveil" id="qrveil" aria-expanded="false"><span class="qrimg" role="img" aria-label="QR code of the payment request">${svgSmall}</span><em>Tap to show QR</em></button>` : `<p class="r-fine c">This request (${n} payments, ${req.uri.length} characters) is too long for one QR code. Use “Open in wallet” or “Copy request”.</p>`}
               <p class="r-fine c">✓ Signed by ${n === 2 ? "both" : `all ${n}`} members · checked in your browser · charter ${req.charterHash.slice(0, 8)}</p>
               <div class="r-perf" aria-hidden="true"></div>
-              <p class="r-thanks" aria-hidden="true">terima kasih!</p>
+              <p class="r-thanks" aria-hidden="true">thank you!</p>
             </section>
           </div>
         </div>

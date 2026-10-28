@@ -95,7 +95,7 @@ const LUNAS =
     '<g filter="url(#cl-ink)">' +
       '<rect x="7" y="7" width="226" height="98" rx="16" fill="none" stroke="#c0341d" stroke-width="7"/>' +
       '<rect x="19" y="19" width="202" height="74" rx="8" fill="none" stroke="#c0341d" stroke-width="2.4"/>' +
-      '<text class="cf-stamp-t" x="120" y="80" text-anchor="middle" fill="#c0341d">LUNAS</text>' +
+      '<text class="cf-stamp-t" x="120" y="80" text-anchor="middle" fill="#c0341d">PAID</text>' +
     "</g>" +
   "</svg>";
 
